@@ -1,0 +1,65 @@
+# Julkaisee pelin GitHub Pagesiin aina, kun main-haaraan tulee muutoksia.
+# Jos sisältötiedosto on rikki tai testi epäonnistuu, julkaisu pysähtyy ja
+# edellinen toimiva versio jää näkyviin. Virheen syy näkyy suomeksi ajon
+# yhteenvedossa (Actions → ajo → Summary).
+name: Julkaisu
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  rakenna:
+    name: Tarkista ja rakenna
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hae koodi
+        uses: actions/checkout@v7
+
+      - name: Asenna Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Asenna riippuvuudet
+        run: npm ci
+
+      - name: Tarkista sisältötiedostot
+        run: npm run tarkista-sisalto
+
+      - name: Aja testit
+        run: npm test
+
+      - name: Rakenna peli
+        run: npm run build
+
+      - name: Valmistele julkaisu
+        uses: actions/configure-pages@v6
+
+      - name: Lähetä julkaistavat tiedostot
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  julkaise:
+    name: Julkaise GitHub Pagesiin
+    needs: rakenna
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.julkaisu.outputs.page_url }}
+    steps:
+      - name: Julkaise
+        id: julkaisu
+        uses: actions/deploy-pages@v5

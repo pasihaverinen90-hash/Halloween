@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Halloween-peli-ilta</title>
+    <style>
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #07040d; overflow: hidden; }
+      #peli { width: 100%; height: 100%; }
+      #lataus { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        color: #f4ecd8; font: 600 28px system-ui, sans-serif; letter-spacing: 0.05em; }
+      #virhe { position: fixed; inset: 0; display: none; padding: 48px; box-sizing: border-box;
+        color: #f4ecd8; background: #1a0d14; font: 20px/1.5 system-ui, sans-serif; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div id="lataus">Ladataan…</div>
+    <div id="virhe"></div>
+    <div id="peli"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
