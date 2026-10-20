@@ -29,8 +29,10 @@ export const POPE_HALF_H = 36 * SCALE;
 export const EXIT_Y = FIELD_H + 60;
 
 export type EnemyKind = 'ghost' | 'bat' | 'pumpkin' | 'skeleton' | 'imp' | 'reaper' | 'ark' | 'grail';
-export type BoostKind = 'rapid' | 'spread' | 'shield';
-export const BOOSTS: readonly BoostKind[] = ['rapid', 'spread', 'shield'];
+/** What a destroyed enemy may drop: a temporary boost, one more holy water or (at set moments) a point of endurance. */
+export type BoostKind = 'rapid' | 'spread' | 'shield' | 'water' | 'life';
+/** How likely each random drop is (endurance never drops by chance, see CONFIG.raiskinta.lifeDropTimes). */
+const DROP_WEIGHTS: Record<BoostKind, number> = { rapid: 3, spread: 3, shield: 2, water: 1, life: 0 };
 
 /** Hits needed to destroy each enemy with the basic weapon. */
 export const ENEMY_HP: Record<EnemyKind, number> = { ghost: 1, bat: 1, pumpkin: 3, skeleton: 2, imp: 2, reaper: 10, ark: 5, grail: 5 };
@@ -47,7 +49,7 @@ export const ENEMY_RADIUS: Record<EnemyKind, number> = {
 };
 /** Enemies that shoot back. */
 export const SHOOTERS: ReadonlySet<EnemyKind> = new Set<EnemyKind>(['pumpkin', 'skeleton', 'reaper']);
-/** Holy objects: shooting one improves the weapon. */
+/** Holy objects: shooting one gives a lasting upgrade (the ark a better weapon, the grail a guardian orb). */
 export const SPECIALS: ReadonlySet<EnemyKind> = new Set<EnemyKind>(['ark', 'grail']);
 
 export interface FormationSlot {
@@ -70,8 +72,6 @@ export interface Spawn {
   dir: 1 | -1;
   /** Skeletons march in a block like in the classics. */
   formation: FormationSlot | null;
-  /** Destroying it drops this boost. */
-  drop: BoostKind | null;
 }
 
 /** An imp's dive: from where, which way (px/s) and when (age) it started. */
@@ -146,7 +146,7 @@ function pickWave(d: number, previous: Wave | null, random: () => number): Wave 
 /** All enemies of an attempt in the order they appear. Same for everyone, every time. */
 export function buildSchedule(): Spawn[] {
   const random = seededRandom(20261031);
-  const list: Array<Omit<Spawn, 'id' | 'drop'>> = [];
+  const list: Array<Omit<Spawn, 'id'>> = [];
   let formations = 0;
   let previous: Wave | null = null;
   const push = (t: number, kind: EnemyKind, x: number, dir: 1 | -1, formation: FormationSlot | null = null): void => {
@@ -198,23 +198,41 @@ export function buildSchedule(): Spawn[] {
     push(t, i % 2 === 0 ? 'ark' : 'grail', dir > 0 ? -80 : FIELD_W + 80, dir);
   });
   list.sort((a, b) => a.t - b.t);
-
-  // Every boostEverySeconds one ordinary enemy carries a boost, in turn rapid fire, spread shot and shield.
-  let nextDrop = C.boostEverySeconds * 0.6;
-  let drops = 0;
-  return list.map((spawn, id) => {
-    let drop: BoostKind | null = null;
-    if (spawn.t >= nextDrop && !SPECIALS.has(spawn.kind)) {
-      drop = BOOSTS[drops++ % BOOSTS.length];
-      nextDrop += C.boostEverySeconds;
-    }
-    return { ...spawn, t: Math.round(spawn.t * 100) / 100, id, drop };
-  });
+  return list.map((spawn, id) => ({ ...spawn, t: Math.round(spawn.t * 100) / 100, id }));
 }
 
 export const SCHEDULE: readonly Spawn[] = buildSchedule();
 /** Every enemy and holy object of an attempt. Destroying all of them gives the full enemy points. */
 export const ENEMY_TOTAL = SCHEDULE.length;
+
+/**
+ * What a destroyed enemy drops (Pasi 20.10.: by chance), given two random
+ * numbers 0..1. Nothing within dropGapSeconds of the previous drop, and no
+ * holy water when the pope already carries the most he can.
+ */
+export function rollDrop(roll: number, pick: number, sinceLastDrop: number, holyWater: number): BoostKind | null {
+  if (sinceLastDrop < C.dropGapSeconds || roll >= C.dropChance) return null;
+  const kinds = (Object.keys(DROP_WEIGHTS) as BoostKind[]).filter((k) => DROP_WEIGHTS[k] > 0 && (k !== 'water' || holyWater < C.holyWaterMax));
+  let left = pick * kinds.reduce((sum, k) => sum + DROP_WEIGHTS[k], 0);
+  for (const kind of kinds) {
+    left -= DROP_WEIGHTS[kind];
+    if (left < 0) return kind;
+  }
+  return kinds[kinds.length - 1];
+}
+
+/** Guardian orbs: how far from the pope they circle, how fast (rad/s) and their size for collisions. */
+export const ORB_DISTANCE = 64;
+export const ORB_SPEED = 3.2;
+export const ORB_RADIUS = 15;
+
+/** Where the guardian orbs are, evenly spaced around the pope. */
+export function orbPositions(count: number, angle: number, popeX: number, popeY: number): Array<{ x: number; y: number }> {
+  return Array.from({ length: count }, (_, i) => {
+    const a = angle + (i * Math.PI * 2) / count;
+    return { x: popeX + Math.cos(a) * ORB_DISTANCE, y: popeY - 6 + Math.sin(a) * ORB_DISTANCE * 0.9 };
+  });
+}
 
 /** Where an imp aims its dive: at the pope, at a fixed speed. */
 export function planDive(from: { x: number; y: number }, target: { x: number; y: number }, age: number): Dive {

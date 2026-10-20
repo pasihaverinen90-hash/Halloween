@@ -15,7 +15,7 @@ async function startAttempt(page: Page): Promise<void> {
   await waitForScene(page, 'Raiskinta');
 }
 
-test('räiskintä: liikkuminen, tauko, boosti, liitonarkku, Paholainen ja kolme yritystä', async ({ page }) => {
+test('räiskintä: liikkuminen, tauko, boosti, liitonarkku, malja, pyhä vesi, Paholainen ja kolme yritystä', async ({ page }) => {
   test.setTimeout(420_000);
   await openGame(page);
   await createPlayer(page, 'Ampuja');
@@ -47,26 +47,37 @@ test('räiskintä: liikkuminen, tauko, boosti, liitonarkku, Paholainen ja kolme 
   await press(page, 'Enter', 400);
   await waitForState(page, 'Raiskinta', (s) => s.time > paused);
 
-  // Boostin kantaja: tuhotaan, ja paavi kerää boostin. Testin ajaksi paavi ei ammu itse,
-  // ja suojakehä pitää hänet hengissä.
-  await shooter(page, 'scene.boosts.shield = 999; scene.fireCooldown = 99999; scene.debugSkip(9)');
-  await waitForState(page, 'Raiskinta', (s) => s.enemies > 0);
-  await expect
-    .poll(() => shooter<boolean>(page, 'return scene.enemies.some((e) => e.spawn.drop)'), { timeout: 60_000 })
-    .toBe(true);
-  await shooter(page, 'const e = scene.enemies.find((e) => e.spawn.drop); scene.kill(e); scene.popeX = e.x;');
+  // Pudonnut boosti kerätään koskettamalla. Testin ajaksi paavi ei ammu itse, ja suojakehä pitää hänet hengissä.
+  await shooter(page, 'scene.boosts.shield = 999; scene.fireCooldown = 99999;');
+  await shooter(page, "scene.debugDrop('rapid')");
   await waitForState(page, 'Raiskinta', (s) => s.boosts.rapid > 0);
 
-  // Liitonarkku parantaa asetta
-  await shooter(page, 'scene.debugSkip(30)');
+  // Liitonarkku parantaa asetta, pyhä malja tuo suojapallon
+  await shooter(page, 'scene.debugSkip(19)');
   await expect.poll(() => shooter<boolean>(page, "return scene.enemies.some((e) => e.spawn.kind === 'ark')"), { timeout: 60_000 }).toBe(true);
   await shooter(page, "scene.kill(scene.enemies.find((e) => e.spawn.kind === 'ark'))");
-  expect(await sceneState(page, 'Raiskinta')).toMatchObject({ weapon: 2 });
+  expect(await sceneState(page, 'Raiskinta')).toMatchObject({ weapon: 2, orbs: 0 });
+  await shooter(page, 'scene.debugSkip(39)');
+  await expect.poll(() => shooter<boolean>(page, "return scene.enemies.some((e) => e.spawn.kind === 'grail')"), { timeout: 60_000 }).toBe(true);
+  await shooter(page, "scene.kill(scene.enemies.find((e) => e.spawn.kind === 'grail'))");
+  expect(await sceneState(page, 'Raiskinta')).toMatchObject({ weapon: 2, orbs: 1 });
+
+  // Pyhä vesi (välilyönti) tuhoaa näkyvät viholliset
+  await waitForState(page, 'Raiskinta', (s) => s.enemies >= 3);
+  const beforeWater = await sceneState(page, 'Raiskinta');
+  expect(beforeWater.holyWater).toBe(3);
+  await press(page, 'Space', 400);
+  await waitForState(page, 'Raiskinta', (s) => s.holyWater === 2);
+  const afterWater = await sceneState(page, 'Raiskinta');
+  expect(afterWater.killed).toBeGreaterThan(beforeWater.killed);
 
   // Osumat vievät kestoa
   const before = (await sceneState(page, 'Raiskinta')).health;
   await shooter(page, 'scene.debugHurt(3)');
   expect((await sceneState(page, 'Raiskinta')).health).toBe(before - 3);
+  // Kultainen risti palauttaa yhden
+  await shooter(page, "scene.debugDrop('life')");
+  await waitForState(page, 'Raiskinta', (s) => s.health === before - 2);
   await shooter(page, 'scene.boosts.shield = 999');
 
   // Välitekstin jälkeen Paholainen; viimeinen osuma kaataa sen

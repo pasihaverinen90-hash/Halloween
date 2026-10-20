@@ -27,7 +27,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **Hiominen lopuksi (20.10.):** kaikkien pelien kysymykset, kuvat ja yksityiskohdat muokataan vasta, kun kaikki pelit on tehty ja testattu toimiviksi. Pelit tehdään ensin toimiviksi yksi kerrallaan.
 - **Lentopeli:** maali on noin 90 sekunnin lennon päässä (säädetään testauksen perusteella). Maa on lattia, jota pitkin noita voi liukua; vain esteet ovat vaarallisia. Taivas on katto.
 - **Lentopeli, Pasin palaute 20.10.:** kissoja liian usein, peli liian helppo ja esteet aina katosta asti (vain yksi reitti). Pasin ehdotuksesta mukaan tulivat vastaan lentävät lepakot. Nyt esteitä on neljää tyyppiä (häkki + inkvisiittori, pelkkä inkvisiittoritorni, pelkkä riippuva häkki ja lepakkoparvi), ja usein esteen ohi pääsee sekä yli että ali. Kissoja on kolme koko matkalla (noin 22 sekunnin välein), aina lepakoiden vieressä.
-- **Räiskintä (Pasi 20.10.):** Paholainen saapuu 3 minuutin kohdalla (ei 5), jotta ilta ei veny. Vihollispisteet (400) ovat osuus kaikista vihollisista, ja viholliset tulevat kaikille samassa järjestyksessä. Liitonarkku ja pyhä malja lasketaan vihollisiin. Paholaisesta saa 300 pistettä vain kaatamalla sen. Kestoa (10 osumaa) ei voi palauttaa.
+- **Räiskintä (Pasi 20.10.):** Paholainen saapuu 3 minuutin kohdalla (ei 5), jotta ilta ei veny. Vihollispisteet (400) ovat osuus kaikista vihollisista, ja viholliset tulevat kaikille samassa järjestyksessä. Liitonarkku ja pyhä malja lasketaan vihollisiin. Paholaisesta saa 300 pistettä vain kaatamalla sen. Paavi kestää 10 osumaa. Pasi muutti myöhemmin 20.10.: matkan varrella putoaa kolme kultaista ristiä (noin 50, 100 ja 150 s), joista kukin palauttaa yhden.
 - **Räiskintä, Pasin palaute 20.10.:** vihollisia aivan liian vähän, kuva saa olla kauempaa (enemmän pelialuetta), paavi saa liikkua myös pystysuunnassa, lisää vaikeampia vihollisia, ja Paholainen oli tylsä. Boosteihin voi myöhemmin lisätä erilaisia lisäaseita (ei vielä).
 - **JSON-varmuuskopiot pois käytöstä (Pasi 20.10.):** kiitosnäkymä ei lataa varmuuskopiota, eikä korjaustilassa ole "Lataa varmuuskopio"- ja "Tuo varmuuskopio"-toimintoja. Tulokset tallentuvat edelleen selaimeen, ja CSV-vienti säilyy. Poikkeaa CLAUDE.md:n Tallennus-kohdasta Pasin päätöksellä. Kytkin: `CONFIG.storage.jsonBackups`.
 - **Täydellinen tulos päättää pelin (Pasi 20.10.):** kun toimintapelin yrityksestä tulee 1000 pistettä, loput yritykset jäävät väliin. Koskee kaikkia toimintapelejä.
@@ -131,6 +131,13 @@ Pasin palaute ensimmäiseen versioon: vihollisia liian vähän, kuva lähemmäs 
 - Vihollisia on noin 690 (ennen 256). Uudet, vaikeammat viholliset: pikkupirut syöksyvät paavia kohti, ja viikatemiehet kestävät 10 osumaa ja ampuvat viiden kirouspallon viuhkoja. Kurpitsat ampuvat lopussa kolme tulipalloa kerralla.
 - Paholainen raivostuu kahdesti (2/3 ja 1/3 kestävyydestä), ja raivon vaiheet näkyvät palkissa. Hyökkäyksiä on kahdeksan: tuliviuhka, tähdätty sarja, tulisade, tulikierre, tulirengas, pikkupirujen kutsu, rynnäkkö paavia kohti ja katoaminen. Kestävyys on 420.
 - JSON-varmuuskopiot otettiin pois käytöstä Pasin pyynnöstä (ks. yllä).
+
+Pasin palaute toiseen versioon: vaikeahko, mutta hän pääsi Paholaisen viimeiseen vaiheeseen, kun keskittyi ampumiseen. Vihollismäärä saa pysyä, kunhan aseisiin tulee enemmän apua. Lisäelämiä saa pudota pari, koska loppuun jäi vain 3. Väliaikaisten boostien pitää pudota sattumalta tuhotuista vihollisista. Lisää pysyviä parannuksia, esimerkiksi paavia kiertävä suojapallo, ja alkuun noin 3 ruudun tyhjentävää pommia. Korjattu samassa rupeamassa:
+- Boostit putoavat sattumalta tuhotuista vihollisista (5 %, enintään yksi neljässä sekunnissa): nopea tuli, hajaammus, suojakehä tai pyhä vesi.
+- Pyhiä esineitä on seitsemän (20, 40, 65, 90, 115, 140 ja 160 s). Liitonarkku parantaa asetta, ja pyhä malja tuo paavia kiertävän suojapallon (enintään 3), joka pysäyttää ammuksia ja vahingoittaa vihollisia.
+- Pyhä vesi (välilyönti, alussa 3, enintään 5): 6 vahinkoa kaikkiin näkyviin vihollisiin, ammukset katoavat, ja Paholaiselle tulee 30 vahinkoa. Nimi on oma, koska "holy hand grenade" on tunnetusta elokuvasta.
+- Kolme kultaista ristiä (+1 kesto) putoaa noin 50, 100 ja 150 sekunnin kohdalla.
+- Viholliset ovat samat kuin Pasin testaamassa versiossa. Osuman jälkeinen suoja-aika on 1,5 s (ennen 1,2 s).
 
 Seuraavaksi:
 - Vaihe 5, ristikko, kun Pasi hyväksyy räiskinnän. Kysy Pasilta näppäimet (CLAUDE.md: ehdota liikkuminen, suunnan vaihto ja kirjaimen paljastus).

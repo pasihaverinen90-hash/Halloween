@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { CONFIG } from '../../config';
 import { addKeyHints } from '../../ui/hints';
-import { heldKeys, type HeldKeys } from '../../ui/input';
+import { heldKeys, onKeys, type HeldKeys } from '../../ui/input';
 import { addAsset } from '../../ui/place';
 import { H, W } from '../../ui/screen';
 import { COLORS, CSS, TEXT } from '../../ui/theme';
@@ -20,8 +20,10 @@ import {
   FIREBALL,
   GHOST,
   GRAIL,
+  HOLY_WATER,
   IMP,
   LIFE,
+  ORB,
   POPE,
   PUMPKIN,
   REAPER,
@@ -45,12 +47,16 @@ import {
   fireInterval,
   hitsBoss,
   IMP_HOVER,
+  ORB_RADIUS,
+  ORB_SPEED,
+  orbPositions,
   planDive,
   POPE_MAX_X,
   POPE_MAX_Y,
   POPE_MIN_X,
   POPE_MIN_Y,
   POPE_START_Y,
+  rollDrop,
   SCALE,
   SCHEDULE,
   scoreOf,
@@ -77,8 +83,10 @@ const ENEMY_ART: Record<EnemyKind, AssetSpec> = {
   ark: ARK,
   grail: GRAIL,
 };
-const BOOST_ART: Record<BoostKind, AssetSpec> = { rapid: BOOST_RAPID, spread: BOOST_SPREAD, shield: BOOST_SHIELD };
-const BOOST_NAMES: Record<BoostKind, string> = { rapid: 'Nopea tuli', spread: 'Hajaammus', shield: 'Suojakehä' };
+const BOOST_ART: Record<BoostKind, AssetSpec> = { rapid: BOOST_RAPID, spread: BOOST_SPREAD, shield: BOOST_SHIELD, water: HOLY_WATER, life: LIFE };
+const BOOST_NAMES: Record<BoostKind, string> = { rapid: 'Nopea tuli', spread: 'Hajaammus', shield: 'Suojakehä', water: 'Pyhä vesi +1', life: '+1 kesto' };
+/** Boosts that last a while (holy water is kept until thrown, endurance is restored at once). */
+type TimedBoost = Exclude<BoostKind, 'water' | 'life'>;
 /** Colour of the burst when an enemy is destroyed. */
 const BURST: Record<EnemyKind, number> = {
   ghost: 0xdfe9ff,
@@ -110,6 +118,8 @@ interface Enemy {
   /** Seconds since it appeared. */
   age: number;
   shootIn: number;
+  /** A guardian orb hurts the enemy again only after this many seconds. */
+  orbCooldown: number;
   dive: Dive | null;
   /** Called by the Devil: not one of the scheduled enemies, gives no points. */
   minion: boolean;
@@ -176,7 +186,16 @@ export class RaiskintaScene extends Phaser.Scene {
   private health: number = C.maxHealth;
   private invulnerable = 0;
   private weaponLevel = 1;
-  private boosts: Record<BoostKind, number> = { rapid: 0, spread: 0, shield: 0 };
+  private boosts: Record<TimedBoost, number> = { rapid: 0, spread: 0, shield: 0 };
+  private holyWater: number = C.holyWaterStart;
+  private orbCount = 0;
+  private orbAngle = 0;
+  private orbs: Phaser.GameObjects.Image[] = [];
+  private bossOrbCooldown = 0;
+  /** Seconds since the last drop (drops come at most every dropGapSeconds). */
+  private sinceDrop = 0;
+  /** Index of the next golden cross in CONFIG.raiskinta.lifeDropTimes. */
+  private nextLifeDrop = 0;
   private fireCooldown = 0;
   private killed = 0;
   private bossDefeated = false;
@@ -230,6 +249,13 @@ export class RaiskintaScene extends Phaser.Scene {
     this.invulnerable = 0;
     this.weaponLevel = 1;
     this.boosts = { rapid: 0, spread: 0, shield: 0 };
+    this.holyWater = C.holyWaterStart;
+    this.orbCount = 0;
+    this.orbAngle = 0;
+    this.orbs = [];
+    this.bossOrbCooldown = 0;
+    this.sinceDrop = 0;
+    this.nextLifeDrop = 0;
     this.fireCooldown = 0.4;
     this.killed = 0;
     this.bossDefeated = false;
@@ -268,9 +294,11 @@ export class RaiskintaScene extends Phaser.Scene {
     this.buildHud();
     addKeyHints(this, [
       ['←→↑↓', 'Liiku'],
+      ['Välilyönti', 'Pyhä vesi'],
       ['Esc', 'Tauko'],
     ]);
     this.keys = heldKeys(this, ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']);
+    onKeys(this, { ' ': () => this.throwHolyWater() });
     this.ctx.sfx.play('start');
   }
 
@@ -282,6 +310,8 @@ export class RaiskintaScene extends Phaser.Scene {
       return;
     }
     this.movePope(dt);
+    this.moveOrbs(dt);
+    this.sinceDrop += dt;
     this.fire(dt);
     if (this.phase === 'playing') {
       this.playTime = Math.min(C.bossAfterSeconds, this.playTime + dt);
@@ -314,6 +344,8 @@ export class RaiskintaScene extends Phaser.Scene {
       enemies: this.enemies.length,
       bossHealth: this.phase === 'boss' || this.phase === 'won' ? this.bossHealth : null,
       bossStage: this.phase === 'boss' ? this.bossStageNow : null,
+      orbs: this.orbCount,
+      holyWater: this.holyWater,
       popeX: Math.round(this.popeX),
       popeY: Math.round(this.popeY),
     };
@@ -333,6 +365,11 @@ export class RaiskintaScene extends Phaser.Scene {
       this.boosts.shield = 0;
       this.hurt();
     }
+  }
+
+  /** Test helper: drop a boost just above the pope. */
+  debugDrop(kind: BoostKind): void {
+    this.dropItem(kind, this.popeX, this.popeY - 90);
   }
 
   /** Test helper: set the Devil's health. */
@@ -355,7 +392,7 @@ export class RaiskintaScene extends Phaser.Scene {
     this.pope.setPosition(this.popeX, this.popeY).setAngle(dx * 6);
     this.invulnerable = Math.max(0, this.invulnerable - dt);
     this.pope.setAlpha(this.invulnerable > 0 && Math.floor(this.invulnerable * 11) % 2 === 0 ? 0.35 : 1);
-    for (const kind of Object.keys(this.boosts) as BoostKind[]) this.boosts[kind] = Math.max(0, this.boosts[kind] - dt);
+    for (const kind of Object.keys(this.boosts) as TimedBoost[]) this.boosts[kind] = Math.max(0, this.boosts[kind] - dt);
     const shielded = this.boosts.shield > 0;
     this.shield.setVisible(shielded).setPosition(this.popeX, this.popeY);
     if (shielded) this.shield.setAlpha(this.boosts.shield < 1.5 && Math.floor(this.boosts.shield * 8) % 2 === 0 ? 0.3 : 0.9);
@@ -420,12 +457,13 @@ export class RaiskintaScene extends Phaser.Scene {
     const sprite = addScaled(this, ENEMY_ART[spawn.kind], pos.x, pos.y).setDepth(SPECIALS.has(spawn.kind) ? 2 : 3);
     const gap = enemyShotGap(spawn.t);
     const shootIn = spawn.kind === 'skeleton' ? gap * (2 + this.random.frac() * 5) : gap * (0.6 + this.random.frac() * 0.6);
-    this.enemies.push({ spawn, hp: ENEMY_HP[spawn.kind], sprite, x: pos.x, y: pos.y, age, shootIn, dive: null, minion });
+    this.enemies.push({ spawn, hp: ENEMY_HP[spawn.kind], sprite, x: pos.x, y: pos.y, age, shootIn, orbCooldown: 0, dive: null, minion });
   }
 
   private moveEnemies(dt: number): void {
     for (const enemy of [...this.enemies]) {
       enemy.age += dt;
+      enemy.orbCooldown = Math.max(0, enemy.orbCooldown - dt);
       if (enemy.spawn.kind === 'imp' && !enemy.dive && enemy.age >= IMP_HOVER) {
         enemy.dive = planDive({ x: enemy.x, y: enemy.y }, { x: this.popeX, y: this.popeY }, enemy.age);
         this.ctx.sfx.tone({ freq: 700, slideTo: 350, duration: 0.15, type: 'square', volume: 0.06 });
@@ -490,19 +528,81 @@ export class RaiskintaScene extends Phaser.Scene {
   }
 
   private kill(enemy: Enemy): void {
-    const { kind, drop } = enemy.spawn;
+    const { kind } = enemy.spawn;
     if (!enemy.minion) this.killed += 1;
     this.burst(enemy.x, enemy.y, BURST[kind], SPECIALS.has(kind) || kind === 'reaper' ? 18 : 8);
     this.ctx.sfx.tone({ freq: 520, slideTo: 240, duration: 0.12, type: 'triangle', volume: 0.16 });
-    if (drop) this.items.push({ kind: drop, sprite: addScaled(this, BOOST_ART[drop], enemy.x, enemy.y, 0.85).setDepth(2), x: enemy.x, y: enemy.y });
     if (SPECIALS.has(kind)) {
-      const before = this.weaponLevel;
-      this.weaponLevel = Math.min(C.maxWeaponLevel, this.weaponLevel + 1);
-      const name = kind === 'ark' ? 'Liitonarkku' : 'Pyhä malja';
-      this.floatText(enemy.x, enemy.y, this.weaponLevel > before ? `${name}: ase paranee!` : name, CSS.gold);
-      this.ctx.sfx.play('success');
+      this.blessing(kind, enemy.x, enemy.y);
+    } else if (this.nextLifeDrop < C.lifeDropTimes.length && this.playTime >= C.lifeDropTimes[this.nextLifeDrop]) {
+      // Pasi 20.10.: a couple of extra lives along the way
+      this.nextLifeDrop += 1;
+      this.dropItem('life', enemy.x, enemy.y);
+    } else {
+      // Pasi 20.10.: any destroyed enemy may drop a boost
+      const drop = rollDrop(this.random.frac(), this.random.frac(), this.sinceDrop, this.holyWater);
+      if (drop) this.dropItem(drop, enemy.x, enemy.y);
     }
     this.removeEnemy(enemy);
+  }
+
+  /** A lasting upgrade from a holy object: the ark improves the weapon, the grail adds a guardian orb. */
+  private blessing(kind: EnemyKind, x: number, y: number): void {
+    let message: string;
+    if (kind === 'ark' && this.weaponLevel < C.maxWeaponLevel) {
+      this.weaponLevel += 1;
+      message = 'Liitonarkku: ase paranee!';
+    } else if (kind === 'grail' && this.orbCount < C.maxOrbs) {
+      this.addOrb();
+      message = 'Pyhä malja: suojapallo!';
+    } else {
+      this.holyWater = Math.min(C.holyWaterMax, this.holyWater + 1);
+      message = `${kind === 'ark' ? 'Liitonarkku' : 'Pyhä malja'}: pyhää vettä!`;
+    }
+    this.floatText(x, y, message, CSS.gold);
+    this.ctx.sfx.play('success');
+  }
+
+  private dropItem(kind: BoostKind, x: number, y: number): void {
+    this.sinceDrop = 0;
+    this.items.push({ kind, sprite: addScaled(this, BOOST_ART[kind], x, y, kind === 'life' ? 1.5 : 1).setDepth(2), x, y });
+  }
+
+  // ---------------------------------------------------------------- guardian orbs and holy water
+
+  private addOrb(): void {
+    this.orbCount += 1;
+    this.orbs.push(addScaled(this, ORB, this.popeX, this.popeY, 1.4).setDepth(5));
+  }
+
+  private moveOrbs(dt: number): void {
+    this.orbAngle += ORB_SPEED * dt;
+    this.bossOrbCooldown = Math.max(0, this.bossOrbCooldown - dt);
+    orbPositions(this.orbs.length, this.orbAngle, this.popeX, this.popeY).forEach((p, i) => this.orbs[i].setPosition(p.x, p.y));
+  }
+
+  /** Space: holy water hurts every enemy on screen and wipes out all their bullets. */
+  private throwHolyWater(): void {
+    if ((this.phase !== 'playing' && this.phase !== 'boss') || this.holyWater <= 0) return;
+    this.holyWater -= 1;
+    this.cameras.main.flash(300, 255, 245, 210);
+    const ring = this.add.circle(this.popeX, this.popeY, 30, 0xbfe3ff, 0.5).setDepth(8);
+    this.tweens.add({ targets: ring, scale: 30, alpha: 0, duration: 700, ease: 'Quad.Out', onComplete: () => ring.destroy() });
+    this.ctx.sfx.tone({ freq: 880, slideTo: 1320, duration: 0.5, type: 'sine', volume: 0.2 });
+    this.ctx.sfx.tone({ freq: 660, slideTo: 990, duration: 0.6, type: 'triangle', volume: 0.12, delay: 0.08 });
+    this.ctx.sfx.noise({ duration: 0.5, volume: 0.2, filterFreq: 3000 });
+    for (const b of this.bullets) this.burst(b.x, b.y, 0xbfe3ff, 3);
+    this.clearBullets(this.bullets);
+    for (const enemy of [...this.enemies]) {
+      if (enemy.y < -20 || enemy.y > H + 20 || enemy.x < -20 || enemy.x > W + 20) continue;
+      enemy.hp -= C.holyWaterDamage;
+      if (enemy.hp <= 0) this.kill(enemy);
+      else {
+        enemy.sprite.setTintFill(0xbfe3ff);
+        this.time.delayedCall(120, () => enemy.sprite.active && enemy.sprite.clearTint());
+      }
+    }
+    if (this.bossHittable()) this.hitBoss(C.holyWaterBossDamage);
   }
 
   // ---------------------------------------------------------------- bullets, items and hits
@@ -540,6 +640,11 @@ export class RaiskintaScene extends Phaser.Scene {
     item.sprite.destroy();
   }
 
+  /** The attempt has ended (the pope fell or the Devil was defeated). */
+  private isOver(): boolean {
+    return this.phase === 'won' || this.phase === 'dead';
+  }
+
   private bossHittable(): boolean {
     return !!this.boss && this.phase === 'boss' && this.bossAge > 1.5 && this.boss.alpha > 0.5;
   }
@@ -575,6 +680,28 @@ export class RaiskintaScene extends Phaser.Scene {
       this.bullets.splice(i, 1);
       this.hurt();
     }
+    // Guardian orbs stop bullets and hurt the enemies they touch
+    for (const orb of this.orbs) {
+      for (let i = this.bullets.length - 1; i >= 0; i--) {
+        const b = this.bullets[i];
+        const r = ORB_RADIUS + b.radius;
+        if ((b.x - orb.x) ** 2 + (b.y - orb.y) ** 2 > r * r) continue;
+        this.burst(b.x, b.y, COLORS.gold, 3);
+        b.pool.give(b.sprite);
+        this.bullets.splice(i, 1);
+      }
+      for (const enemy of [...this.enemies]) {
+        const r = ORB_RADIUS + ENEMY_RADIUS[enemy.spawn.kind];
+        if (enemy.orbCooldown > 0 || (enemy.x - orb.x) ** 2 + (enemy.y - orb.y) ** 2 > r * r) continue;
+        enemy.orbCooldown = 0.3;
+        this.damage(enemy);
+      }
+      if (this.bossOrbCooldown <= 0 && this.bossHittable() && hitsBoss(this.boss!.x, this.boss!.y, orb.x, orb.y)) {
+        this.bossOrbCooldown = 0.3;
+        this.hitBoss();
+      }
+      if (this.isOver()) return; // an orb gave the Devil its last hit
+    }
     for (const enemy of [...this.enemies]) {
       if (!touchesPope(this.popeX, this.popeY, enemy.x, enemy.y, ENEMY_RADIUS[enemy.spawn.kind] * 0.8)) continue;
       if (this.boosts.shield > 0 && enemy.spawn.kind !== 'reaper') {
@@ -591,7 +718,9 @@ export class RaiskintaScene extends Phaser.Scene {
     // Boosts
     for (const item of [...this.items]) {
       if (!touchesPope(this.popeX, this.popeY, item.x, item.y, 20)) continue;
-      this.boosts[item.kind] = item.kind === 'shield' ? C.shieldSeconds : C.boostSeconds;
+      if (item.kind === 'water') this.holyWater = Math.min(C.holyWaterMax, this.holyWater + 1);
+      else if (item.kind === 'life') this.health = Math.min(C.maxHealth, this.health + 1);
+      else this.boosts[item.kind] = item.kind === 'shield' ? C.shieldSeconds : C.boostSeconds;
       this.floatText(item.x, item.y - 30, BOOST_NAMES[item.kind], CSS.bone);
       this.ctx.sfx.play('correct');
       this.removeItem(item);
@@ -725,7 +854,7 @@ export class RaiskintaScene extends Phaser.Scene {
         // Imps called from the sky (they give no points)
         const count = stage + 2;
         for (let i = 0; i < count; i++) {
-          const spawn: Spawn = { id: -(++this.minions), t: this.playTime, kind: 'imp', x: Phaser.Math.Clamp(x + (i - (count - 1) / 2) * 110, 80, W - 80), dir: i % 2 ? 1 : -1, formation: null, drop: null };
+          const spawn: Spawn = { id: -(++this.minions), t: this.playTime, kind: 'imp', x: Phaser.Math.Clamp(x + (i - (count - 1) / 2) * 110, 80, W - 80), dir: i % 2 ? 1 : -1, formation: null };
           later(i * 0.15, () => this.addEnemy(spawn, 0, true));
         }
         this.boss!.setTintFill(0x7dff8a);
@@ -777,9 +906,9 @@ export class RaiskintaScene extends Phaser.Scene {
     return [this.boss, this.aura].filter((part): part is NonNullable<typeof part> => part !== null);
   }
 
-  private hitBoss(): void {
+  private hitBoss(damage = 1): void {
     if (!this.boss || this.phase !== 'boss') return;
-    this.bossHealth = Math.max(0, this.bossHealth - 1);
+    this.bossHealth = Math.max(0, this.bossHealth - damage);
     if (!this.boss.isTinted) {
       this.boss.setTintFill(0xffe0a0);
       this.time.delayedCall(50, () => this.boss?.active && this.boss.clearTint());
@@ -877,8 +1006,9 @@ export class RaiskintaScene extends Phaser.Scene {
       // The rightmost cross goes first
       this.lives.forEach((life, i) => life.setAlpha(C.maxHealth - 1 - i < this.health ? 1 : 0.2));
     }
-    const parts = [`Ase ${this.weaponLevel}/${C.maxWeaponLevel}`];
-    for (const kind of Object.keys(this.boosts) as BoostKind[]) {
+    const parts = [`Ase ${this.weaponLevel}/${C.maxWeaponLevel}`, `Pyhä vesi ${this.holyWater}`];
+    if (this.orbCount > 0) parts.push(`Suojapallot ${this.orbCount}`);
+    for (const kind of Object.keys(this.boosts) as TimedBoost[]) {
       if (this.boosts[kind] > 0) parts.push(`${BOOST_NAMES[kind]} ${Math.ceil(this.boosts[kind])} s`);
     }
     const status = parts.join('   ');

@@ -535,6 +535,26 @@ Hyvä tietää:
 
 > Läpikuultava kultainen valorengas, joka ympäröi hahmon. Keskusta läpinäkyvä. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 130 × 140 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
+### `raiskinta-suojapallo.png` – Suojapallo
+
+- **Koko:** 28 × 28 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni kultainen valopallo, jonka keskellä on risti, ympärillä lämmin hehku. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 28 × 28 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-pyhavesi.png` – Pyhä vesi
+
+- **Koko:** 32 × 42 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pyöreä lasipullo, jossa on kirkkaan sinistä vettä, korkki ja kultainen risti kyljessä, ympärillä sininen hehku. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 32 × 42 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
 ### `raiskinta-kesto.png` – Kestopiste (pieni risti)
 
 - **Koko:** 22 × 26 px

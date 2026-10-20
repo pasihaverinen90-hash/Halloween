@@ -11,9 +11,11 @@ import {
   FIELD_W,
   fireInterval,
   hitsBoss,
+  orbPositions,
   planDive,
   POPE_HALF_H,
   POPE_HALF_W,
+  rollDrop,
   SCHEDULE,
   scoreOf,
   SPECIALS,
@@ -32,8 +34,8 @@ describe('schedule', () => {
     const count = (from: number, to: number): number => SCHEDULE.filter((s) => s.t >= from && s.t < to && !SPECIALS.has(s.kind)).length;
     expect(count(0, 40)).toBeLessThan(count(128, 168));
     expect(Math.max(...SCHEDULE.map((s) => s.t))).toBeLessThanOrEqual(C.lastSpawnSeconds + 3);
-    expect(ENEMY_TOTAL).toBeGreaterThan(500);
-    expect(ENEMY_TOTAL).toBeLessThan(900);
+    expect(ENEMY_TOTAL).toBeGreaterThan(400);
+    expect(ENEMY_TOTAL).toBeLessThan(800);
     expect(new Set(SCHEDULE.map((s) => s.kind))).toEqual(new Set(['ghost', 'bat', 'pumpkin', 'skeleton', 'imp', 'reaper', 'ark', 'grail']));
   });
 
@@ -46,15 +48,9 @@ describe('schedule', () => {
   it('has the ark and the grail at the agreed moments', () => {
     const specials = SCHEDULE.filter((s) => SPECIALS.has(s.kind));
     expect(specials.map((s) => s.t)).toEqual([...C.specialTimes]);
-    expect(specials.map((s) => s.kind)).toEqual(['ark', 'grail', 'ark', 'grail']);
+    expect(specials.map((s) => s.kind)).toEqual(['ark', 'grail', 'ark', 'grail', 'ark', 'grail', 'ark']);
   });
 
-  it('drops a boost about every boostEverySeconds, in turn', () => {
-    const drops = SCHEDULE.filter((s) => s.drop);
-    const last = Math.max(...SCHEDULE.filter((s) => !SPECIALS.has(s.kind)).map((s) => s.t));
-    expect(drops.length).toBe(Math.floor((last - C.boostEverySeconds * 0.6) / C.boostEverySeconds) + 1);
-    expect(drops.slice(0, 3).map((s) => s.drop)).toEqual(['rapid', 'spread', 'shield']);
-  });
 
   it('keeps every enemy inside the field and lets it leave in reasonable time', () => {
     for (const spawn of SCHEDULE) {
@@ -80,6 +76,33 @@ describe('schedule', () => {
     const visible = enemyPosition(last, C.bossAfterSeconds - last.t - 1);
     expect(last.t).toBeLessThan(C.bossAfterSeconds - 8);
     expect(visible === null || visible.y < EXIT_Y).toBe(true);
+  });
+});
+
+describe('drops', () => {
+  it('drops a boost only by chance and not too often', () => {
+    expect(rollDrop(C.dropChance + 0.01, 0, 99, 0)).toBeNull();
+    expect(rollDrop(0, 0, C.dropGapSeconds - 0.1, 0)).toBeNull();
+    expect(rollDrop(0, 0, C.dropGapSeconds, 0)).toBe('rapid');
+    expect(new Set([0, 0.3, 0.5, 0.8, 0.99].map((p) => rollDrop(0, p, 99, 0)))).toEqual(new Set(['rapid', 'spread', 'shield', 'water']));
+  });
+
+  it('never gives endurance by chance (golden crosses drop only at set moments)', () => {
+    for (let p = 0; p < 1; p += 0.01) expect(rollDrop(0, p, 99, 0)).not.toBe('life');
+    expect(C.lifeDropTimes.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('gives no holy water when the pope carries the most he can', () => {
+    for (let p = 0; p < 1; p += 0.01) expect(rollDrop(0, p, 99, C.holyWaterMax)).not.toBe('water');
+  });
+});
+
+describe('guardian orbs', () => {
+  it('circle the pope evenly', () => {
+    const orbs = orbPositions(3, 0, 640, 500);
+    expect(orbs).toHaveLength(3);
+    for (const o of orbs) expect(Math.hypot(o.x - 640, (o.y - 494) / 0.9)).toBeCloseTo(64, 5);
+    expect(orbPositions(0, 1, 640, 500)).toEqual([]);
   });
 });
 

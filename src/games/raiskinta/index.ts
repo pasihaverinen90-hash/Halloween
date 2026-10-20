@@ -14,13 +14,16 @@ const raiskinta: GameDefinition = {
   sceneClass: RaiskintaScene,
   instructions: {
     goal: `Paavi puolustaa hautausmaata Halloween-olentoja vastaan. Selviä ${minutes} minuuttia ja kaada lopuksi Paholainen.`,
-    keys: [['←→↑↓', 'Liiku']],
+    keys: [
+      ['←→↑↓', 'Liiku'],
+      ['Välilyönti', `Heitä pyhää vettä (alussa ${C.holyWaterStart} pulloa)`],
+    ],
     rules: [
       'Paavi ampuu itse. Sinä liikutat häntä ja väistelet vihollisia ja niiden ammuksia.',
-      'Varo pikkupiruja, jotka syöksyvät päin, ja viikatemiehiä, jotka kestävät monta osumaa.',
-      `Paavi kestää ${C.maxHealth} osumaa. Kestoa ei voi palauttaa.`,
-      'Ammu liitonarkku ja pyhä malja: ase paranee loppuyrityksen ajaksi.',
-      'Osa vihollisista pudottaa boostin: nopea tuli, hajaammus tai suojakehä. Kerää se koskettamalla.',
+      `Paavi kestää ${C.maxHealth} osumaa. Matkan varrella putoaa ${C.lifeDropTimes.length} kultaista ristiä, joista kukin palauttaa yhden.`,
+      'Pyhä vesi vahingoittaa kaikkia näkyviä vihollisia ja hävittää niiden ammukset.',
+      'Liitonarkku parantaa asetta, ja pyhä malja tuo paavin ympärille kiertävän suojapallon.',
+      'Tuhottu vihollinen voi pudottaa boostin: nopea tuli, hajaammus, suojakehä tai pyhää vettä.',
       `Vihollisia tulee koko ajan enemmän. ${minutes} minuutin kohdalla saapuu Paholainen.`,
     ],
     scoring: [

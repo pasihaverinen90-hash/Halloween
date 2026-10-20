@@ -141,16 +141,24 @@ export const CONFIG = {
     /** The pope withstands this many hits. */
     maxHealth: 10,
     /** After a hit the pope cannot be hit for this long. */
-    invulnerableSeconds: 1.2,
+    invulnerableSeconds: 1.5,
     /** Pope's speed (px/s); he moves sideways and up and down in the lower part of the screen. */
     popeSpeed: 560,
     /** Shots per second with the basic weapon; each weapon level adds a little. The rapid-fire boost doubles it. */
     fireRate: 4.5,
     fireRatePerLevel: 0.4,
     shotSpeed: 950,
-    /** Weapon levels: 1 at the start, +1 for each ark or grail. */
+    /** Weapon levels: 1 at the start, +1 for each ark of the covenant. */
     maxWeaponLevel: 5,
-    /** Seconds between enemy waves: at the start → at the end (Pasi 20.10.: many more enemies). */
+    /** Guardian orbs circling the pope: +1 for each holy grail, at most this many (Pasi 20.10.). */
+    maxOrbs: 3,
+    /** Holy water: thrown with Space, it hurts every enemy on screen and wipes out their bullets (Pasi 20.10.). */
+    holyWaterStart: 3,
+    holyWaterMax: 5,
+    /** Damage to every enemy on screen (a reaper takes 8, everything else less) and to the Devil. */
+    holyWaterDamage: 6,
+    holyWaterBossDamage: 30,
+    /** Seconds between enemy waves: at the start → at the end (Pasi 20.10.: many more enemies; this many is fine with the extra help). */
     waveGapStart: 2.5,
     waveGapEnd: 1.05,
     /** Enemy bullets (px/s) and how often a shooting enemy shoots (s): at the start → at the end. */
@@ -158,13 +166,15 @@ export const CONFIG = {
     enemyShotSpeedEnd: 350,
     enemyShotGapStart: 2.4,
     enemyShotGapEnd: 1.3,
-    /** Boosts dropped by some enemies: how long they last. */
-    boostSeconds: 8,
-    shieldSeconds: 6,
-    /** A boost drops about every n seconds. */
-    boostEverySeconds: 16,
-    /** The ark and the grail appear at these moments. */
-    specialTimes: [30, 70, 110, 150],
+    /** Temporary boosts: a destroyed enemy drops one by chance (Pasi 20.10.), at most one per dropGapSeconds. */
+    dropChance: 0.05,
+    dropGapSeconds: 4,
+    boostSeconds: 9,
+    shieldSeconds: 7,
+    /** A golden cross that restores one point of endurance drops from the first enemy destroyed after each of these moments (Pasi 20.10.). */
+    lifeDropTimes: [50, 100, 150],
+    /** Holy objects appear at these moments, in turn an ark (weapon) and a grail (guardian orb). */
+    specialTimes: [20, 40, 65, 90, 115, 140, 160],
     /** Devil's health in basic shots, and seconds between its attacks (calm → furious). It grows angrier at 2/3 and 1/3 health. */
     bossHealth: 420,
     bossAttackGapStart: 1.5,

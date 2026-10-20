@@ -376,6 +376,47 @@ function skeleton(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   ctx.restore();
 }
 
+/** A golden orb of light that circles the pope and guards him. */
+function guardianOrb(ctx: CanvasRenderingContext2D, w: number, h: number): void {
+  ctx.save();
+  ctx.scale(w / 28, h / 28);
+  glow(ctx, 14, 14, 14, 'rgba(255, 230, 140, 0.7)');
+  shape(ctx, '#fff1b8', () => ctx.arc(14, 14, 7, 0, Math.PI * 2), 1.5);
+  ctx.fillStyle = GOLD_DARK;
+  ctx.fillRect(13, 9, 2, 10);
+  ctx.fillRect(10, 12, 8, 2);
+  ctx.restore();
+}
+
+/** A glass flask of holy water with a cork and a golden cross. */
+function holyWater(ctx: CanvasRenderingContext2D, w: number, h: number): void {
+  ctx.save();
+  ctx.scale(w / 32, h / 42);
+  glow(ctx, 16, 24, 18, 'rgba(140, 200, 255, 0.45)');
+  shape(ctx, '#8a6a3a', () => ctx.rect(12, 2, 8, 7), 2);
+  shape(ctx, 'rgba(200, 230, 255, 0.55)', () => {
+    ctx.moveTo(12, 9);
+    ctx.lineTo(20, 9);
+    ctx.lineTo(20, 15);
+    ctx.quadraticCurveTo(29, 20, 28, 30);
+    ctx.quadraticCurveTo(27, 40, 16, 40);
+    ctx.quadraticCurveTo(5, 40, 4, 30);
+    ctx.quadraticCurveTo(3, 20, 12, 15);
+    ctx.closePath();
+  }, 2.5);
+  ctx.fillStyle = '#4f9be8';
+  ctx.beginPath();
+  ctx.moveTo(5, 27);
+  ctx.quadraticCurveTo(16, 24, 27, 27);
+  ctx.quadraticCurveTo(27, 38, 16, 38);
+  ctx.quadraticCurveTo(5, 38, 5, 27);
+  ctx.fill();
+  ctx.fillStyle = GOLD;
+  ctx.fillRect(14.5, 17, 3, 12);
+  ctx.fillRect(11, 20, 10, 3);
+  ctx.restore();
+}
+
 /** A small dark imp with bat wings, horns and green eyes (not the Devil itself). */
 function imp(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   ctx.save();
@@ -923,6 +964,18 @@ export const REAPER = spec(
 
 export const CURSE = spec('raiskinta-kirous.png', 24, 24, 'Kirouspallo', 'Pyöreä violetti energiapallo: vaalea keskus, tumma violetti reuna, pehmeä hehku.', true, curseOrb);
 
+export const ORB = spec('raiskinta-suojapallo.png', 28, 28, 'Suojapallo', 'Pieni kultainen valopallo, jonka keskellä on risti, ympärillä lämmin hehku.', true, guardianOrb);
+
+export const HOLY_WATER = spec(
+  'raiskinta-pyhavesi.png',
+  32,
+  42,
+  'Pyhä vesi',
+  'Pyöreä lasipullo, jossa on kirkkaan sinistä vettä, korkki ja kultainen risti kyljessä, ympärillä sininen hehku.',
+  true,
+  holyWater,
+);
+
 export const ARK = spec(
   'raiskinta-liitonarkku.png',
   110,
@@ -961,4 +1014,4 @@ export const SHIELD = spec('raiskinta-suojakeha.png', 130, 140, 'Suojakehä', 'L
 
 export const LIFE = spec('raiskinta-kesto.png', 22, 26, 'Kestopiste (pieni risti)', 'Pieni kultainen risti mustalla ääriviivalla.', true, lifeCross);
 
-export const ASSETS: AssetSpec[] = [BACKGROUND, POPE, GHOST, BAT, PUMPKIN, SKELETON, IMP, REAPER, ARK, GRAIL, DEVIL, BOLT, FIREBALL, BONE, CURSE, BOOST_RAPID, BOOST_SPREAD, BOOST_SHIELD, SHIELD, LIFE];
+export const ASSETS: AssetSpec[] = [BACKGROUND, POPE, GHOST, BAT, PUMPKIN, SKELETON, IMP, REAPER, ARK, GRAIL, DEVIL, BOLT, FIREBALL, BONE, CURSE, BOOST_RAPID, BOOST_SPREAD, BOOST_SHIELD, SHIELD, ORB, HOLY_WATER, LIFE];
