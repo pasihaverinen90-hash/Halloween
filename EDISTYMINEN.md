@@ -9,7 +9,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 
 | Vaihe | Tila |
 | --- | --- |
-| 1. Pohja ja hirsipuu | Valmis Pasin testattavaksi (20.10.) |
+| 1. Pohja ja hirsipuu | Valmis, Pasi hyväksyi 20.10. |
 | 2. Kuva-arvoitukset | Ei aloitettu |
 | 3. Lentopeli | Ei aloitettu |
 | 4. Räiskintä | Ei aloitettu |
@@ -55,6 +55,18 @@ Kesken:
 Seuraavaksi:
 - Pasin palautteen mukaiset korjaukset vaiheeseen 1.
 - Vaihe 2, kuva-arvoitukset. Claude Code ehdottaa kuvista muodostuvien arvoitusten ideat ja tekee emojiarvoitukset. Pasi tekee kuvat.
+
+### 20.10.2026 – rupeama 2 (vaiheen 1 palaute)
+
+Tehty:
+- Pasi testasi vaiheen 1: kaikki toimii.
+- Pasin pyynnöstä tulosvalikon napeista poistettiin selitteet, joten napeissa on nyt vain otsikko.
+
+Kesken:
+- Pasi saattaa antaa myöhemmin omat hirsipuun sanat. Hän voi muokata tiedostoa `content/hirsipuu.txt` itse tai lähettää sanat Claude Codelle.
+
+Seuraavaksi:
+- Vaihe 2, kuva-arvoitukset, kun Pasi antaa luvan aloittaa.
 
 ## Aikataulu
 

@@ -12,10 +12,10 @@ import { SCENES } from './keys';
 import { switchTo } from './nav';
 
 const ITEMS = [
-  { label: 'Palkintojenjako', detail: 'Kolme parasta korokkeille', key: SCENES.Podium },
-  { label: 'Tulokset pelin mukaan', detail: 'Kunkin pelin top-lista', key: SCENES.GameResults },
-  { label: 'Tulokset pelaajan mukaan', detail: 'Yhden pelaajan kaikki pelit', key: SCENES.PlayerResults },
-  { label: 'Takaisin alkuun', detail: 'Lukitsee tulokset', key: SCENES.Start },
+  { label: 'Palkintojenjako', key: SCENES.Podium },
+  { label: 'Tulokset pelin mukaan', key: SCENES.GameResults },
+  { label: 'Tulokset pelaajan mukaan', key: SCENES.PlayerResults },
+  { label: 'Takaisin alkuun', key: SCENES.Start },
 ];
 
 /** Tulosnäkymien valikko (opened with Pasi's password from the start screen). */
@@ -41,7 +41,7 @@ export class ResultsMenuScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.menu = new MenuList(this, W / 2, 190, ITEMS, {
-      width: 640,
+      width: 560,
       itemHeight: 76,
       gap: 16,
       fontSize: 32,
