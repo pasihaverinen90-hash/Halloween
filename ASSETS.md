@@ -564,3 +564,25 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Pieni kultainen risti mustalla ääriviivalla. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 22 × 26 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+## Kalmanristikko (ristikko)
+
+### `valikko-ristikko.png` – Ristikon esikatselukuva valikkoon
+
+- **Koko:** 360 × 200 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni valikkokuva ristikkopelille: tummalla taustalla pala vanhan paperin värisiä ristikkoruutuja, joissa on kirjaimia, nurkassa hämähäkinseitti ja langassa roikkuva hämähäkki. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `ristikko-tausta.png` – Ristikon tausta
+
+- **Koko:** 1280 × 720 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Hämärä vanha työhuone: tumma violetti seinä, hämähäkinseitit yläkulmissa, oikeassa yläkulmassa langassa roikkuva hämähäkki ja alakulmissa palavat kynttilät. Keskiosa on rauhallinen, koska ristikko ja vihjeet piirretään sen päälle. Ei tekstiä. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.

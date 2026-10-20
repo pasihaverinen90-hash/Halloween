@@ -68,12 +68,13 @@ export const CONFIG = {
     riddlesPerRound: 10,
     /** How many of them are multiple choice (the rest are open answers). CLAUDE.md: half. */
     multipleChoiceCount: 5,
-    /** Seconds per riddle. */
-    secondsPerRiddle: 20,
-    /** Points for a correct answer at once … */
+    /** Seconds per riddle (Pasi 20.10.: 12, shorter than before). */
+    secondsPerRiddle: 12,
+    /** Points for a correct answer within the first fullPointsSeconds … */
     maxPoints: 100,
-    /** … falling evenly to this at the end of the time. */
-    minPoints: 50,
+    fullPointsSeconds: 5,
+    /** … then falling quickly and evenly to this at the end of the time (Pasi 20.10.). */
+    minPoints: 0,
     /** Each wrong answer to an open riddle reduces the points by this much (not below 0). */
     wrongAnswerPenalty: 20,
     /** The ticking sound plays during the last seconds. */
@@ -122,6 +123,31 @@ export const CONFIG = {
     maxCats: 3,
     /** After losing a cat the witch cannot be hit for this long (and until she is clear of the obstacle). */
     invulnerableSeconds: 1.5,
+  },
+
+  /** 5. Ristikko. */
+  ristikko: {
+    /** The crossword is built from content/ristikko.txt, which has this many words (CLAUDE.md: over 15; Pasi 20.10.: 18). */
+    minWords: 16,
+    maxWords: 22,
+    /** Word length in letters. */
+    minLetters: 3,
+    maxLetters: 13,
+    /** The grid may be at most this many cells wide and high, so it fits the screen next to the clues. */
+    maxCols: 22,
+    maxRows: 16,
+    /** Time for the whole crossword (CLAUDE.md: 10 minutes). */
+    seconds: 600,
+    /** A wrong word and each revealed letter take this many seconds off the remaining time. */
+    wrongWordPenaltySeconds: 5,
+    revealPenaltySeconds: 5,
+    /** The second Enter must come within this many seconds of the first to reveal a letter (Pasi 20.10.: Enter twice). */
+    revealConfirmSeconds: 3,
+    /** Points: correct words as a share of all (60 %) and the remaining time (40 %). */
+    wordPoints: 600,
+    timePoints: 400,
+    /** Full time points when the crossword is solved within this many seconds (Pasi 20.10.: 3 minutes), then evenly down to 0 at the end. */
+    fullTimePointsWithinSeconds: 180,
   },
 
   /** 4. Räiskintä. Distances in pixels of the 1280×720 game space, times in seconds of play (pauses excluded). */

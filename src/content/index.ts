@@ -1,6 +1,7 @@
 import type { ContentError } from './format';
 import { parseArvoitukset } from './arvoitukset';
 import { parseHirsipuu } from './hirsipuu';
+import { parseRistikko } from './ristikko';
 
 /** Every content file in content/ and how it is checked before publishing. Later phases add more. */
 export interface ContentFile {
@@ -37,6 +38,18 @@ export const CONTENT_FILES: readonly ContentFile[] = [
     describe: (text) => {
       const result = parseArvoitukset(text);
       return result.ok ? `${result.riddles.length} arvoitusta` : '';
+    },
+  },
+  {
+    file: 'ristikko.txt',
+    title: 'Ristikon sanat',
+    check: (text) => {
+      const result = parseRistikko(text);
+      return result.ok ? [] : result.errors;
+    },
+    describe: (text) => {
+      const result = parseRistikko(text);
+      return result.ok ? `${result.words.length} sanaa, ristikko ${result.layout.cols} × ${result.layout.rows} ruutua` : '';
     },
   },
 ];

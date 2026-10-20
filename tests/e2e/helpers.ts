@@ -218,3 +218,16 @@ export async function playShooterQuickly(page: Page): Promise<number> {
   }
   return (await sceneState(page, 'AttemptResult')).best as number;
 }
+
+/** Crossword: from the instruction screen, let the time run out at once. Returns the score. */
+export async function playCrosswordQuickly(page: Page): Promise<number> {
+  await press(page, 'Enter');
+  await waitForScene(page, 'Ristikko', 60_000);
+  await page.evaluate(() => {
+    (window.__peli!.game as any).scene.getScene('Ristikko').crossword.secondsLeft = 0.2;
+  });
+  await waitForState(page, 'Ristikko', (s) => s.phase === 'timeout');
+  await press(page, 'Enter');
+  await waitForScene(page, 'AttemptResult');
+  return (await sceneState(page, 'AttemptResult')).score as number;
+}

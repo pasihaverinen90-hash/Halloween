@@ -1,0 +1,167 @@
+# RISTIKON SANAT
+#
+# Peli tekee ristikon automaattisesti näistä sanoista. Kaikki pelaavat saman ristikon.
+# Jokainen sana on oma korttinsa: ensin rivi "sana:", sitten rivi "vihje:".
+# Korttien väliin jätetään yksi tyhjä rivi.
+#
+# - Sanoja on 16–22 (nyt 20).
+# - Sana on yksi sana ilman välilyöntejä: vain kirjaimia A–Ö, 3–13 kirjainta.
+# - Vihje saa olla enintään 60 merkkiä.
+# - Isoilla ja pienillä kirjaimilla ei ole väliä.
+# - Jos sanoista ei saada ristikkoa, joka mahtuu ruudulle, julkaisu pysähtyy ja virhe
+#   kerrotaan. Vaihda silloin jokin pitkä sana lyhyempään.
+# - #-merkillä alkavat rivit ovat ohjeita, eikä peli lue niitä.
+#
+# Sanat ovat Pasin listasta (20.10.). Varasanat ovat tiedoston lopussa.
+
+sana: Kalmisto
+vihje: Vanha nimi hautausmaalle
+
+sana: Krypta
+vihje: Kirkon alla oleva hautaholvi
+
+sana: Meedio
+vihje: Kertoo saavansa viestejä vainajilta
+
+sana: Etiäinen
+vihje: Ihmisen edellä kulkeva aave, joka ennustaa tulon
+
+sana: Virvatuli
+vihje: Suolla lepattava salaperäinen valo
+
+sana: Sarkofagi
+vihje: Kivinen arkku, jossa muumio lepää
+
+sana: Manala
+vihje: Vainajien maanalainen valtakunta
+
+sana: Tuonela
+vihje: Kalevalan kuolleiden valtakunta
+
+sana: Näkki
+vihje: Vedenhaltija, joka houkuttelee syvyyksiin
+
+sana: Hiisi
+vihje: Paha metsänhenki
+
+sana: Kyöpeli
+vihje: Hautausmaalla kummitteleva vainaja
+
+sana: Riivaaja
+vihje: Paha henki, joka valtaa ihmisen
+
+sana: Kirous
+vihje: Pahan toivotus, joka voi toteutua
+
+sana: Katakombi
+vihje: Maanalainen hautakäytävä
+
+sana: Painajainen
+vihje: Paha uni
+
+sana: Vampyyri
+vihje: Juo verta ja nukkuu arkussa
+
+sana: Taikajuoma
+vihje: Porisee noidan padassa
+
+sana: Dracula
+vihje: Transilvanian kuuluisin kreivi
+
+sana: Frankenstein
+vihje: Tohtori, joka kokosi hirviön ruumiinosista
+
+sana: Annabelle
+vihje: Kauhuelokuvan kirottu nukke
+
+# ---------------------------------------------------------------------------
+# VARASANAT: peli ei lue näitä. Voit vaihtaa sanan ottamalla #-merkit pois
+# kortin riveiltä ja lisäämällä #-merkit vaihdettavan sanan riveille.
+# (Sielunvihollinen on liian pitkä ristikkoon: 16 kirjainta.)
+#
+# sana: Horna
+# vihje: Helvetti, ”mene hornaan!”
+#
+# sana: Lempo
+# vihje: Paholaisen vanha nimi
+#
+# sana: Maahinen
+# vihje: Maan alla asuva pieni olento
+#
+# sana: Menninkäinen
+# vihje: Pieni metsän ja maan alla asuva olento
+#
+# sana: Kalma
+# vihje: Kuolema, jonka hajun voi haistaa
+#
+# sana: Kalmo
+# vihje: Kuollut ihminen
+#
+# sana: Demoni
+# vihje: Paha henki
+#
+# sana: Spiritismi
+# vihje: Henkien kutsuminen istunnossa
+#
+# sana: Okkultismi
+# vihje: Salatieteiden harrastus
+#
+# sana: Taikausko
+# vihje: Usko enteisiin ja onnenkaluihin
+#
+# sana: Noidankehä
+# vihje: Kierre, josta ei pääse irti
+#
+# sana: Noidankattila
+# vihje: Siinä noita keittää liemensä
+#
+# sana: Aarnivalkea
+# vihje: Aarteen paikkaa merkitsevä liekki
+#
+# sana: Kalmankalpea
+# vihje: Valkoinen kuin vainaja
+#
+# sana: Mausoleumi
+# vihje: Komea hautarakennus
+#
+# sana: Verenimijä
+# vihje: Vampyyrin toinen nimi
+#
+# sana: Kummitustalo
+# vihje: Talo, jossa henget riehuvat
+#
+# sana: Haudankaivaja
+# vihje: Kaivaa hautoja työkseen
+#
+# sana: Noitavaino
+# vihje: Noitien jahti menneinä vuosisatoina
+#
+# sana: Loitsukirja
+# vihje: Kirja täynnä taikasanoja
+#
+# sana: Kuolonkorina
+# vihje: Viimeinen henkäys
+#
+# sana: Kauhunhuuto
+# vihje: Pelästyneen kiljaisu
+#
+# sana: Nosferatu
+# vihje: Vanhan mykkäelokuvan vampyyri
+#
+# sana: Beetlejuice
+# vihje: Sano nimi kolmesti, niin hän ilmestyy
+#
+# sana: Pennywise
+# vihje: Viemärissä asuva pelle
+#
+# sana: Chucky
+# vihje: Murhaava leikkinukke
+#
+# sana: Wednesday
+# vihje: Addamsin perheen synkkä tytär
+#
+# sana: Poltergeist
+# vihje: Esineitä paiskova henki
+#
+# sana: Manaaja
+# vihje: Ajaa pahan hengen ulos ihmisestä

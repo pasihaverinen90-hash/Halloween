@@ -59,9 +59,10 @@ export function isCorrectAnswer(riddle: Riddle, typed: string): boolean {
  * Time up gives 0.
  */
 export function riddlePoints(elapsedMs: number, wrongAnswers: number): number {
-  const { maxPoints, minPoints, wrongAnswerPenalty } = CONFIG.arvoitukset;
+  const { maxPoints, minPoints, wrongAnswerPenalty, fullPointsSeconds } = CONFIG.arvoitukset;
   if (!(elapsedMs < LIMIT_MS)) return 0;
-  const progress = Math.max(0, elapsedMs) / LIMIT_MS;
+  const fullMs = fullPointsSeconds * 1000;
+  const progress = Math.max(0, elapsedMs - fullMs) / (LIMIT_MS - fullMs);
   const base = maxPoints - (maxPoints - minPoints) * progress;
   return Math.max(0, Math.round(base - wrongAnswerPenalty * Math.max(0, wrongAnswers)));
 }

@@ -11,6 +11,7 @@ export const GAME_ORDER: readonly string[] = [
   'arvoitukset',
   'lentopeli',
   'raiskinta',
+  'ristikko',
 ];
 
 export const GAMES: readonly GameDefinition[] = GAME_ORDER.map((id) => {

@@ -181,7 +181,7 @@ test('ei JSON-varmuuskopioita; CSV, pelaajan poisto ja tyhjennys kahdella vahvis
   expect(csvFile.suggestedFilename()).toMatch(/^halloween-tulokset-.*\.csv$/);
   const csv = await readFile((await csvFile.path())!, 'utf8');
   expect(csv.charCodeAt(0)).toBe(0xfeff);
-  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Kiirastuli;Yhteensä', '1;Aino;800;;;;800']);
+  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Kiirastuli;Kalmanristikko;Yhteensä', '1;Aino;800;;;;;800']);
 
   // Pelaajan poisto
   await chooseAction(page, 'Poista pelaaja');

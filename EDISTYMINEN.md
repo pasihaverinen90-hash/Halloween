@@ -13,7 +13,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | 2. Kuva-arvoitukset | Valmis, Pasi hyväksyi 20.10. |
 | 3. Lentopeli | Valmis, Pasi hyväksyi 20.10. ("riittävän hyvä tähän vaiheeseen") |
 | 4. Räiskintä | Valmis, Pasi hyväksyi 20.10. ("Paljon parempi"; Paholaiselle +10 % kestävyyttä) |
-| 5. Ristikko | Aloitettu 20.10.: kysymykset Pasille |
+| 5. Ristikko | Valmis Pasin testattavaksi (20.10.) |
 | 6. Tasohyppely | Ei aloitettu |
 | 7. Kurpitsalinko | Ei aloitettu |
 | 8. Viimeistely | Ei aloitettu (CSV-vienti ja kuvien vaihtaminen tehtiin jo vaiheessa 1) |
@@ -30,6 +30,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **Räiskintä (Pasi 20.10.):** Paholainen saapuu 3 minuutin kohdalla (ei 5), jotta ilta ei veny. Vihollispisteet (400) ovat osuus kaikista vihollisista, ja viholliset tulevat kaikille samassa järjestyksessä. Liitonarkku ja pyhä malja lasketaan vihollisiin. Paholaisesta saa 300 pistettä vain kaatamalla sen. Paavi kestää 10 osumaa. Pasi muutti myöhemmin 20.10.: matkan varrella putoaa kolme kultaista ristiä (noin 50, 100 ja 150 s), joista kukin palauttaa yhden.
 - **Räiskintä, Pasin palaute 20.10.:** vihollisia aivan liian vähän, kuva saa olla kauempaa (enemmän pelialuetta), paavi saa liikkua myös pystysuunnassa, lisää vaikeampia vihollisia, ja Paholainen oli tylsä. Boosteihin voi myöhemmin lisätä erilaisia lisäaseita (ei vielä).
 - **JSON-varmuuskopiot pois käytöstä (Pasi 20.10.):** kiitosnäkymä ei lataa varmuuskopiota, eikä korjaustilassa ole "Lataa varmuuskopio"- ja "Tuo varmuuskopio"-toimintoja. Tulokset tallentuvat edelleen selaimeen, ja CSV-vienti säilyy. Poikkeaa CLAUDE.md:n Tallennus-kohdasta Pasin päätöksellä. Kytkin: `CONFIG.storage.jsonBackups`.
+- **Ristikko (Pasi 20.10.):** Välilyönti vaihtaa suuntaa, ja nuoli ristisuuntaan kääntää ensin suunnan. Enter kahdesti paljastaa kirjaimen (−5 s). Ristikossa on 18–20 sanaa (nyt 20 Pasin listasta, loput varasanoina tiedostossa). Täydet 400 aikapistettä saa, kun ratkaisee alle 3 minuutissa, ja sen jälkeen pisteet vähenevät tasaisesti nollaan 10 minuutin kohdalla. Kokonaan paljastettu sana ei tuo sanapisteitä, mutta sana, johon on itse kirjoitettu vähintään yksi kirjain, tuo. Kun aika loppuu, ratkaisematta jääneet kirjaimet näytetään punaisina. Valmiin sanan jälkeen kohdistin siirtyy seuraavaan sanaan. Hiirellä voi valita ruudun tai vihjeen (poikkeus CLAUDE.md:n "ei hiirtä" -periaatteeseen, ja näppäimistö riittää edelleen). Tab-hyppyä ei tehty.
+- **Enteet (Pasi 20.10.):** vastausaika 12 s. Täydet 100 pistettä saa 5 sekunnin sisällä, ja sen jälkeen pisteet laskevat tasaisesti nollaan.
 - **Täydellinen tulos päättää pelin (Pasi 20.10.):** kun toimintapelin yrityksestä tulee 1000 pistettä, loput yritykset jäävät väliin. Koskee kaikkia toimintapelejä.
 - **Kuva-arvoitukset:** 5 kuva-arvoitusta (Pasi tekee kuvat, yksi kuva per arvoitus) ja 5 emojiarvoitusta (Claude Code). Kuva-arvoitukset: hirviö, ihmissusi, verikuu, silmämuna ja kummitusjuna. Arvoitukseen saa lisätä vihjeen (kohta `kysymys`). Ensimmäiset versiot tehdään nyt, ja niitä muokataan myöhemmin.
 - **GitHub Pages** on päällä (Source: GitHub Actions), Pasi kytki sen 19.10.2026.
@@ -143,9 +145,26 @@ Seuraavaksi:
 - Vaihe 5, ristikko, kun Pasi hyväksyy räiskinnän. Kysy Pasilta näppäimet (CLAUDE.md: ehdota liikkuminen, suunnan vaihto ja kirjaimen paljastus).
 - Myöhemmin (Pasi): boosteihin erilaisia lisäaseita.
 
+### 20.10.2026 – rupeama 6 (vaihe 5)
+
+Pasi hyväksyi räiskinnän ("Paljon parempi") ja pyysi Paholaiselle 10 % lisää kestävyyttä (420 → 462).
+
+Tehty:
+- Ristikko "Kalmanristikko": ruudukko tehdään automaattisesti sanoista (`src/games/ristikko/logic.ts`). Haku peruu ja kokeilee uudelleen, kun sana ei mahdu, ja sijoittaa ensin sanan, jolla on vähiten vaihtoehtoja. Ruudukko on enintään 22 × 16 ruutua, ja 20 sanan ristikon tekeminen vie noin puoli sekuntia, kun peli avataan. Julkaisun tarkistus kertoo suomeksi, jos sanoista ei saa ristikkoa.
+- Pelin säännöt ovat erillään piirtämisestä (`crossword.ts`): kirjoittaminen, väärän sanan tarkistus (−5 s), paljastus (−5 s), automaattinen siirtyminen seuraavaan sanaan, pisteet ja tallennus jokaisen muutoksen jälkeen. Kesken jäänyt ristikko jatkuu samasta kohdasta.
+- Ruudulla on ruudukko vasemmalla ja numeroidut vihjeet oikealla (vaaka ja pysty). Nykyinen vihje näkyy ylhäällä, ja aika ja ratkaistut sanat näkyvät kulmissa.
+- Hiiri otettiin käyttöön Phaser-asetuksissa, mutta vain ristikko käyttää sitä.
+- Enteiden ajoitus muutettiin Pasin toiveen mukaan.
+
+Kesken:
+- Pasi testaa ristikon.
+
+Seuraavaksi:
+- Vaihe 6, tasohyppely, kun Pasi hyväksyy ristikon. Kysy ensin reilusti kysymyksiä (Pasin toive 20.10.).
+
 ## Aikataulu
 
-Iltaan on 11 päivää, ja jäljellä on kolme peliä (ristikko, tasohyppely ja kurpitsalinko) sekä viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
+Iltaan on 11 päivää, ja jäljellä on kaksi peliä (tasohyppely ja kurpitsalinko) sekä viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
 
 **Illan kesto:** kaikki pelaavat samalla koneella vuorotellen. Arvio yhden pelaajan koko vuorosta on 45–70 minuuttia (räiskintä enintään noin 12 minuuttia, ristikko 10, tasohyppely 3 yritystä × noin 6 minuuttia). Kahdeksalla pelaajalla vuorot kestävät siis useita tunteja. Pasille kerrottu 20.10.
 

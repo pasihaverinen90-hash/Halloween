@@ -4,6 +4,7 @@ import {
   expectNoRuntimeErrors,
   failHangmanWord,
   openGame,
+  playCrosswordQuickly,
   playFlightQuickly,
   playShooterQuickly,
   playRiddlesCorrectly,
@@ -30,6 +31,7 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
       { id: 'arvoitukset', status: 'unplayed', score: null },
       { id: 'lentopeli', status: 'unplayed', score: null },
       { id: 'raiskinta', status: 'unplayed', score: null },
+      { id: 'ristikko', status: 'unplayed', score: null },
     ],
   });
   await press(page, 'Enter');
@@ -77,7 +79,7 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
   const riddles = await playRiddlesCorrectly(page);
-  expect(riddles).toBeGreaterThan(500);
+  expect(riddles).toBeGreaterThan(300);
   await press(page, 'Enter');
   await waitForScene(page, 'Menu');
   expect((await sceneState(page, 'Menu')).selected).toBe('lentopeli');
@@ -90,13 +92,19 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
   const shooter = await playShooterQuickly(page);
+  await press(page, 'Enter');
+  await waitForScene(page, 'Menu');
+  expect((await sceneState(page, 'Menu')).selected).toBe('ristikko');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  const crossword = await playCrosswordQuickly(page);
 
   // Kiitosnäkymä: tulokset ovat tallessa selaimessa, eikä varmuuskopiotiedostoa ladata (Pasi 20.10.)
   const downloads: string[] = [];
   page.on('download', (d) => downloads.push(d.suggestedFilename()));
   await press(page, 'Enter');
   await waitForScene(page, 'Thanks');
-  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles + flight + shooter, backupOk: false });
+  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles + flight + shooter + crossword, backupOk: false });
   expect((await savedData(page)).players[0]).toMatchObject({ name: 'Äijö Testi', games: { hirsipuu: { attempts: [750] } } });
 
   // Seuraava pelaaja: sama nimi pienillä kirjaimilla ei kelpaa
@@ -133,6 +141,11 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
   await playShooterQuickly(page);
+  await press(page, 'Enter');
+  await waitForScene(page, 'Menu');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  await playCrosswordQuickly(page);
   await press(page, 'Enter');
   await waitForScene(page, 'Thanks');
   expect((await savedData(page)).players.map((p: { name: string }) => p.name)).toEqual(['Äijö Testi', 'Liisa']);

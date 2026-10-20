@@ -12,18 +12,19 @@ const choice: Riddle = {
 };
 
 describe('points', () => {
-  it('gives 100 at once and falls evenly to 50 at the end of 20 seconds', () => {
-    expect(LIMIT_MS).toBe(20_000);
+  it('gives 100 for the first 5 seconds, then falls quickly and evenly to 0 at 12 seconds', () => {
+    expect(LIMIT_MS).toBe(12_000);
     expect(riddlePoints(0, 0)).toBe(100);
-    expect(riddlePoints(10_000, 0)).toBe(75);
-    expect(riddlePoints(19_999, 0)).toBe(50);
-    expect(riddlePoints(20_000, 0)).toBe(0);
+    expect(riddlePoints(5_000, 0)).toBe(100);
+    expect(riddlePoints(8_500, 0)).toBe(50);
+    expect(riddlePoints(11_999, 0)).toBe(0);
+    expect(riddlePoints(12_000, 0)).toBe(0);
   });
 
   it('takes 20 per wrong answer but never goes below 0', () => {
-    expect(riddlePoints(10_000, 1)).toBe(55);
-    expect(riddlePoints(10_000, 3)).toBe(15);
-    expect(riddlePoints(10_000, 4)).toBe(0);
+    expect(riddlePoints(1_000, 1)).toBe(80);
+    expect(riddlePoints(8_500, 1)).toBe(30);
+    expect(riddlePoints(8_500, 3)).toBe(0);
     expect(riddlePoints(0, 9)).toBe(0);
   });
 

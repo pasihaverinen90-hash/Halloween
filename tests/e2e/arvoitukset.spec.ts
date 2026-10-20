@@ -33,12 +33,12 @@ test('arvoitukset: pisteet, väärät vastaukset, tauko ja aikaraja', async ({ p
   await startRiddles(page, 'Arvaaja');
   let total = 0;
 
-  // 1: oikea vastaus heti → 50–100 pistettä
+  // 1: oikea vastaus nopeasti → täydet tai lähes täydet pisteet (täydet 5 sekunnin sisällä)
   expect((await waitRiddle(page, 0)).kind).toBe('monivalinta');
   await answerRiddle(page, 'correct');
   let state = await sceneState(page, 'Arvoitukset');
   expect(state.outcome).toBe('correct');
-  expect(state.total).toBeGreaterThanOrEqual(90);
+  expect(state.total).toBeGreaterThanOrEqual(60);
   expect(state.total).toBeLessThanOrEqual(100);
   total = state.total;
   await press(page, 'Enter');
@@ -55,7 +55,7 @@ test('arvoitukset: pisteet, väärät vastaukset, tauko ja aikaraja', async ({ p
   await answerRiddle(page, 'wrong');
   state = await sceneState(page, 'Arvoitukset');
   expect(state).toMatchObject({ outcome: 'correct', wrong: 1 });
-  expect(state.total - total).toBeGreaterThanOrEqual(70);
+  expect(state.total - total).toBeGreaterThanOrEqual(30);
   expect(state.total - total).toBeLessThanOrEqual(80);
   total = state.total;
   await press(page, 'Enter');
@@ -83,7 +83,7 @@ test('arvoitukset: pisteet, väärät vastaukset, tauko ja aikaraja', async ({ p
   await waitForScene(page, 'AttemptResult');
   const result = await sceneState(page, 'AttemptResult');
   expect(result).toMatchObject({ kind: 'puzzle', isFinal: true });
-  expect(result.score).toBeGreaterThan(total + 6 * 50 - 1);
+  expect(result.score).toBeGreaterThan(total + 6 * 30 - 1);
   expect((await savedData(page)).players[0].games.arvoitukset).toMatchObject({ attempts: [result.score], finished: true });
   await expectNoRuntimeErrors(page);
 });

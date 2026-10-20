@@ -132,7 +132,8 @@ async function start(): Promise<void> {
     backgroundColor: COLORS.night,
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
     audio: { noAudio: true },
-    input: { keyboard: true, mouse: false, touch: false, gamepad: false },
+    // The mouse is used only in the crossword (Pasi 20.10.); everything else is keyboard only.
+    input: { keyboard: true, mouse: true, touch: false, gamepad: false },
     render: { antialias: true },
     banner: false,
     scene: ALL_SCENES,

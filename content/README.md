@@ -6,8 +6,7 @@ Tässä kansiossa ovat pelien sanat ja vihjeet. Voit muokata niitä itse suoraan
 | --- | --- |
 | [`hirsipuu.txt`](hirsipuu.txt) | Hirsipuun 5 sanaa tai lausetta ja niiden vihjeet |
 | [`kuva-arvoitukset.txt`](kuva-arvoitukset.txt) | Kuva-arvoitusten ja emojiarvoitusten 10 arvoitusta |
-
-Myöhemmin tähän tulevat myös ristikon sanat.
+| [`ristikko.txt`](ristikko.txt) | Ristikon 16–22 sanaa ja niiden vihjeet (nyt 20) sekä varasanoja |
 
 ## Näin muokkaat tiedostoa
 
@@ -80,3 +79,19 @@ Julkaisun yhteydessä tiedosto tarkistetaan automaattisesti. Jos siinä on virhe
 - Korjaa tiedosto samalla tavalla kuin muokkasit sitä. Julkaisu yritetään uudelleen heti, kun tallennat korjauksen.
 
 Jos et saa virhettä korjattua, kerro siitä Claude Codelle. Voit myös palauttaa tiedoston aiemman version GitHubin **History**-näkymästä.
+
+### Ristikon säännöt
+
+Peli tekee ristikon automaattisesti sanoista, joten riittää, että vaihdat sanat ja vihjeet. Kaikki pelaavat saman ristikon.
+
+```
+sana: Kalmisto
+vihje: Vanha nimi hautausmaalle
+```
+
+- Sanoja pitää olla **16–22**. Suositus on 18–20.
+- Sana on yksi sana ilman välilyöntejä: vain kirjaimia A–Ö, 3–13 kirjainta.
+- Vihje saa olla enintään 60 merkkiä. Peli näyttää vihjeen perässä sanan pituuden.
+- Tiedoston lopussa on varasanoja `#`-merkeillä. Voit vaihtaa sanan ottamalla #-merkit pois varasanan riveiltä ja lisäämällä ne poistettavan sanan riveille.
+- Jos sanoista ei saada ristikkoa, joka mahtuu ruudulle, julkaisu pysähtyy ja virhe kerrotaan. Silloin vaihda jokin pitkä sana lyhyempään tai sellaiseen, jossa on yleisiä kirjaimia (esimerkiksi A, I, K, L, S, T, U).
+
