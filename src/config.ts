@@ -117,4 +117,51 @@ export const CONFIG = {
     /** After losing a cat the witch cannot be hit for this long (and until she is clear of the obstacle). */
     invulnerableSeconds: 1.5,
   },
+
+  /** 4. Räiskintä. Distances in pixels of the 1280×720 game space, times in seconds of play (pauses excluded). */
+  raiskinta: {
+    /** The Devil arrives after this much play (Pasi 20.10.: 3 minutes). */
+    bossAfterSeconds: 180,
+    /** No new enemies after this, so the last ones can still be shot before the Devil. */
+    lastSpawnSeconds: 168,
+    /** Length of the text before the Devil. */
+    interludeSeconds: 5,
+    /** Points: destroyed enemies (share of all), surviving until the Devil (share of the time) and defeating the Devil. */
+    enemyPoints: 400,
+    survivalPoints: 300,
+    bossPoints: 300,
+    /** The pope withstands this many hits. */
+    maxHealth: 10,
+    /** After a hit the pope cannot be hit for this long. */
+    invulnerableSeconds: 1.2,
+    /** Pope's sideways speed (px/s). */
+    popeSpeed: 560,
+    /** Shots per second with the basic weapon; each weapon level adds a little. The rapid-fire boost doubles it. */
+    fireRate: 4,
+    fireRatePerLevel: 0.4,
+    shotSpeed: 900,
+    /** Weapon levels: 1 at the start, +1 for each ark or grail. */
+    maxWeaponLevel: 5,
+    /** Seconds between enemy waves: at the start → at the end. */
+    waveGapStart: 5.5,
+    waveGapEnd: 2.3,
+    /** Enemy bullets (px/s) and how often a shooting enemy shoots (s): at the start → at the end. */
+    enemyShotSpeedStart: 250,
+    enemyShotSpeedEnd: 340,
+    enemyShotGapStart: 2.6,
+    enemyShotGapEnd: 1.4,
+    /** Boosts dropped by some enemies: how long they last. */
+    boostSeconds: 8,
+    shieldSeconds: 6,
+    /** A boost drops about every n seconds. */
+    boostEverySeconds: 18,
+    /** The ark and the grail appear at these moments. */
+    specialTimes: [30, 70, 110, 150],
+    /** Devil's health in basic shots, and seconds between its attacks (calm → furious). */
+    bossHealth: 360,
+    bossAttackGapStart: 1.6,
+    bossAttackGapEnd: 0.8,
+    /** Graveyard scrolling speed (px/s). */
+    scrollSpeed: 70,
+  },
 } as const;

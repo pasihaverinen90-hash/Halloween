@@ -193,3 +193,28 @@ export async function playFlightQuickly(page: Page): Promise<number> {
   }
   return (await sceneState(page, 'AttemptResult')).best as number;
 }
+
+/** Menu: move the selection to the game with this id. */
+export async function selectGame(page: Page, id: string): Promise<void> {
+  for (let i = 0; i < 12; i++) {
+    const menu = await sceneState(page, 'Menu');
+    if (menu.selected === id) return;
+    const ids = menu.tiles.map((t: { id: string }) => t.id);
+    await press(page, ids.indexOf(id) > ids.indexOf(menu.selected) ? 'ArrowRight' : 'ArrowLeft', 150);
+  }
+  expect((await sceneState(page, 'Menu')).selected).toBe(id);
+}
+
+/** Shooter: from the instruction screen, play three quick attempts (the pope falls at once). Returns the best score. */
+export async function playShooterQuickly(page: Page): Promise<number> {
+  await press(page, 'Enter');
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    await waitForScene(page, 'AttemptIntro');
+    await press(page, 'Enter');
+    await waitForScene(page, 'Raiskinta');
+    await page.evaluate(() => (window.__peli!.game as any).scene.getScene('Raiskinta').debugHurt(10));
+    await waitForScene(page, 'AttemptResult', 120_000);
+    if (attempt < 3) await press(page, 'Enter');
+  }
+  return (await sceneState(page, 'AttemptResult')).best as number;
+}

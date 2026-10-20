@@ -247,3 +247,46 @@ export function onChar(scene: Phaser.Scene, handler: (char: string, event: Keybo
     () => false,
   );
 }
+
+/** Which of the watched keys are held down right now. */
+export interface HeldKeys {
+  isDown(key: NamedKey): boolean;
+}
+
+/**
+ * Track keys that act while held (e.g. moving sideways). A key counts as held
+ * from its keydown in this scene until its keyup. Everything is released when
+ * the scene pauses, resumes or sleeps and when the window loses focus, so a
+ * key let go during a pause never keeps moving the player.
+ */
+export function heldKeys(scene: Phaser.Scene, keys: NamedKey[]): HeldKeys {
+  const watched = new Set<string>(keys);
+  const down = new Set<string>();
+  const keyboard = scene.input?.keyboard;
+  if (!keyboard) {
+    console.warn(`Näppäimistö ei ole käytössä näkymässä ${scene.sys.settings.key}.`);
+    return { isDown: () => false };
+  }
+  const onDown = (event: KeyboardEvent): void => {
+    const key = keyOf(event);
+    if (!watched.has(key) || wasHandled(event) || !isPlainKey(event) || !scene.sys.canInput()) return;
+    markHandled(event);
+    down.add(key);
+  };
+  const onUp = (event: KeyboardEvent): void => {
+    down.delete(keyOf(event));
+  };
+  const releaseAll = (): void => down.clear();
+  const events = scene.sys.events;
+  keyboard.on('keydown', onDown);
+  keyboard.on('keyup', onUp);
+  window.addEventListener('blur', releaseAll);
+  for (const name of ['pause', 'resume', 'sleep', 'wake']) events.on(name, releaseAll);
+  events.once('shutdown', () => {
+    keyboard.off('keydown', onDown);
+    keyboard.off('keyup', onUp);
+    window.removeEventListener('blur', releaseAll);
+    for (const name of ['pause', 'resume', 'sleep', 'wake']) events.off(name, releaseAll);
+  });
+  return { isDown: (key) => down.has(key) };
+}

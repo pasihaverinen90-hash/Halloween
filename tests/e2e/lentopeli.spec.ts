@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createPlayer, expectNoRuntimeErrors, openGame, press, savedData, sceneState, waitForScene, waitForState } from './helpers';
+import { createPlayer, expectNoRuntimeErrors, openGame, press, savedData, sceneState, selectGame, waitForScene, waitForState } from './helpers';
 
 /** Move the witch along the course (test helper of the scene). */
 async function place(page: Page, distance: number, y: number): Promise<void> {
@@ -28,9 +28,7 @@ async function startAttempt(page: Page): Promise<void> {
 test('lentopeli: törmäys, kissa, maali ja loput yritykset väliin', async ({ page }) => {
   await openGame(page);
   await createPlayer(page, 'Lentäjä');
-  await press(page, 'ArrowRight');
-  await press(page, 'ArrowRight');
-  expect((await sceneState(page, 'Menu')).selected).toBe('lentopeli');
+  await selectGame(page, 'lentopeli');
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
   await press(page, 'Enter');

@@ -11,8 +11,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | --- | --- |
 | 1. Pohja ja hirsipuu | Valmis, Pasi hyväksyi 20.10. |
 | 2. Kuva-arvoitukset | Valmis, Pasi hyväksyi 20.10. |
-| 3. Lentopeli | Valmis Pasin testattavaksi (20.10.) |
-| 4. Räiskintä | Ei aloitettu |
+| 3. Lentopeli | Valmis, Pasi hyväksyi 20.10. ("riittävän hyvä tähän vaiheeseen") |
+| 4. Räiskintä | Valmis Pasin testattavaksi (20.10.) |
 | 5. Ristikko | Ei aloitettu |
 | 6. Tasohyppely | Ei aloitettu |
 | 7. Kurpitsalinko | Ei aloitettu |
@@ -27,6 +27,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **Hiominen lopuksi (20.10.):** kaikkien pelien kysymykset, kuvat ja yksityiskohdat muokataan vasta, kun kaikki pelit on tehty ja testattu toimiviksi. Pelit tehdään ensin toimiviksi yksi kerrallaan.
 - **Lentopeli:** maali on noin 90 sekunnin lennon päässä (säädetään testauksen perusteella). Maa on lattia, jota pitkin noita voi liukua; vain esteet ovat vaarallisia. Taivas on katto.
 - **Lentopeli, Pasin palaute 20.10.:** kissoja liian usein, peli liian helppo ja esteet aina katosta asti (vain yksi reitti). Pasin ehdotuksesta mukaan tulivat vastaan lentävät lepakot. Nyt esteitä on neljää tyyppiä (häkki + inkvisiittori, pelkkä inkvisiittoritorni, pelkkä riippuva häkki ja lepakkoparvi), ja usein esteen ohi pääsee sekä yli että ali. Kissoja on kolme koko matkalla (noin 22 sekunnin välein), aina lepakoiden vieressä.
+- **Räiskintä (Pasi 20.10.):** Paholainen saapuu 3 minuutin kohdalla (ei 5), jotta ilta ei veny. Vihollispisteet (400) ovat osuus kaikista vihollisista, ja viholliset tulevat kaikille samassa järjestyksessä. Liitonarkku ja pyhä malja lasketaan vihollisiin. Paholaisesta saa 300 pistettä vain kaatamalla sen. Kestoa (10 osumaa) ei voi palauttaa.
 - **Täydellinen tulos päättää pelin (Pasi 20.10.):** kun toimintapelin yrityksestä tulee 1000 pistettä, loput yritykset jäävät väliin. Koskee kaikkia toimintapelejä.
 - **Kuva-arvoitukset:** 5 kuva-arvoitusta (Pasi tekee kuvat, yksi kuva per arvoitus) ja 5 emojiarvoitusta (Claude Code). Kuva-arvoitukset: hirviö, ihmissusi, verikuu, silmämuna ja kummitusjuna. Arvoitukseen saa lisätä vihjeen (kohta `kysymys`). Ensimmäiset versiot tehdään nyt, ja niitä muokataan myöhemmin.
 - **GitHub Pages** on päällä (Source: GitHub Actions), Pasi kytki sen 19.10.2026.
@@ -108,9 +109,28 @@ Kesken:
 Seuraavaksi:
 - Vaihe 4, räiskintä, kun Pasi hyväksyy lentopelin.
 
+### 20.10.2026 – rupeama 5 (vaihe 4)
+
+Pasi hyväksyi lentopelin ("riittävän hyvä tähän vaiheeseen").
+
+Tehty:
+- Räiskintä "Kiirastuli": keksitty paavihahmo liikkuu nuolilla ja ampuu itse. Alla vierii hautausmaa. Viholliset ovat aaveita, lepakoita, ampuvia kurpitsalyhtyjä ja luurankojen marssiryhmiä (kuten klassikoissa). Aallot ovat kaikille samat, ja niitä tulee koko ajan tiheämmin (256 vihollista 168 sekunnissa).
+- Liitonarkku ja pyhä malja (30, 70, 110 ja 150 s) nostavat aseen tasoa (1–5). Joka 18. sekunti yksi vihollinen pudottaa boostin: nopea tuli, hajaammus tai suojakehä.
+- 3 minuutin kohdalla väliteksti "Kaiken pahan alku ja juuri esittäytyy vihdoin…" ja Paholainen, joka kiihtyy kolmessa vaiheessa (tuliviuhka, tähdätyt tulipallot, tulisade).
+- Pisteet: 400 × tuhottujen osuus + 300 × selviytyty aika + 300 Paholaisesta.
+- Yhteiset osat: pohjassa pidettävien näppäinten apuväline (`heldKeys`), lepakon piirros yhteisessä tiedostossa (`src/games/shared/bat.ts`), testien `selectGame`.
+
+Kesken:
+- Pasi testaa räiskinnän. Vaikeus säädetään tiedostossa `src/config.ts` (kohta `raiskinta`).
+
+Seuraavaksi:
+- Vaihe 5, ristikko, kun Pasi hyväksyy räiskinnän. Kysy Pasilta näppäimet (CLAUDE.md: ehdota liikkuminen, suunnan vaihto ja kirjaimen paljastus).
+
 ## Aikataulu
 
-Iltaan on 11 päivää, ja jäljellä on neljä peliä ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
+Iltaan on 11 päivää, ja jäljellä on kolme peliä (ristikko, tasohyppely ja kurpitsalinko) sekä viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
+
+**Illan kesto:** kaikki pelaavat samalla koneella vuorotellen. Arvio yhden pelaajan koko vuorosta on 45–70 minuuttia (räiskintä enintään noin 12 minuuttia, ristikko 10, tasohyppely 3 yritystä × noin 6 minuuttia). Kahdeksalla pelaajalla vuorot kestävät siis useita tunteja. Pasille kerrottu 20.10.
 
 ## Tekninen muistio Claude Codelle
 

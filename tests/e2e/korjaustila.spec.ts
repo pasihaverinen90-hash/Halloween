@@ -170,7 +170,7 @@ test('varmuuskopio, CSV, tuonti, pelaajan poisto ja tyhjennys kahdella vahvistuk
   expect(csvFile.suggestedFilename()).toMatch(/^halloween-tulokset-.*\.csv$/);
   const csv = await readFile((await csvFile.path())!, 'utf8');
   expect(csv.charCodeAt(0)).toBe(0xfeff);
-  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Yhteensä', '1;Aino;800;;;800']);
+  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Kiirastuli;Yhteensä', '1;Aino;800;;;;800']);
 
   // Tuonti: varmuuskopioon lisätty pelaaja palaa tuonnissa
   backup.players.push({ ...backup.players[2], id: 'uusi', name: 'Tuotu' });

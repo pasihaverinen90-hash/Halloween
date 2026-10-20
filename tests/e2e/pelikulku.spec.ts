@@ -6,6 +6,7 @@ import {
   failHangmanWord,
   openGame,
   playFlightQuickly,
+  playShooterQuickly,
   playRiddlesCorrectly,
   press,
   savedData,
@@ -30,6 +31,7 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
       { id: 'hirsipuu', status: 'unplayed', score: null },
       { id: 'arvoitukset', status: 'unplayed', score: null },
       { id: 'lentopeli', status: 'unplayed', score: null },
+      { id: 'raiskinta', status: 'unplayed', score: null },
     ],
   });
   await press(page, 'Enter');
@@ -84,6 +86,12 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
   const flight = await playFlightQuickly(page);
+  await press(page, 'Enter');
+  await waitForScene(page, 'Menu');
+  expect((await sceneState(page, 'Menu')).selected).toBe('raiskinta');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  const shooter = await playShooterQuickly(page);
 
   // Kiitosnäkymä lataa varmuuskopion automaattisesti
   const firstBackup = page.waitForEvent('download');
@@ -93,7 +101,7 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   expect(download.suggestedFilename()).toMatch(BACKUP_NAME);
   const backup = JSON.parse(await readFile((await download.path())!, 'utf8'));
   expect(backup.players[0]).toMatchObject({ name: 'Äijö Testi', games: { hirsipuu: { attempts: [750] } } });
-  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles + flight, backupOk: true });
+  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles + flight + shooter, backupOk: true });
 
   // Seuraava pelaaja: sama nimi pienillä kirjaimilla ei kelpaa
   await press(page, 'Enter');
@@ -124,6 +132,11 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
   await playFlightQuickly(page);
+  await press(page, 'Enter');
+  await waitForScene(page, 'Menu');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  await playShooterQuickly(page);
   const secondBackup = page.waitForEvent('download');
   await press(page, 'Enter');
   await waitForScene(page, 'Thanks');

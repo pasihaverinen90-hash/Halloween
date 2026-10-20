@@ -332,3 +332,185 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Korkea kivinen kaariportti, jonka keskellä hehkuu violetti taikaportaali. Portin juurella kaksi kurpitsalyhtyä. Edestä katsottuna. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 240 × 560 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+## Kiirastuli (räiskintä)
+
+### `valikko-raiskinta.png` – Räiskinnän esikatselukuva valikkoon
+
+- **Koko:** 360 × 200 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni valikkokuva räiskintäpelille: ylhäältä päin nähty yöllinen hautausmaa, alalaidassa valkoasuinen paavihahmo kultaisen paimensauvan kanssa ampuu valonsäteitä ylöspäin, ylhäällä aaveita, lentävä kurpitsalyhty, lepakko ja luuranko, keskellä ylhäällä uhkaava sarvipäinen Paholainen. Keksitty hahmo, ei oikea paavi. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `raiskinta-hautausmaa.png` – Hautausmaa ylhäältä päin
+
+- **Koko:** 1280 × 720 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Yöllinen hautausmaa vinosti ylhäältä päin nähtynä: tumma ruoho, mutkitteleva kivipolku keskellä, hautakiviä, ristejä ja hautakumpuja riveissä, ohutta usvaa. Kuva toistuu pystysuunnassa saumattomasti: ylä- ja alareuna jatkuvat toisiinsa. Ei hahmoja. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `raiskinta-paavi.png` – Paavi
+
+- **Koko:** 90 × 110 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Keksitty, hyväntahtoinen paavihahmo edestä: valkoinen kaapu kultaisella raidalla, punainen olkaviitta, korkea valkoinen hiippa jossa kultainen risti, punaiset posket, kädessä kultainen paimensauva jonka kärki hehkuu. Ei mikään oikea paavi. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 90 × 110 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-haamu.png` – Aave
+
+- **Koko:** 64 × 70 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Valkoinen lakanamainen aave mustin silmin ja avoimin suin, aaltoileva helma, kylmä sininen hehku. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 64 × 70 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-lepakko.png` – Lepakko
+
+- **Koko:** 70 × 46 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Lepakko lentää suoraan katsojaa kohti siivet levällään: tumma violetti siipikalvo, aaltoileva alareuna, pienet terävät korvat ja hehkuvat oranssit silmät. Ohut vaalea ääriviiva. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 70 × 46 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-kurpitsa.png` – Lentävä kurpitsalyhty
+
+- **Koko:** 70 × 64 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Oranssi kurpitsalyhty, jonka kaiverretut kasvot hehkuvat keltaisina ja jolla on pienet tummat lepakonsiivet. Ilkikurinen ilme. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 70 × 64 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-luuranko.png` – Luuranko
+
+- **Koko:** 56 × 70 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Luuranko edestä kädet ylhäällä ja jalat harallaan, punaisina hehkuvat silmäkuopat, luunvalkoinen. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 56 × 70 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-liitonarkku.png` – Liitonarkku
+
+- **Koko:** 110 × 72 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kultainen arkku, jonka sivuilla kantotangot ja kannella kaksi siivekästä kultaista hahmoa vastakkain, ympärillä lämmin hehku. Yksinkertainen oma tulkinta. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 110 × 72 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-malja.png` – Pyhä malja
+
+- **Koko:** 60 × 76 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kultainen malja jalokivin, ympärillä säteilevä valo. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 60 × 76 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-paholainen.png` – Paholainen (loppuvastus)
+
+- **Koko:** 260 × 240 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Keksitty uhkaava Paholainen edestä: punainen iho, suuret kaartuvat sarvet, keltaisina hehkuvat silmät, ilkeä virne torahampain, suippo musta parta, levitetyt lepakonsiivet ja kolmikärkinen hanko kädessä. Pelottava mutta ei verinen. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 260 × 240 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-valo.png` – Paavin valonsäde
+
+- **Koko:** 14 × 34 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pystysuora kirkas valonsäde: valkoinen kärki, kultainen hehku joka häipyy alaspäin. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 14 × 34 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-tulipallo.png` – Tulipallo
+
+- **Koko:** 28 × 28 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pyöreä tulipallo: keltainen keskus, oranssi ja punainen reuna, pehmeä hehku. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 28 × 28 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-luu.png` – Heitetty luu
+
+- **Koko:** 32 × 14 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni luunvalkoinen luu vaakasuunnassa, nuppimaiset päät. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 32 × 14 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-boosti-tuli.png` – Boosti: nopea tuli
+
+- **Koko:** 48 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pyöreä punainen merkki, jossa keltainen salama. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 48 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-boosti-haja.png` – Boosti: hajaammus
+
+- **Koko:** 48 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pyöreä sininen merkki, jossa kolme vaaleaa sädettä viuhkana. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 48 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-boosti-suoja.png` – Boosti: suojakehä
+
+- **Koko:** 48 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pyöreä violetti merkki, jossa kultainen sädekehä. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 48 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-suojakeha.png` – Suojakehä
+
+- **Koko:** 130 × 140 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Läpikuultava kultainen valorengas, joka ympäröi hahmon. Keskusta läpinäkyvä. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 130 × 140 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-kesto.png` – Kestopiste (pieni risti)
+
+- **Koko:** 22 × 26 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni kultainen risti mustalla ääriviivalla. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 22 × 26 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
