@@ -14,9 +14,10 @@ const raiskinta: GameDefinition = {
   sceneClass: RaiskintaScene,
   instructions: {
     goal: `Paavi puolustaa hautausmaata Halloween-olentoja vastaan. Selviä ${minutes} minuuttia ja kaada lopuksi Paholainen.`,
-    keys: [['←→', 'Liiku sivuttain']],
+    keys: [['←→↑↓', 'Liiku']],
     rules: [
-      'Paavi ampuu itse. Sinä väistelet vihollisia ja niiden ammuksia.',
+      'Paavi ampuu itse. Sinä liikutat häntä ja väistelet vihollisia ja niiden ammuksia.',
+      'Varo pikkupiruja, jotka syöksyvät päin, ja viikatemiehiä, jotka kestävät monta osumaa.',
       `Paavi kestää ${C.maxHealth} osumaa. Kestoa ei voi palauttaa.`,
       'Ammu liitonarkku ja pyhä malja: ase paranee loppuyrityksen ajaksi.',
       'Osa vihollisista pudottaa boostin: nopea tuli, hajaammus tai suojakehä. Kerää se koskettamalla.',

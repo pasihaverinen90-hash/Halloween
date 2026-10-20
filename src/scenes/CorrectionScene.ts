@@ -23,16 +23,26 @@ import { switchTo } from './nav';
 
 type Mode = 'menu' | 'grid' | 'popup' | 'busy';
 
-const ACTIONS: Array<MenuItem & { help: string }> = [
-  { label: 'Tulokset ja korjaukset', help: 'Kaikki tulokset taulukkona. Valitse ruutu ja paina Enter: voit muuttaa tai poistaa tuloksen tai antaa pelin uudelleen.' },
-  { label: 'Jatka kesken jäänyttä vuoroa', help: 'Jos selain suljettiin tai peli jumittui, pelaaja pääsee jatkamaan siitä, mihin jäi.' },
-  { label: 'Lataa varmuuskopio', help: 'Tallentaa kaikki tulokset tiedostoon Lataukset-kansioon.' },
-  { label: 'Tuo varmuuskopio', help: 'Palauttaa tulokset varmuuskopiotiedostosta. Nykyisistä tuloksista ladataan ensin varmuuskopio.' },
-  { label: 'Vie tulokset CSV-tiedostona', help: 'Tulostaulukko, jonka voi avata Excelissä tai muussa taulukkolaskentaohjelmassa.' },
-  { label: 'Poista pelaaja', help: 'Poistaa pelaajan ja kaikki hänen tuloksensa, esimerkiksi testipelaajan.' },
-  { label: 'Tyhjennä kaikki tulokset', help: 'Poistaa kaikki pelaajat ja tulokset. Kysytään kahdesti. Ennen tyhjennystä ladataan varmuuskopio.' },
-  { label: 'Poistu korjaustilasta', help: 'Palaa aloitusnäkymään.' },
+/** JSON backup files are in use (Pasi 20.10.: turned off, see CONFIG.storage.jsonBackups). */
+const BACKUPS: boolean = CONFIG.storage.jsonBackups;
+
+type ActionId = 'results' | 'continue' | 'backup' | 'import' | 'csv' | 'deletePlayer' | 'clear' | 'exit';
+
+const ALL_ACTIONS: Array<MenuItem & { id: ActionId; help: string }> = [
+  { id: 'results', label: 'Tulokset ja korjaukset', help: 'Kaikki tulokset taulukkona. Valitse ruutu ja paina Enter: voit muuttaa tai poistaa tuloksen tai antaa pelin uudelleen.' },
+  { id: 'continue', label: 'Jatka kesken jäänyttä vuoroa', help: 'Jos selain suljettiin tai peli jumittui, pelaaja pääsee jatkamaan siitä, mihin jäi.' },
+  { id: 'backup', label: 'Lataa varmuuskopio', help: 'Tallentaa kaikki tulokset tiedostoon Lataukset-kansioon.' },
+  { id: 'import', label: 'Tuo varmuuskopio', help: 'Palauttaa tulokset varmuuskopiotiedostosta. Nykyisistä tuloksista ladataan ensin varmuuskopio.' },
+  { id: 'csv', label: 'Vie tulokset CSV-tiedostona', help: 'Tulostaulukko, jonka voi avata Excelissä tai muussa taulukkolaskentaohjelmassa.' },
+  { id: 'deletePlayer', label: 'Poista pelaaja', help: 'Poistaa pelaajan ja kaikki hänen tuloksensa, esimerkiksi testipelaajan.' },
+  {
+    id: 'clear',
+    label: 'Tyhjennä kaikki tulokset',
+    help: `Poistaa kaikki pelaajat ja tulokset. Kysytään kahdesti.${BACKUPS ? ' Ennen tyhjennystä ladataan varmuuskopio.' : ''}`,
+  },
+  { id: 'exit', label: 'Poistu korjaustilasta', help: 'Palaa aloitusnäkymään.' },
 ];
+const ACTIONS = ALL_ACTIONS.filter((action) => BACKUPS || (action.id !== 'backup' && action.id !== 'import'));
 
 const GRID_TOP = 150;
 const GRID_ROW_H = 42;
@@ -187,7 +197,7 @@ export class CorrectionScene extends Phaser.Scene {
       `Pelaajia: ${players.length}`,
       `Kaikki pelit pelanneita: ${players.length - unfinished.length}`,
       `Vuoro kesken: ${unfinished.length === 0 ? '–' : unfinished.map((p) => p.name).join(', ')}`,
-      `Tallennus: ${db.saveProblem ? 'EI TOIMI – lataa varmuuskopio!' : 'kunnossa'}`,
+      `Tallennus: ${db.saveProblem ? `EI TOIMI – ${BACKUPS ? 'lataa varmuuskopio' : 'vie tulokset CSV-tiedostona'}!` : 'kunnossa'}`,
     ];
     this.info.add(
       this.add.text(left + 28, 290, lines.join('\n'), { ...TEXT.body, fontSize: '22px', color: CSS.muted, lineSpacing: 10, wordWrap: { width: width - 56 } }),
@@ -202,8 +212,8 @@ export class CorrectionScene extends Phaser.Scene {
 
   private runAction(index: number): void {
     if (this.mode !== 'menu') return;
-    switch (index) {
-      case 0:
+    switch (ACTIONS[index]?.id) {
+      case 'results':
         this.row = 0;
         this.col = 0;
         this.scroll = 0;
@@ -213,26 +223,26 @@ export class CorrectionScene extends Phaser.Scene {
         }
         this.setMode('grid');
         return;
-      case 1:
+      case 'continue':
         this.continueTurn();
         return;
-      case 2:
+      case 'backup':
         this.downloadBackup();
         return;
-      case 3:
+      case 'import':
         void this.importBackup();
         return;
-      case 4:
+      case 'csv':
         if (downloadResultsCsv(getDb().data, GAMES)) showToast(this, 'Tulostaulukko (CSV) ladattu.', 'success');
         else showToast(this, 'CSV-tiedoston lataus ei onnistunut.', 'error');
         return;
-      case 5:
+      case 'deletePlayer':
         this.deletePlayer();
         return;
-      case 6:
+      case 'clear':
         void this.clearAll();
         return;
-      case 7:
+      case 'exit':
         this.exit();
         return;
     }
@@ -319,21 +329,21 @@ export class CorrectionScene extends Phaser.Scene {
   private async clearAll(): Promise<void> {
     const first = await confirmDialog(this, {
       title: 'Tyhjennetäänkö kaikki tulokset?',
-      message: 'Kaikki pelaajat ja tulokset poistetaan. Ennen tyhjennystä ladataan varmuuskopio.',
+      message: `Kaikki pelaajat ja tulokset poistetaan.${BACKUPS ? ' Ennen tyhjennystä ladataan varmuuskopio.' : ''}`,
       confirmLabel: 'Jatka',
       danger: true,
     });
     if (!first) return;
     const second = await confirmDialog(this, {
       title: 'Oletko aivan varma?',
-      message: 'Tätä ei voi perua. Varmuuskopiosta tulokset voi tuoda takaisin.',
+      message: BACKUPS ? 'Tätä ei voi perua. Varmuuskopiosta tulokset voi tuoda takaisin.' : 'Tätä ei voi perua.',
       confirmLabel: 'Tyhjennä kaikki',
       cancelLabel: 'Peruuta',
       defaultChoice: 'cancel',
       danger: true,
     });
     if (!second) return;
-    downloadBackupFile(getDb().data);
+    if (BACKUPS) downloadBackupFile(getDb().data);
     getDb().clearAll();
     showToast(this, 'Kaikki tulokset tyhjennettiin.', 'success');
     this.renderInfo();

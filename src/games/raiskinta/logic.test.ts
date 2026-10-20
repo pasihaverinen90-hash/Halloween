@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { CONFIG } from '../../config';
 import {
+  BOSS_ATTACKS,
   bossPosition,
+  bossStage,
   buildSchedule,
   ENEMY_TOTAL,
   enemyPosition,
@@ -9,7 +11,9 @@ import {
   FIELD_W,
   fireInterval,
   hitsBoss,
-  POPE_Y,
+  planDive,
+  POPE_HALF_H,
+  POPE_HALF_W,
   SCHEDULE,
   scoreOf,
   SPECIALS,
@@ -28,9 +32,15 @@ describe('schedule', () => {
     const count = (from: number, to: number): number => SCHEDULE.filter((s) => s.t >= from && s.t < to && !SPECIALS.has(s.kind)).length;
     expect(count(0, 40)).toBeLessThan(count(128, 168));
     expect(Math.max(...SCHEDULE.map((s) => s.t))).toBeLessThanOrEqual(C.lastSpawnSeconds + 3);
-    expect(ENEMY_TOTAL).toBeGreaterThan(120);
-    expect(ENEMY_TOTAL).toBeLessThan(400);
-    expect(new Set(SCHEDULE.map((s) => s.kind))).toEqual(new Set(['ghost', 'bat', 'pumpkin', 'skeleton', 'ark', 'grail']));
+    expect(ENEMY_TOTAL).toBeGreaterThan(500);
+    expect(ENEMY_TOTAL).toBeLessThan(900);
+    expect(new Set(SCHEDULE.map((s) => s.kind))).toEqual(new Set(['ghost', 'bat', 'pumpkin', 'skeleton', 'imp', 'reaper', 'ark', 'grail']));
+  });
+
+  it('brings the harder imps and reapers only after the start', () => {
+    const first = (kind: string): number => SCHEDULE.find((s) => s.kind === kind)!.t;
+    expect(first('imp')).toBeGreaterThan(15);
+    expect(first('reaper')).toBeGreaterThan(40);
   });
 
   it('has the ark and the grail at the agreed moments', () => {
@@ -41,7 +51,8 @@ describe('schedule', () => {
 
   it('drops a boost about every boostEverySeconds, in turn', () => {
     const drops = SCHEDULE.filter((s) => s.drop);
-    expect(drops.length).toBe(Math.floor((C.lastSpawnSeconds - C.boostEverySeconds * 0.6) / C.boostEverySeconds) + 1);
+    const last = Math.max(...SCHEDULE.filter((s) => !SPECIALS.has(s.kind)).map((s) => s.t));
+    expect(drops.length).toBe(Math.floor((last - C.boostEverySeconds * 0.6) / C.boostEverySeconds) + 1);
     expect(drops.slice(0, 3).map((s) => s.drop)).toEqual(['rapid', 'spread', 'shield']);
   });
 
@@ -59,8 +70,8 @@ describe('schedule', () => {
           expect(p.x, `${spawn.kind} ${spawn.id}`).toBeLessThanOrEqual(FIELD_W - 30);
         }
       }
-      expect(left, `${spawn.kind} ${spawn.id}`).toBeGreaterThan(3);
-      expect(left, `${spawn.kind} ${spawn.id}`).toBeLessThan(spawn.kind === 'skeleton' ? 45 : 20);
+      expect(left, `${spawn.kind} ${spawn.id}`).toBeGreaterThan(2);
+      expect(left, `${spawn.kind} ${spawn.id}`).toBeLessThan(spawn.kind === 'skeleton' ? 45 : spawn.kind === 'reaper' ? 30 : 20);
     }
   });
 
@@ -102,18 +113,33 @@ describe('points', () => {
 });
 
 describe('collisions', () => {
-  it('hits the pope only near his body', () => {
-    expect(touchesPope(640, 640, POPE_Y, 10)).toBe(true);
-    expect(touchesPope(640, 640 + 24 + 9, POPE_Y, 10)).toBe(true);
-    expect(touchesPope(640, 640 + 24 + 11, POPE_Y, 10)).toBe(false);
-    expect(touchesPope(640, 640, POPE_Y - 36 - 11, 10)).toBe(false);
+  it('hits the pope only near his body, wherever he is', () => {
+    expect(touchesPope(640, 500, 640, 500, 10)).toBe(true);
+    expect(touchesPope(640, 500, 640 + POPE_HALF_W + 9, 500, 10)).toBe(true);
+    expect(touchesPope(640, 500, 640 + POPE_HALF_W + 11, 500, 10)).toBe(false);
+    expect(touchesPope(640, 500, 640, 500 - POPE_HALF_H - 11, 10)).toBe(false);
+  });
+
+  it('sends an imp straight at the pope', () => {
+    const dive = planDive({ x: 300, y: 150 }, { x: 600, y: 550 }, 1.4);
+    expect(dive.vx).toBeGreaterThan(0);
+    expect(dive.vy / dive.vx).toBeCloseTo(400 / 300, 5);
+    const imp = SCHEDULE.find((s) => s.kind === 'imp')!;
+    const later = enemyPosition(imp, 2.4, dive)!;
+    expect(later.x).toBeCloseTo(300 + dive.vx, 5);
+    expect(later.y).toBeCloseTo(150 + dive.vy, 5);
+  });
+
+  it('makes the Devil angrier at two thirds and one third of its health', () => {
+    expect([1, 0.7, 0.6, 0.34, 0.3, 0.01].map(bossStage)).toEqual([1, 1, 2, 2, 3, 3]);
+    expect(BOSS_ATTACKS[2].length).toBeGreaterThan(BOSS_ATTACKS[0].length);
   });
 
   it('brings the Devil down from above the screen and hits it within its body', () => {
     expect(bossPosition(0, 1).y).toBeLessThan(0);
     const p = bossPosition(10, 1);
     expect(p.y).toBeGreaterThan(140);
-    expect(hitsBoss(p.x, p.y, p.x, p.y + 80)).toBe(true);
-    expect(hitsBoss(p.x, p.y, p.x + 120, p.y)).toBe(false);
+    expect(hitsBoss(p.x, p.y, p.x, p.y + 60)).toBe(true);
+    expect(hitsBoss(p.x, p.y, p.x + 100, p.y)).toBe(false);
   });
 });

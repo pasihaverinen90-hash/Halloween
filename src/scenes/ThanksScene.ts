@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CONFIG } from '../config';
 import { getDb } from '../core/db';
 import { downloadBackupFile } from '../core/files';
 import { isPlayerDone, playerTotal, recordScore } from '../core/scores';
@@ -43,7 +44,8 @@ export class ThanksScene extends Phaser.Scene {
     }
     const player = this.player;
     db.markFinished(player.id);
-    this.backupOk = downloadBackupFile(db.data);
+    // JSON backups are off (Pasi 20.10.), see CONFIG.storage.jsonBackups.
+    this.backupOk = CONFIG.storage.jsonBackups && downloadBackupFile(db.data);
 
     addBackdrop(this, { dim: 0.3 });
     this.addEmbers();
@@ -77,6 +79,7 @@ export class ThanksScene extends Phaser.Scene {
 
     this.time.delayedCall(250, () => {
       sfx.play('success');
+      if (!CONFIG.storage.jsonBackups) return;
       showToast(
         this,
         this.backupOk

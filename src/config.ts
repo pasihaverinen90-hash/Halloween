@@ -32,6 +32,12 @@ export const CONFIG = {
   storage: {
     /** localStorage key for all results. Changing it starts from empty results. */
     key: 'halloween-peli-ilta:v1',
+    /**
+     * JSON backup files: download on the thank-you screen and before importing or clearing,
+     * and "Lataa varmuuskopio" / "Tuo varmuuskopio" in the correction mode.
+     * Pasi 20.10.: turned off completely. Results are still saved in the browser, and CSV export stays.
+     */
+    jsonBackups: false,
   },
 
   audio: {
@@ -120,6 +126,8 @@ export const CONFIG = {
 
   /** 4. Räiskintä. Distances in pixels of the 1280×720 game space, times in seconds of play (pauses excluded). */
   raiskinta: {
+    /** How big everything looks: under 1 shows the graveyard from further away (Pasi 20.10.: zoom out a little). */
+    viewScale: 0.72,
     /** The Devil arrives after this much play (Pasi 20.10.: 3 minutes). */
     bossAfterSeconds: 180,
     /** No new enemies after this, so the last ones can still be shot before the Devil. */
@@ -134,34 +142,34 @@ export const CONFIG = {
     maxHealth: 10,
     /** After a hit the pope cannot be hit for this long. */
     invulnerableSeconds: 1.2,
-    /** Pope's sideways speed (px/s). */
+    /** Pope's speed (px/s); he moves sideways and up and down in the lower part of the screen. */
     popeSpeed: 560,
     /** Shots per second with the basic weapon; each weapon level adds a little. The rapid-fire boost doubles it. */
-    fireRate: 4,
+    fireRate: 4.5,
     fireRatePerLevel: 0.4,
-    shotSpeed: 900,
+    shotSpeed: 950,
     /** Weapon levels: 1 at the start, +1 for each ark or grail. */
     maxWeaponLevel: 5,
-    /** Seconds between enemy waves: at the start → at the end. */
-    waveGapStart: 5.5,
-    waveGapEnd: 2.3,
+    /** Seconds between enemy waves: at the start → at the end (Pasi 20.10.: many more enemies). */
+    waveGapStart: 2.5,
+    waveGapEnd: 1.05,
     /** Enemy bullets (px/s) and how often a shooting enemy shoots (s): at the start → at the end. */
     enemyShotSpeedStart: 250,
-    enemyShotSpeedEnd: 340,
-    enemyShotGapStart: 2.6,
-    enemyShotGapEnd: 1.4,
+    enemyShotSpeedEnd: 350,
+    enemyShotGapStart: 2.4,
+    enemyShotGapEnd: 1.3,
     /** Boosts dropped by some enemies: how long they last. */
     boostSeconds: 8,
     shieldSeconds: 6,
     /** A boost drops about every n seconds. */
-    boostEverySeconds: 18,
+    boostEverySeconds: 16,
     /** The ark and the grail appear at these moments. */
     specialTimes: [30, 70, 110, 150],
-    /** Devil's health in basic shots, and seconds between its attacks (calm → furious). */
-    bossHealth: 360,
-    bossAttackGapStart: 1.6,
-    bossAttackGapEnd: 0.8,
+    /** Devil's health in basic shots, and seconds between its attacks (calm → furious). It grows angrier at 2/3 and 1/3 health. */
+    bossHealth: 420,
+    bossAttackGapStart: 1.5,
+    bossAttackGapEnd: 0.75,
     /** Graveyard scrolling speed (px/s). */
-    scrollSpeed: 70,
+    scrollSpeed: 60,
   },
 } as const;

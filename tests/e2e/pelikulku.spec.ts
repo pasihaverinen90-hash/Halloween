@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import {
   createPlayer,
@@ -17,7 +16,6 @@ import {
   waitForState,
 } from './helpers';
 
-const BACKUP_NAME = /^halloween-varmuuskopio-\d{4}-\d{2}-\d{2}-klo-\d{2}-\d{2}-\d{2}\.json$/;
 
 test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await openGame(page);
@@ -93,15 +91,13 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await waitForScene(page, 'Instructions');
   const shooter = await playShooterQuickly(page);
 
-  // Kiitosnäkymä lataa varmuuskopion automaattisesti
-  const firstBackup = page.waitForEvent('download');
+  // Kiitosnäkymä: tulokset ovat tallessa selaimessa, eikä varmuuskopiotiedostoa ladata (Pasi 20.10.)
+  const downloads: string[] = [];
+  page.on('download', (d) => downloads.push(d.suggestedFilename()));
   await press(page, 'Enter');
   await waitForScene(page, 'Thanks');
-  const download = await firstBackup;
-  expect(download.suggestedFilename()).toMatch(BACKUP_NAME);
-  const backup = JSON.parse(await readFile((await download.path())!, 'utf8'));
-  expect(backup.players[0]).toMatchObject({ name: 'Äijö Testi', games: { hirsipuu: { attempts: [750] } } });
-  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles + flight + shooter, backupOk: true });
+  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles + flight + shooter, backupOk: false });
+  expect((await savedData(page)).players[0]).toMatchObject({ name: 'Äijö Testi', games: { hirsipuu: { attempts: [750] } } });
 
   // Seuraava pelaaja: sama nimi pienillä kirjaimilla ei kelpaa
   await press(page, 'Enter');
@@ -137,11 +133,11 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
   await playShooterQuickly(page);
-  const secondBackup = page.waitForEvent('download');
   await press(page, 'Enter');
   await waitForScene(page, 'Thanks');
-  const both = JSON.parse(await readFile((await (await secondBackup).path())!, 'utf8'));
-  expect(both.players.map((p: { name: string }) => p.name)).toEqual(['Äijö Testi', 'Liisa']);
+  expect((await savedData(page)).players.map((p: { name: string }) => p.name)).toEqual(['Äijö Testi', 'Liisa']);
+  await page.waitForTimeout(500);
+  expect(downloads).toEqual([]);
   await expectNoRuntimeErrors(page);
 });
 

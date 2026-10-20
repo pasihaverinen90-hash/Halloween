@@ -26,13 +26,17 @@ test('räiskintä: liikkuminen, tauko, boosti, liitonarkku, Paholainen ja kolme 
 
   // Yritys 1
   await startAttempt(page);
-  expect(await sceneState(page, 'Raiskinta')).toMatchObject({ phase: 'playing', health: 10, weapon: 1, popeX: 640 });
+  expect(await sceneState(page, 'Raiskinta')).toMatchObject({ phase: 'playing', health: 10, weapon: 1, popeX: 640, popeY: 600 });
   await page.keyboard.down('ArrowLeft');
   await waitForState(page, 'Raiskinta', (s) => s.popeX < 560);
   await page.keyboard.up('ArrowLeft');
   const stopped = (await sceneState(page, 'Raiskinta')).popeX;
   await page.waitForTimeout(400);
   expect((await sceneState(page, 'Raiskinta')).popeX).toBe(stopped);
+  // Paavi liikkuu myös ylös ja alas
+  await page.keyboard.down('ArrowUp');
+  await waitForState(page, 'Raiskinta', (s) => s.popeY < 540);
+  await page.keyboard.up('ArrowUp');
 
   // Tauko pysäyttää ajan
   await waitForState(page, 'Raiskinta', (s) => s.time > 1);
@@ -43,8 +47,9 @@ test('räiskintä: liikkuminen, tauko, boosti, liitonarkku, Paholainen ja kolme 
   await press(page, 'Enter', 400);
   await waitForState(page, 'Raiskinta', (s) => s.time > paused);
 
-  // Boostin kantaja: tuhotaan, ja paavi kerää boostin
-  await shooter(page, 'scene.debugSkip(11)');
+  // Boostin kantaja: tuhotaan, ja paavi kerää boostin. Testin ajaksi paavi ei ammu itse,
+  // ja suojakehä pitää hänet hengissä.
+  await shooter(page, 'scene.boosts.shield = 999; scene.fireCooldown = 99999; scene.debugSkip(9)');
   await waitForState(page, 'Raiskinta', (s) => s.enemies > 0);
   await expect
     .poll(() => shooter<boolean>(page, 'return scene.enemies.some((e) => e.spawn.drop)'), { timeout: 60_000 })
@@ -62,12 +67,13 @@ test('räiskintä: liikkuminen, tauko, boosti, liitonarkku, Paholainen ja kolme 
   const before = (await sceneState(page, 'Raiskinta')).health;
   await shooter(page, 'scene.debugHurt(3)');
   expect((await sceneState(page, 'Raiskinta')).health).toBe(before - 3);
+  await shooter(page, 'scene.boosts.shield = 999');
 
   // Välitekstin jälkeen Paholainen; viimeinen osuma kaataa sen
   await shooter(page, 'scene.debugSkip(179)');
   await waitForState(page, 'Raiskinta', (s) => s.phase === 'interlude');
   await waitForState(page, 'Raiskinta', (s) => s.phase === 'boss', 120_000);
-  await shooter(page, 'scene.debugBossHealth(1)');
+  await shooter(page, 'scene.fireCooldown = 0; scene.popeX = 640; scene.popeY = 420; scene.debugBossHealth(1)');
   await waitForState(page, 'Raiskinta', (s) => s.phase === 'won', 120_000);
   const won = await sceneState(page, 'Raiskinta');
   await waitForScene(page, 'AttemptResult', 120_000);

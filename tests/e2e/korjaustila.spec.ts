@@ -153,16 +153,27 @@ test('kesken jäänyt hirsipuu jatkuu samasta kohdasta sivun uudelleenlatauksen 
   await expectNoRuntimeErrors(page);
 });
 
-test('varmuuskopio, CSV, tuonti, pelaajan poisto ja tyhjennys kahdella vahvistuksella', async ({ page }) => {
+test('ei JSON-varmuuskopioita; CSV, pelaajan poisto ja tyhjennys kahdella vahvistuksella', async ({ page }) => {
   await openGame(page, EVENING);
   await openCorrection(page);
+  const downloads: string[] = [];
+  page.on('download', (d) => downloads.push(d.suggestedFilename()));
 
-  const backupDownload = page.waitForEvent('download');
-  await chooseAction(page, 'Lataa varmuuskopio');
-  const backupFile = await backupDownload;
-  expect(backupFile.suggestedFilename()).toMatch(/^halloween-varmuuskopio-.*\.json$/);
-  const backup = JSON.parse(await readFile((await backupFile.path())!, 'utf8'));
-  expect(backup.players).toHaveLength(3);
+  // Pasi 20.10.: JSON-varmuuskopiot pois käytöstä, joten valikossa ei ole niitä
+  const labels: string[] = [(await sceneState(page, 'Correction')).action];
+  for (let i = 0; i < 8; i++) {
+    await press(page, 'ArrowDown', 120);
+    labels.push((await sceneState(page, 'Correction')).action);
+  }
+  expect([...new Set(labels)]).toEqual([
+    'Tulokset ja korjaukset',
+    'Jatka kesken jäänyttä vuoroa',
+    'Vie tulokset CSV-tiedostona',
+    'Poista pelaaja',
+    'Tyhjennä kaikki tulokset',
+    'Poistu korjaustilasta',
+  ]);
+  for (let i = 0; i < 8; i++) await press(page, 'ArrowUp', 120);
 
   const csvDownload = page.waitForEvent('download');
   await chooseAction(page, 'Vie tulokset CSV-tiedostona');
@@ -172,18 +183,6 @@ test('varmuuskopio, CSV, tuonti, pelaajan poisto ja tyhjennys kahdella vahvistuk
   expect(csv.charCodeAt(0)).toBe(0xfeff);
   expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Kiirastuli;Yhteensä', '1;Aino;800;;;;800']);
 
-  // Tuonti: varmuuskopioon lisätty pelaaja palaa tuonnissa
-  backup.players.push({ ...backup.players[2], id: 'uusi', name: 'Tuotu' });
-  await press(page, 'ArrowUp', 150);
-  await press(page, 'ArrowUp', 150);
-  const chooser = page.waitForEvent('filechooser');
-  await chooseAction(page, 'Tuo varmuuskopio');
-  const safety = page.waitForEvent('download');
-  await (await chooser).setFiles({ name: 'varmuuskopio.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) });
-  await answerDialog(page, true);
-  await safety; // the current results are downloaded before they are replaced
-  await expect.poll(async () => (await savedData(page)).players.map((p: { name: string }) => p.name)).toEqual(['Aino', 'Eero', 'Testi', 'Tuotu']);
-
   // Pelaajan poisto
   await chooseAction(page, 'Poista pelaaja');
   await press(page, 'ArrowDown');
@@ -191,20 +190,19 @@ test('varmuuskopio, CSV, tuonti, pelaajan poisto ja tyhjennys kahdella vahvistuk
   expect((await sceneState(page, 'Correction')).popup).toBe('Testi');
   await press(page, 'Enter');
   await answerDialog(page, true);
-  expect((await savedData(page)).players.map((p: { name: string }) => p.name)).toEqual(['Aino', 'Eero', 'Tuotu']);
+  expect((await savedData(page)).players.map((p: { name: string }) => p.name)).toEqual(['Aino', 'Eero']);
 
   // Tyhjennys: toinen vahvistus peruttuna mitään ei tapahdu
   await chooseAction(page, 'Tyhjennä kaikki tulokset');
   await answerDialog(page, true);
   await answerDialog(page, false);
-  expect((await savedData(page)).players).toHaveLength(3);
-  // Kahdesti vahvistettuna tulokset tyhjenevät ja varmuuskopio ladataan ensin
-  const beforeClear = page.waitForEvent('download');
+  expect((await savedData(page)).players).toHaveLength(2);
+  // Kahdesti vahvistettuna tulokset tyhjenevät, eikä varmuuskopiota ladata
   await chooseAction(page, 'Tyhjennä kaikki tulokset');
   await answerDialog(page, true);
   await answerDialog(page, true);
-  await beforeClear;
   expect((await savedData(page)).players).toEqual([]);
+  expect(downloads).toEqual([csvFile.suggestedFilename()]);
 
   await chooseAction(page, 'Poistu korjaustilasta');
   await waitForScene(page, 'Start');

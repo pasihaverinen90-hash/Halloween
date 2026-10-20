@@ -343,7 +343,7 @@ Hyvä tietää:
 
 **Kuvaus generaattorille:**
 
-> Pieni valikkokuva räiskintäpelille: ylhäältä päin nähty yöllinen hautausmaa, alalaidassa valkoasuinen paavihahmo kultaisen paimensauvan kanssa ampuu valonsäteitä ylöspäin, ylhäällä aaveita, lentävä kurpitsalyhty, lepakko ja luuranko, keskellä ylhäällä uhkaava sarvipäinen Paholainen. Keksitty hahmo, ei oikea paavi. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+> Pieni valikkokuva räiskintäpelille: ylhäältä päin nähty yöllinen hautausmaa, alalaidassa valkoasuinen paavihahmo kultaisen paimensauvan kanssa ampuu valonsäteitä ylöspäin, ylhäällä aaveita, lentävä kurpitsalyhty, lepakko, luuranko, pikkupiru ja viikatemies, keskellä ylhäällä uhkaava sarvipäinen Paholainen. Keksitty hahmo, ei oikea paavi. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
 
 ### `raiskinta-hautausmaa.png` – Hautausmaa ylhäältä päin
 
@@ -405,6 +405,26 @@ Hyvä tietää:
 
 > Luuranko edestä kädet ylhäällä ja jalat harallaan, punaisina hehkuvat silmäkuopat, luunvalkoinen. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 56 × 70 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
+### `raiskinta-piru.png` – Pikkupiru
+
+- **Koko:** 60 × 56 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni tumma violetinmusta piru: lepakonsiivet, pienet vaaleat sarvet, vihreinä hehkuvat silmät, ilkikurinen virne ja kiemurainen häntä. Eri hahmo kuin iso Paholainen. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 60 × 56 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-viikatemies.png` – Viikatemies
+
+- **Koko:** 90 × 110 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Viikatemies edestä: musta huppukaapu repaleisella helmalla, hupun varjossa pääkallo violetein hehkuvin silmin, luinen käsi pitää viikatetta jonka terä on hopeinen. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 90 × 110 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
 ### `raiskinta-liitonarkku.png` – Liitonarkku
 
 - **Koko:** 110 × 72 px
@@ -464,6 +484,16 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Pieni luunvalkoinen luu vaakasuunnassa, nuppimaiset päät. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 32 × 14 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `raiskinta-kirous.png` – Kirouspallo
+
+- **Koko:** 24 × 24 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pyöreä violetti energiapallo: vaalea keskus, tumma violetti reuna, pehmeä hehku. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 24 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
 ### `raiskinta-boosti-tuli.png` – Boosti: nopea tuli
 

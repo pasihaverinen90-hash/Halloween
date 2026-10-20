@@ -28,6 +28,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **Lentopeli:** maali on noin 90 sekunnin lennon päässä (säädetään testauksen perusteella). Maa on lattia, jota pitkin noita voi liukua; vain esteet ovat vaarallisia. Taivas on katto.
 - **Lentopeli, Pasin palaute 20.10.:** kissoja liian usein, peli liian helppo ja esteet aina katosta asti (vain yksi reitti). Pasin ehdotuksesta mukaan tulivat vastaan lentävät lepakot. Nyt esteitä on neljää tyyppiä (häkki + inkvisiittori, pelkkä inkvisiittoritorni, pelkkä riippuva häkki ja lepakkoparvi), ja usein esteen ohi pääsee sekä yli että ali. Kissoja on kolme koko matkalla (noin 22 sekunnin välein), aina lepakoiden vieressä.
 - **Räiskintä (Pasi 20.10.):** Paholainen saapuu 3 minuutin kohdalla (ei 5), jotta ilta ei veny. Vihollispisteet (400) ovat osuus kaikista vihollisista, ja viholliset tulevat kaikille samassa järjestyksessä. Liitonarkku ja pyhä malja lasketaan vihollisiin. Paholaisesta saa 300 pistettä vain kaatamalla sen. Kestoa (10 osumaa) ei voi palauttaa.
+- **Räiskintä, Pasin palaute 20.10.:** vihollisia aivan liian vähän, kuva saa olla kauempaa (enemmän pelialuetta), paavi saa liikkua myös pystysuunnassa, lisää vaikeampia vihollisia, ja Paholainen oli tylsä. Boosteihin voi myöhemmin lisätä erilaisia lisäaseita (ei vielä).
+- **JSON-varmuuskopiot pois käytöstä (Pasi 20.10.):** kiitosnäkymä ei lataa varmuuskopiota, eikä korjaustilassa ole "Lataa varmuuskopio"- ja "Tuo varmuuskopio"-toimintoja. Tulokset tallentuvat edelleen selaimeen, ja CSV-vienti säilyy. Poikkeaa CLAUDE.md:n Tallennus-kohdasta Pasin päätöksellä. Kytkin: `CONFIG.storage.jsonBackups`.
 - **Täydellinen tulos päättää pelin (Pasi 20.10.):** kun toimintapelin yrityksestä tulee 1000 pistettä, loput yritykset jäävät väliin. Koskee kaikkia toimintapelejä.
 - **Kuva-arvoitukset:** 5 kuva-arvoitusta (Pasi tekee kuvat, yksi kuva per arvoitus) ja 5 emojiarvoitusta (Claude Code). Kuva-arvoitukset: hirviö, ihmissusi, verikuu, silmämuna ja kummitusjuna. Arvoitukseen saa lisätä vihjeen (kohta `kysymys`). Ensimmäiset versiot tehdään nyt, ja niitä muokataan myöhemmin.
 - **GitHub Pages** on päällä (Source: GitHub Actions), Pasi kytki sen 19.10.2026.
@@ -123,8 +125,16 @@ Tehty:
 Kesken:
 - Pasi testaa räiskinnän. Vaikeus säädetään tiedostossa `src/config.ts` (kohta `raiskinta`).
 
+Pasin palaute ensimmäiseen versioon: vihollisia liian vähän, kuva lähemmäs kuin pitäisi, Paholainen tylsä. Korjattu samassa rupeamassa:
+- Kuva on kauempaa (kaikki 72 % koosta, `viewScale`), ja tausta toistuu saumattomasti myös sivusuunnassa.
+- Paavi liikkuu nuolilla neljään suuntaan ruudun alaosassa.
+- Vihollisia on noin 690 (ennen 256). Uudet, vaikeammat viholliset: pikkupirut syöksyvät paavia kohti, ja viikatemiehet kestävät 10 osumaa ja ampuvat viiden kirouspallon viuhkoja. Kurpitsat ampuvat lopussa kolme tulipalloa kerralla.
+- Paholainen raivostuu kahdesti (2/3 ja 1/3 kestävyydestä), ja raivon vaiheet näkyvät palkissa. Hyökkäyksiä on kahdeksan: tuliviuhka, tähdätty sarja, tulisade, tulikierre, tulirengas, pikkupirujen kutsu, rynnäkkö paavia kohti ja katoaminen. Kestävyys on 420.
+- JSON-varmuuskopiot otettiin pois käytöstä Pasin pyynnöstä (ks. yllä).
+
 Seuraavaksi:
 - Vaihe 5, ristikko, kun Pasi hyväksyy räiskinnän. Kysy Pasilta näppäimet (CLAUDE.md: ehdota liikkuminen, suunnan vaihto ja kirjaimen paljastus).
+- Myöhemmin (Pasi): boosteihin erilaisia lisäaseita.
 
 ## Aikataulu
 

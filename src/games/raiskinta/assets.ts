@@ -42,26 +42,33 @@ function seeded(seed: number): () => number {
   return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
 
-/** A graveyard seen from above at an angle; tiles seamlessly from top to bottom. */
+/** A graveyard seen from above at an angle; tiles seamlessly in both directions. */
 function graveyard(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   ctx.fillStyle = '#1b1426';
   ctx.fillRect(0, 0, w, h);
   const rnd = seeded(11);
-  // Draws an item and its copy across the top/bottom seam, so the picture tiles.
-  const wrapped = (y: number, size: number, draw: (yy: number) => void): void => {
-    draw(y);
-    if (y + size > h) draw(y - h);
-    if (y - size < 0) draw(y + h);
+  // Draws an item, and its copies across the edges, so the picture tiles in both directions.
+  const wrapped = (x: number, y: number, size: number, draw: () => void): void => {
+    const xs = [0, ...(x + size > w ? [-w] : []), ...(x - size < 0 ? [w] : [])];
+    const ys = [0, ...(y + size > h ? [-h] : []), ...(y - size < 0 ? [h] : [])];
+    for (const dx of xs) {
+      for (const dy of ys) {
+        ctx.save();
+        ctx.translate(dx, dy);
+        draw();
+        ctx.restore();
+      }
+    }
   };
   // Darker patches of grass
   for (let i = 0; i < 40; i++) {
     const x = rnd() * w;
     const y = rnd() * h;
     const r = 40 + rnd() * 90;
-    wrapped(y, r, (yy) => {
+    wrapped(x, y, r, () => {
       ctx.fillStyle = 'rgba(34, 52, 38, 0.35)';
       ctx.beginPath();
-      ctx.ellipse(x, yy, r, r * 0.6, 0, 0, Math.PI * 2);
+      ctx.ellipse(x, y, r, r * 0.6, 0, 0, Math.PI * 2);
       ctx.fill();
     });
   }
@@ -88,14 +95,14 @@ function graveyard(ctx: CanvasRenderingContext2D, w: number, h: number): void {
     const x = rnd() * w;
     const y = rnd() * h;
     if (Math.abs(x - pathX(y)) < 60) continue;
-    wrapped(y, 10, (yy) => {
+    wrapped(x, y, 10, () => {
       ctx.beginPath();
-      ctx.moveTo(x - 4, yy);
-      ctx.lineTo(x - 6, yy - 8);
-      ctx.moveTo(x, yy);
-      ctx.lineTo(x, yy - 10);
-      ctx.moveTo(x + 4, yy);
-      ctx.lineTo(x + 6, yy - 8);
+      ctx.moveTo(x - 4, y);
+      ctx.lineTo(x - 6, y - 8);
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y - 10);
+      ctx.moveTo(x + 4, y);
+      ctx.lineTo(x + 6, y - 8);
       ctx.stroke();
     });
   }
@@ -107,39 +114,39 @@ function graveyard(ctx: CanvasRenderingContext2D, w: number, h: number): void {
       const x = 50 + i * 145 + (rnd() - 0.5) * 50;
       if (Math.abs(x - pathX(y)) < 110) continue;
       const kind = rnd();
-      wrapped(y, 50, (yy) => {
+      wrapped(x, y, 50, () => {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
         ctx.beginPath();
-        ctx.ellipse(x + 6, yy + 4, 22, 7, 0, 0, Math.PI * 2);
+        ctx.ellipse(x + 6, y + 4, 22, 7, 0, 0, Math.PI * 2);
         ctx.fill();
         if (kind < 0.6) {
           shape(ctx, '#5a5368', () => {
-            ctx.moveTo(x - 15, yy);
-            ctx.lineTo(x - 15, yy - 26);
-            ctx.arc(x, yy - 26, 15, Math.PI, 0);
-            ctx.lineTo(x + 15, yy);
+            ctx.moveTo(x - 15, y);
+            ctx.lineTo(x - 15, y - 26);
+            ctx.arc(x, y - 26, 15, Math.PI, 0);
+            ctx.lineTo(x + 15, y);
             ctx.closePath();
           }, 2.5);
           ctx.strokeStyle = '#3e3849';
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.moveTo(x - 7, yy - 26);
-          ctx.lineTo(x + 7, yy - 26);
-          ctx.moveTo(x - 7, yy - 19);
-          ctx.lineTo(x + 5, yy - 19);
+          ctx.moveTo(x - 7, y - 26);
+          ctx.lineTo(x + 7, y - 26);
+          ctx.moveTo(x - 7, y - 19);
+          ctx.lineTo(x + 5, y - 19);
           ctx.stroke();
         } else if (kind < 0.85) {
           shape(ctx, '#4d4759', () => {
-            ctx.rect(x - 4, yy - 38, 8, 38);
-            ctx.rect(x - 14, yy - 30, 28, 8);
+            ctx.rect(x - 4, y - 38, 8, 38);
+            ctx.rect(x - 14, y - 30, 28, 8);
           }, 2.5);
         } else {
           // A grave mound with flowers
-          shape(ctx, '#3b2c30', () => ctx.ellipse(x, yy - 8, 24, 11, 0, 0, Math.PI * 2), 2.5);
+          shape(ctx, '#3b2c30', () => ctx.ellipse(x, y - 8, 24, 11, 0, 0, Math.PI * 2), 2.5);
           ctx.fillStyle = '#5d4f6b';
           for (const fx of [-10, 0, 9]) {
             ctx.beginPath();
-            ctx.arc(x + fx, yy - 11 + (fx % 3), 2.5, 0, Math.PI * 2);
+            ctx.arc(x + fx, y - 11 + (fx % 3), 2.5, 0, Math.PI * 2);
             ctx.fill();
           }
         }
@@ -153,12 +160,12 @@ function graveyard(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   for (let i = 0; i < 10; i++) {
     const x = rnd() * w;
     const y = rnd() * h;
-    wrapped(y, 80, (yy) => {
-      const g = ctx.createRadialGradient(x, yy, 0, x, yy, 160);
+    wrapped(x, y, 160, () => {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, 160);
       g.addColorStop(0, 'rgba(200, 190, 230, 0.07)');
       g.addColorStop(1, 'rgba(200, 190, 230, 0)');
       ctx.fillStyle = g;
-      ctx.fillRect(x - 160, yy - 160, 320, 320);
+      ctx.fillRect(x - 160, y - 160, 320, 320);
     });
   }
 }
@@ -367,6 +374,119 @@ function skeleton(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   ctx.fillStyle = INK;
   ctx.fillRect(25, 22, 6, 1.6);
   ctx.restore();
+}
+
+/** A small dark imp with bat wings, horns and green eyes (not the Devil itself). */
+function imp(ctx: CanvasRenderingContext2D, w: number, h: number): void {
+  ctx.save();
+  ctx.scale(w / 60, h / 56);
+  glow(ctx, 30, 30, 30, 'rgba(120, 255, 140, 0.25)');
+  for (const side of [-1, 1]) {
+    shape(ctx, '#3b1d4f', () => {
+      ctx.moveTo(30 + side * 10, 26);
+      ctx.quadraticCurveTo(30 + side * 22, 6, 30 + side * 29, 12);
+      ctx.quadraticCurveTo(30 + side * 24, 20, 30 + side * 28, 30);
+      ctx.quadraticCurveTo(30 + side * 20, 26, 30 + side * 14, 34);
+      ctx.closePath();
+    }, 2);
+  }
+  // Tail
+  ctx.strokeStyle = INK;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(30, 46);
+  ctx.quadraticCurveTo(42, 54, 46, 46);
+  ctx.stroke();
+  shape(ctx, '#2a1838', () => ctx.ellipse(30, 38, 11, 12, 0, 0, Math.PI * 2), 2.5);
+  for (const side of [-1, 1]) {
+    shape(ctx, '#e8dcc0', () => {
+      ctx.moveTo(30 + side * 5, 16);
+      ctx.lineTo(30 + side * 12, 4);
+      ctx.lineTo(30 + side * 10, 18);
+      ctx.closePath();
+    }, 1.5);
+  }
+  shape(ctx, '#2a1838', () => ctx.arc(30, 22, 10, 0, Math.PI * 2), 2.5);
+  ctx.fillStyle = '#7dff8a';
+  for (const ex of [26, 34]) {
+    ctx.beginPath();
+    ctx.ellipse(ex, 21, 2.6, 1.8, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.strokeStyle = '#f4f1ea';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(25, 26);
+  ctx.quadraticCurveTo(30, 30, 35, 26);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** The Grim Reaper: a hooded robe, a skull face and a scythe. */
+function reaper(ctx: CanvasRenderingContext2D, w: number, h: number): void {
+  ctx.save();
+  ctx.scale(w / 90, h / 110);
+  glow(ctx, 45, 50, 46, 'rgba(170, 110, 255, 0.3)');
+  // Scythe
+  ctx.strokeStyle = INK;
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(74, 104);
+  ctx.lineTo(70, 10);
+  ctx.stroke();
+  ctx.strokeStyle = '#7a5a3a';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  shape(ctx, '#c9d1d9', () => {
+    ctx.moveTo(70, 10);
+    ctx.quadraticCurveTo(40, 0, 22, 18);
+    ctx.quadraticCurveTo(46, 10, 70, 18);
+    ctx.closePath();
+  }, 2.5);
+  // Robe, ragged at the hem
+  shape(ctx, '#17111f', () => {
+    ctx.moveTo(45, 8);
+    ctx.quadraticCurveTo(22, 12, 20, 44);
+    ctx.lineTo(14, 106);
+    ctx.lineTo(24, 98);
+    ctx.lineTo(32, 108);
+    ctx.lineTo(40, 98);
+    ctx.lineTo(48, 108);
+    ctx.lineTo(56, 98);
+    ctx.lineTo(64, 106);
+    ctx.lineTo(70, 44);
+    ctx.quadraticCurveTo(68, 12, 45, 8);
+    ctx.closePath();
+  });
+  // Face in the hood
+  shape(ctx, '#05030a', () => ctx.ellipse(45, 32, 14, 17, 0, 0, Math.PI * 2), 2);
+  ctx.fillStyle = '#e8e2d2';
+  ctx.beginPath();
+  ctx.ellipse(45, 33, 9, 11, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#b06bff';
+  ctx.beginPath();
+  ctx.arc(41, 31, 2.6, 0, Math.PI * 2);
+  ctx.arc(49, 31, 2.6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = INK;
+  ctx.fillRect(41, 39, 8, 1.6);
+  // Bony hand on the scythe
+  shape(ctx, '#e8e2d2', () => ctx.arc(70, 58, 5, 0, Math.PI * 2), 2);
+  ctx.restore();
+}
+
+/** A purple curse orb shot by the reapers. */
+function curseOrb(ctx: CanvasRenderingContext2D, w: number, h: number): void {
+  const g = ctx.createRadialGradient(w / 2, h / 2, 1, w / 2, h / 2, w / 2);
+  g.addColorStop(0, '#f6e8ff');
+  g.addColorStop(0.35, '#c48bff');
+  g.addColorStop(0.75, '#7a2fd0');
+  g.addColorStop(1, 'rgba(80, 20, 140, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(w / 2, h / 2, w / 2, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 /** A golden chest with carrying poles and winged figures on the lid (an invented, simple design). */
@@ -693,6 +813,8 @@ function preview(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   at(270, 66, () => pumpkin(ctx, 44, 40));
   at(222, 106, () => drawBat(ctx, 44, 30));
   at(60, 118, () => skeleton(ctx, 30, 38));
+  at(16, 24, () => reaper(ctx, 40, 50));
+  at(250, 128, () => imp(ctx, 34, 32));
   at(300, 16, () => grail(ctx, 30, 38));
   ctx.fillStyle = 'rgba(255, 236, 160, 0.9)';
   for (const [x, y] of [
@@ -722,7 +844,7 @@ export const PREVIEW = spec(
   360,
   200,
   'Räiskinnän esikatselukuva valikkoon',
-  'Pieni valikkokuva räiskintäpelille: ylhäältä päin nähty yöllinen hautausmaa, alalaidassa valkoasuinen paavihahmo kultaisen paimensauvan kanssa ampuu valonsäteitä ylöspäin, ylhäällä aaveita, lentävä kurpitsalyhty, lepakko ja luuranko, keskellä ylhäällä uhkaava sarvipäinen Paholainen. Keksitty hahmo, ei oikea paavi.',
+  'Pieni valikkokuva räiskintäpelille: ylhäältä päin nähty yöllinen hautausmaa, alalaidassa valkoasuinen paavihahmo kultaisen paimensauvan kanssa ampuu valonsäteitä ylöspäin, ylhäällä aaveita, lentävä kurpitsalyhty, lepakko, luuranko, pikkupiru ja viikatemies, keskellä ylhäällä uhkaava sarvipäinen Paholainen. Keksitty hahmo, ei oikea paavi.',
   false,
   preview,
 );
@@ -779,6 +901,28 @@ export const SKELETON = spec(
   skeleton,
 );
 
+export const IMP = spec(
+  'raiskinta-piru.png',
+  60,
+  56,
+  'Pikkupiru',
+  'Pieni tumma violetinmusta piru: lepakonsiivet, pienet vaaleat sarvet, vihreinä hehkuvat silmät, ilkikurinen virne ja kiemurainen häntä. Eri hahmo kuin iso Paholainen.',
+  true,
+  imp,
+);
+
+export const REAPER = spec(
+  'raiskinta-viikatemies.png',
+  90,
+  110,
+  'Viikatemies',
+  'Viikatemies edestä: musta huppukaapu repaleisella helmalla, hupun varjossa pääkallo violetein hehkuvin silmin, luinen käsi pitää viikatetta jonka terä on hopeinen.',
+  true,
+  reaper,
+);
+
+export const CURSE = spec('raiskinta-kirous.png', 24, 24, 'Kirouspallo', 'Pyöreä violetti energiapallo: vaalea keskus, tumma violetti reuna, pehmeä hehku.', true, curseOrb);
+
 export const ARK = spec(
   'raiskinta-liitonarkku.png',
   110,
@@ -817,4 +961,4 @@ export const SHIELD = spec('raiskinta-suojakeha.png', 130, 140, 'Suojakehä', 'L
 
 export const LIFE = spec('raiskinta-kesto.png', 22, 26, 'Kestopiste (pieni risti)', 'Pieni kultainen risti mustalla ääriviivalla.', true, lifeCross);
 
-export const ASSETS: AssetSpec[] = [BACKGROUND, POPE, GHOST, BAT, PUMPKIN, SKELETON, ARK, GRAIL, DEVIL, BOLT, FIREBALL, BONE, BOOST_RAPID, BOOST_SPREAD, BOOST_SHIELD, SHIELD, LIFE];
+export const ASSETS: AssetSpec[] = [BACKGROUND, POPE, GHOST, BAT, PUMPKIN, SKELETON, IMP, REAPER, ARK, GRAIL, DEVIL, BOLT, FIREBALL, BONE, CURSE, BOOST_RAPID, BOOST_SPREAD, BOOST_SHIELD, SHIELD, LIFE];
