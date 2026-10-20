@@ -55,4 +55,22 @@ export const CONFIG = {
     /** The word fails on this many wrong letters (one skeleton part per wrong letter). */
     maxWrongLetters: 8,
   },
+
+  /** 2. Kuva-arvoitukset */
+  arvoitukset: {
+    /** Riddles per round; content/kuva-arvoitukset.txt must contain exactly this many. */
+    riddlesPerRound: 10,
+    /** How many of them are multiple choice (the rest are open answers). CLAUDE.md: half. */
+    multipleChoiceCount: 5,
+    /** Seconds per riddle. */
+    secondsPerRiddle: 20,
+    /** Points for a correct answer at once … */
+    maxPoints: 100,
+    /** … falling evenly to this at the end of the time. */
+    minPoints: 50,
+    /** Each wrong answer to an open riddle reduces the points by this much (not below 0). */
+    wrongAnswerPenalty: 20,
+    /** The ticking sound plays during the last seconds. */
+    tickFromSecondsLeft: 5,
+  },
 } as const;

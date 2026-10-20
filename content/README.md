@@ -5,8 +5,9 @@ Tässä kansiossa ovat pelien sanat ja vihjeet. Voit muokata niitä itse suoraan
 | Tiedosto | Mitä siinä on |
 | --- | --- |
 | [`hirsipuu.txt`](hirsipuu.txt) | Hirsipuun 5 sanaa tai lausetta ja niiden vihjeet |
+| [`kuva-arvoitukset.txt`](kuva-arvoitukset.txt) | Kuva-arvoitusten ja emojiarvoitusten 10 arvoitusta |
 
-Myöhemmin tähän tulevat myös kuva-arvoitukset ja ristikon sanat.
+Myöhemmin tähän tulevat myös ristikon sanat.
 
 ## Näin muokkaat tiedostoa
 
@@ -41,6 +42,32 @@ vihje: Näin lapset kysyvät ovella Halloween-iltana.
 - Numeroita ei voi arvata, joten kirjoita ne kirjaimin.
 - Yksi sana saa olla enintään 14 kirjainta, ja koko lauseen pitää mahtua kolmelle riville (noin 40 merkkiä).
 - Vihje saa olla enintään 90 merkkiä.
+
+### Kuva-arvoitusten säännöt
+
+Esimerkki kahdesta arvoituksesta:
+
+```
+tyyppi: monivalinta
+kuva: arvoitus-ihmissusi.png
+kysymys: Mikä kauhuolento?
+vastaus: Ihmissusi
+väärät: Vampyyri; Susikoira; Metsänpeikko
+
+tyyppi: avoin
+emojit: 🔪🚿
+kysymys: Mikä kauhuelokuva?
+vastaus: Psyko; Psycho
+```
+
+- Arvoituksia pitää olla **tasan 10**: viisi monivalintaa ja viisi avointa.
+- **tyyppi** on `monivalinta` tai `avoin`. Monivalinnassa vastataan kerran neljästä vaihtoehdosta. Avoimeen pelaaja kirjoittaa vastauksen ja saa yrittää monta kertaa.
+- Arvoituksessa on joko **kuva** tai **emojit**.
+  - **kuva** on kuvatiedoston nimi kansiossa `public/assets/`, esimerkiksi `arvoitus-verikuu.png`. Kuvan perään voi lisätä lyhyen tekstin plusmerkillä, esimerkiksi `arvoitus-hirvi.png + Ö`. Jos kuvaa ei vielä ole, peli näyttää tilalla väliaikaisen kuvan tai tekstin "Kuva puuttuu".
+  - **emojit**-riville voi kopioida emojeja esimerkiksi verkosta tai puhelimesta.
+- **kysymys** näkyy arvoituksen yläpuolella, ja siihen voi lisätä vihjeen: `kysymys: Mikä sana? Sen löytää huvipuistosta.`
+- **vastaus**: avoimeen arvoitukseen voi antaa useita hyväksyttyjä vastauksia puolipisteillä erotettuina. Isoilla ja pienillä kirjaimilla, välilyönneillä, väliviivoilla ja välimerkeillä ei ole väliä. Ä ja A ovat kuitenkin eri kirjaimia.
+- **väärät** kuuluu vain monivalintaan: tasan kolme väärää vaihtoehtoa puolipisteillä erotettuina. Vaihtoehtojen järjestys sekoitetaan pelissä, mutta se on kaikille sama.
 
 ## Jos tiedostoon jää virhe
 

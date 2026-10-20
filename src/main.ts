@@ -5,6 +5,8 @@ import '@fontsource/nunito/800.css';
 import '@fontsource/grenze-gotisch/600.css';
 import '@fontsource/grenze-gotisch/800.css';
 import '@fontsource/patrick-hand/400.css';
+import 'twemoji-colr-font/twemoji.css';
+import { GAMES } from './games/registry';
 import { ALL_SCENES } from './scenes';
 import { installAdminHotkey } from './scenes/adminHotkey';
 import { installTestHooks } from './testHooks';
@@ -108,8 +110,12 @@ async function loadFonts(): Promise<void> {
     '800 76px "Grenze Gotisch"',
     '400 34px "Patrick Hand"',
   ];
-  const loads = Promise.all(faces.map((face) => document.fonts.load(face, 'AaÄäÖöÅå')));
-  const timeout = new Promise((resolve) => window.setTimeout(resolve, 4000));
+  const loads = Promise.all([
+    ...faces.map((face) => document.fonts.load(face, 'AaÄäÖöÅå')),
+    // Colour emoji font (COLR format, which Chrome supports; bundled so emojis look the same everywhere).
+    document.fonts.load('64px "Twemoji"', GAMES.map((game) => game.preloadText ?? '').join('') || '🎃'),
+  ]);
+  const timeout = new Promise((resolve) => window.setTimeout(resolve, 8000));
   await Promise.race([loads, timeout]);
 }
 

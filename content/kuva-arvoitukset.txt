@@ -1,0 +1,72 @@
+# KUVA-ARVOITUKSET
+#
+# Pelissä on tasan 10 arvoitusta tässä järjestyksessä. Jokainen arvoitus on oma
+# korttinsa, ja korttien välissä on yksi tyhjä rivi.
+#
+# tyyppi:   monivalinta (neljä vaihtoehtoa, vastata saa kerran) tai avoin
+#           (pelaaja kirjoittaa vastauksen). Kumpaakin pitää olla 5.
+# kuva:     kuvatiedoston nimi kansiossa public/assets, esimerkiksi arvoitus-kuu.png.
+#           Kuvan perään voi lisätä lyhyen tekstin plusmerkillä: arvoitus-hirvi.png + Ö
+# emojit:   emojit kuvan sijaan (arvoituksessa on joko kuva tai emojit)
+# kysymys:  näkyy arvoituksen yläpuolella. Siihen voi kirjoittaa myös vihjeen.
+# vastaus:  oikea vastaus. Avoimeen arvoitukseen voi antaa useita hyväksyttyjä
+#           vastauksia puolipisteillä erotettuina: Psyko; Psycho
+# väärät:   vain monivalinnassa: kolme väärää vaihtoehtoa puolipisteillä erotettuina
+#
+# Isoilla ja pienillä kirjaimilla, välilyönneillä ja väliviivoilla ei ole väliä
+# avoimen arvoituksen vastauksessa.
+
+tyyppi: monivalinta
+kuva: arvoitus-ihmissusi.png
+kysymys: Mikä kauhuolento?
+vastaus: Ihmissusi
+väärät: Vampyyri; Susikoira; Metsänpeikko
+
+tyyppi: monivalinta
+emojit: 🦈🌊🏊
+kysymys: Mikä kauhuelokuva?
+vastaus: Tappajahai
+väärät: Uhrilampaat; Linnut; Alien
+
+tyyppi: avoin
+kuva: arvoitus-verikuu.png
+kysymys: Mikä sana? Sen voi nähdä taivaalla.
+vastaus: Verikuu
+
+tyyppi: avoin
+emojit: 👻🚫
+kysymys: Mikä elokuva?
+vastaus: Haamujengi; Ghostbusters
+
+tyyppi: monivalinta
+kuva: arvoitus-silmamuna.png
+kysymys: Mikä sana?
+vastaus: Silmämuna
+väärät: Munakello; Silmälappu; Pääsiäismuna
+
+tyyppi: avoin
+emojit: 🔪🚿
+kysymys: Mikä kauhuelokuva?
+vastaus: Psyko; Psycho
+
+tyyppi: avoin
+kuva: arvoitus-hirvi.png + Ö
+kysymys: Mikä kauhuolento?
+vastaus: Hirviö
+
+tyyppi: monivalinta
+emojit: 🏨🪓❄️
+kysymys: Mikä kauhuelokuva?
+vastaus: Hohto
+väärät: Manaaja; Painajainen Elm Streetillä; Halloween
+
+tyyppi: avoin
+kuva: arvoitus-kummitusjuna.png
+kysymys: Mikä sana? Sen löytää huvipuistosta.
+vastaus: Kummitusjuna
+
+tyyppi: monivalinta
+emojit: 🎈🤡
+kysymys: Mikä kauhuelokuva?
+vastaus: Se
+väärät: Saw; Scream; Manaaja

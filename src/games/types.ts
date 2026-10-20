@@ -90,6 +90,8 @@ export interface GameDefinition {
   preview: AssetSpec;
   /** All other replaceable images of the game. */
   assets: AssetSpec[];
+  /** Characters the game draws with web fonts (e.g. emojis), loaded before the game starts. */
+  preloadText?: string;
 }
 
 /** Texture key for an asset: file name without extension. */

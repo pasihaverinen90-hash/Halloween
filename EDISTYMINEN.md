@@ -10,7 +10,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | Vaihe | Tila |
 | --- | --- |
 | 1. Pohja ja hirsipuu | Valmis, Pasi hyväksyi 20.10. |
-| 2. Kuva-arvoitukset | Ei aloitettu |
+| 2. Kuva-arvoitukset | Valmis Pasin testattavaksi (20.10.) |
 | 3. Lentopeli | Ei aloitettu |
 | 4. Räiskintä | Ei aloitettu |
 | 5. Ristikko | Ei aloitettu |
@@ -24,6 +24,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **Hirsipuu:** jo kokeiltu kirjain ei tee mitään eikä vähennä pisteitä.
 - **Testipeliä ei tehdä valikkoon.** Kolmen yrityksen kulku testataan automaattisesti näkymättömällä testipelillä (`src/testGame.ts`), joka ei koskaan näy pelaajille.
 - **Tasapisteet:** pelaajat jakavat sijan (esimerkiksi 1., 2., 2., 4.).
+- **Kuva-arvoitukset:** 5 kuva-arvoitusta (Pasi tekee kuvat, yksi kuva per arvoitus) ja 5 emojiarvoitusta (Claude Code). Kuva-arvoitukset: hirviö, ihmissusi, verikuu, silmämuna ja kummitusjuna. Arvoitukseen saa lisätä vihjeen (kohta `kysymys`). Ensimmäiset versiot tehdään nyt, ja niitä muokataan myöhemmin.
 - **GitHub Pages** on päällä (Source: GitHub Actions), Pasi kytki sen 19.10.2026.
 
 ## Claude Coden tekemät ratkaisut (Pasi voi muuttaa)
@@ -68,14 +69,29 @@ Kesken:
 Seuraavaksi:
 - Vaihe 2, kuva-arvoitukset, kun Pasi antaa luvan aloittaa.
 
+### 20.10.2026 – rupeama 3 (vaihe 2)
+
+Tehty:
+- Kuva-arvoitukset "Enteet": 10 arvoitusta (5 monivalintaa, 5 avointa), 20 sekuntia per arvoitus, pisteet 100 → 50 ajan mukaan, avoimessa −20 per väärä vastaus, väärä monivalinta ja aikaraja 0. Tauko pysäyttää ajan. Kesken jäänyt kierros jatkuu samasta arvoituksesta.
+- Sisältötiedosto `content/kuva-arvoitukset.txt` tarkistuksineen ja ohjeineen.
+- Kuva-arvoitusten väliaikaiset kuvat emojeista, kunnes Pasi tekee omat (`ASSETS.md`).
+- Emojifontiksi Twemoji (COLR-muoto). Ensimmäinen kokeiltu fontti (Noto, SVG-muoto) ei näy Chromessa lainkaan.
+- Avoimen vastauksen vertailussa ei välitetä isoista kirjaimista, välilyönneistä, väliviivoista eikä välimerkeistä.
+
+Kesken:
+- Pasi testaa kuva-arvoitukset ja tekee viisi kuvaa (`ASSETS.md`: arvoitus-ihmissusi, -verikuu, -silmamuna, -hirvi, -kummitusjuna).
+
+Seuraavaksi:
+- Pasin palautteen mukaiset korjaukset, sitten vaihe 3 (lentopeli).
+
 ## Aikataulu
 
-Iltaan on 11 päivää, ja jäljellä on kuusi peliä ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
+Iltaan on 11 päivää, ja jäljellä on viisi peliä ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
 
 ## Tekninen muistio Claude Codelle
 
 - Rakenne: `src/core` (tulokset, tallennus, pisteet, salasana, varmuuskopiot, äänet), `src/ui` (yhteiset osat ja päällekkäisnäkymät), `src/scenes` (näkymät), `src/games/<id>/` (yksi kansio per peli: `meta.ts`, `assets.ts`, `index.ts`, pelinäkymä, puhdas `logic.ts`), `src/content` (sisältötiedostojen lukijat), `scripts` (sisällön tarkistus, `ASSETS.md`-generaattori).
-- Uusi peli: oma kansio ja yksi rivi tiedostoon `src/games/registry.ts`. Pelinäkymä saa `GameContext`in (`finish`, `checkpoint`, `sfx`) eikä tiedä yrityksistä tai tallennuksesta.
+- Uusi peli: oma kansio ja yksi rivi tiedostoon `src/games/registry.ts`. Emojeja käyttävä peli listaa ne kentässä `preloadText` (fontti ladataan ennen alkua). Pelinäkymä saa `GameContext`in (`finish`, `checkpoint`, `sfx`) eikä tiedä yrityksistä tai tallennuksesta.
 - Asetukset (pisteet, aikarajat, vaikeus) kuuluvat tiedostoon `src/config.ts`.
 - Kuvien muuttamisen jälkeen aja `npm run kuvalista` (testi varmistaa, että `ASSETS.md` on ajan tasalla).
 - Näppäimet aina `onKeys`/`onChar`-apureilla (`src/ui/input.ts`). Käsittelijä palauttaa `false`, jos se ei käyttänyt näppäintä; muuten painallus merkitään käytetyksi kaikissa näkymissä.

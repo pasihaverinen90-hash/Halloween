@@ -40,9 +40,18 @@ export function findReplacement(spec: AssetSpec, files: readonly string[] = mani
 export function queueReplacementImages(scene: Phaser.Scene, specs: readonly AssetSpec[]): string[] {
   const known = new Set(specs.map((spec) => baseName(spec.file)));
   for (const file of manifest) {
-    if (!known.has(baseName(file))) console.warn(`Kansiossa public/assets on tuntematon kuva: ${file} (nimi ei vastaa mitään kuvaa).`);
+    if (!known.has(baseName(file)) && !baseName(file).startsWith('arvoitus-')) {
+      console.warn(`Kansiossa public/assets on tuntematon kuva: ${file} (nimi ei vastaa mitään kuvaa).`);
+    }
   }
   const queued: string[] = [];
+  // Riddle images named in content files (arvoitus-*.png) may have no AssetSpec; load them as they are.
+  for (const file of manifest) {
+    const base = baseName(file);
+    if (!base.startsWith('arvoitus-') || known.has(base) || scene.textures.exists(base)) continue;
+    scene.load.image(base, `${import.meta.env.BASE_URL}assets/${encodeURIComponent(file)}`);
+    queued.push(base);
+  }
   for (const spec of specs) {
     const file = findReplacement(spec);
     if (!file) continue;

@@ -138,3 +138,75 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Kuvassa oikealla puolella oleva jalka: reisiluu, sääriluu ja jalkaterä, roikkuu alaspäin. Osa 8/8 luurangosta, joka kootaan hirsipuuhun pala kerrallaan. Kuvassa vain tämä yksi osa, suorassa asennossa edestä katsottuna. Tyyli: Pelkistetty piirroskuva, paksut tummat ääriviivat, luunvalkoinen väri ja kevyt varjostus. Kaikki kahdeksan osaa samalla tyylillä ja samassa mittakaavassa, ei lapsellinen. Koko 50 × 124 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+## Enteet (kuva-arvoitukset)
+
+### `valikko-arvoitukset.png` – Kuva-arvoitusten esikatselukuva valikkoon
+
+- **Koko:** 360 × 200 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, tumma violetti, kristallipallon pehmeä hehku, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni valikkokuva arvoituspelille: pöydällä hehkuva ennustajan kristallipallo, jonka sisällä on iso kysymysmerkki. Ympärillä tummaa ja muutama pieni Halloween-kuvio, kuten lepakko ja kurpitsa. Tyyli: Pelkistetty piirroskuva, tumma violetti, kristallipallon pehmeä hehku, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `arvoitukset-tausta.png` – Kuva-arvoitusten taustakuva
+
+- **Koko:** 1280 × 720 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, tumma ja tunnelmallinen, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Leveä taustakuva ennustajan salongista: tumma seinä, jossa haalea kuvioitu tapetti, molemmissa reunoissa tummanpunaiset samettiverhot ja alanurkissa palavat kynttilät. Kuvan keskiosa on tasaisen tumma, koska sen päällä näkyvät arvoitukset ja vastausvaihtoehdot. Ei ihmisiä eikä tekstiä. Tyyli: Pelkistetty piirroskuva, tumma ja tunnelmallinen, ei lapsellinen. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `arvoitus-ihmissusi.png` – Kuva-arvoitus: ihminen + susi
+
+- **Koko:** 600 × 280 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta.
+
+**Kuvaus generaattorille:**
+
+> Kuva-arvoitus, jonka vastaus on IHMISSUSI: vasemmalla tavallinen ihminen seisomassa, keskellä iso plusmerkki ja oikealla harmaa susi. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `arvoitus-verikuu.png` – Kuva-arvoitus: veripisara + kuu
+
+- **Koko:** 600 × 280 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta.
+
+**Kuvaus generaattorille:**
+
+> Kuva-arvoitus, jonka vastaus on VERIKUU: vasemmalla iso punainen veripisara, keskellä plusmerkki ja oikealla täysikuu. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `arvoitus-silmamuna.png` – Kuva-arvoitus: silmä + kananmuna
+
+- **Koko:** 600 × 280 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta.
+
+**Kuvaus generaattorille:**
+
+> Kuva-arvoitus, jonka vastaus on SILMÄMUNA: vasemmalla ihmisen silmä, keskellä plusmerkki ja oikealla valkoinen kananmuna. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `arvoitus-hirvi.png` – Kuva-arvoitus: hirvi (peli lisää perään + Ö)
+
+- **Koko:** 420 × 280 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta.
+
+**Kuvaus generaattorille:**
+
+> Kuva-arvoitus, jonka vastaus on HIRVIÖ: komea hirvi isoine sarvineen sivulta katsottuna. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia, sillä peli lisää kuvan perään itse "+ Ö". Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 420 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `arvoitus-kummitusjuna.png` – Kuva-arvoitus: kummitus + juna
+
+- **Koko:** 600 × 280 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta.
+
+**Kuvaus generaattorille:**
+
+> Kuva-arvoitus, jonka vastaus on KUMMITUSJUNA: vasemmalla valkoinen lakanakummitus, keskellä plusmerkki ja oikealla vanha höyryjuna. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.

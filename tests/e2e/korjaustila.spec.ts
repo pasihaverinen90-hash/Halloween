@@ -100,7 +100,9 @@ test('tuloksen muutos, poisto ja pelin antaminen uudelleen', async ({ page }) =>
   await answerDialog(page, true);
   await answerDialog(page, true); // "Aloita nyt"
   await waitForScene(page, 'Menu');
-  expect(await sceneState(page, 'Menu')).toMatchObject({ player: 'Eero', tiles: [{ id: 'hirsipuu', status: 'unplayed', score: null }] });
+  const menu = await sceneState(page, 'Menu');
+  expect(menu.player).toBe('Eero');
+  expect(menu.tiles[0]).toEqual({ id: 'hirsipuu', status: 'unplayed', score: null });
   expect((await savedData(page)).players[1].finishedAt).toBeNull();
   await expectNoRuntimeErrors(page);
 });
@@ -155,7 +157,7 @@ test('varmuuskopio, CSV, tuonti, pelaajan poisto ja tyhjennys kahdella vahvistuk
   expect(csvFile.suggestedFilename()).toMatch(/^halloween-tulokset-.*\.csv$/);
   const csv = await readFile((await csvFile.path())!, 'utf8');
   expect(csv.charCodeAt(0)).toBe(0xfeff);
-  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Yhteensä', '1;Aino;800;800']);
+  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yhteensä', '1;Aino;800;;800']);
 
   // Tuonti: varmuuskopioon lisätty pelaaja palaa tuonnissa
   backup.players.push({ ...backup.players[2], id: 'uusi', name: 'Tuotu' });

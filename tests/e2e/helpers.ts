@@ -137,3 +137,40 @@ export function savedEvening(players: Array<{ id: string; name: string; games?: 
 export function hangman(score: number, extra: Record<string, unknown> = {}): Record<string, unknown> {
   return { hirsipuu: { attempts: [score], finished: true, checkpoint: null, manualScore: null, updatedAt: '2026-10-31T19:00:00.000Z', ...extra } };
 }
+
+/**
+ * Riddles: answer the current riddle. 'correct' picks/types the right answer,
+ * 'wrong' picks a wrong option (multiple choice) or types a wrong answer once
+ * before the right one (open). Waits until the result is shown.
+ */
+export async function answerRiddle(page: Page, how: 'correct' | 'wrong'): Promise<void> {
+  const state = await sceneState(page, 'Arvoitukset');
+  if (state.kind === 'monivalinta') {
+    const target = how === 'correct' ? state.answers[0] : state.options.find((o: string) => o !== state.answers[0]);
+    const index = state.options.indexOf(target);
+    const moves = [[], ['ArrowRight'], ['ArrowDown'], ['ArrowDown', 'ArrowRight']][index];
+    for (const key of moves) await press(page, key, 120);
+    await press(page, 'Enter');
+  } else {
+    if (how === 'wrong') {
+      await typeText(page, 'väärä vastaus');
+      await press(page, 'Enter', 300);
+    }
+    await typeText(page, (state.answers[0] as string).toLocaleLowerCase('fi-FI'));
+    await press(page, 'Enter');
+  }
+  await waitForState(page, 'Arvoitukset', (s) => s.phase === 'done');
+}
+
+/** Riddles: from the instruction screen, answer every riddle correctly. Returns the round score. */
+export async function playRiddlesCorrectly(page: Page): Promise<number> {
+  await press(page, 'Enter');
+  await waitForScene(page, 'Arvoitukset');
+  for (let index = 0; index < 10; index++) {
+    await waitForState(page, 'Arvoitukset', (s) => s.index === index && s.phase === 'answering');
+    await answerRiddle(page, 'correct');
+    await press(page, 'Enter');
+  }
+  await waitForScene(page, 'AttemptResult');
+  return (await sceneState(page, 'AttemptResult')).score as number;
+}

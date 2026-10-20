@@ -53,6 +53,8 @@ export const FONTS = {
   ui: '"Nunito", "Segoe UI", Arial, sans-serif',
   /** Hand-drawn look for drawn-style games (hangman letters, hints). */
   hand: '"Patrick Hand", "Segoe Print", "Comic Sans MS", cursive',
+  /** Colour emojis, bundled so they look the same on every computer. */
+  emoji: '"Twemoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif',
 } as const;
 
 type Style = Phaser.Types.GameObjects.Text.TextStyle;

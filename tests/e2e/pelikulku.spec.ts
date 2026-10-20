@@ -5,6 +5,7 @@ import {
   expectNoRuntimeErrors,
   failHangmanWord,
   openGame,
+  playRiddlesCorrectly,
   press,
   savedData,
   sceneState,
@@ -24,7 +25,10 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   expect(await sceneState(page, 'Menu')).toMatchObject({
     player: 'Äijö Testi',
     total: 0,
-    tiles: [{ id: 'hirsipuu', status: 'unplayed', score: null }],
+    tiles: [
+      { id: 'hirsipuu', status: 'unplayed', score: null },
+      { id: 'arvoitukset', status: 'unplayed', score: null },
+    ],
   });
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
@@ -64,6 +68,15 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   const saved = await savedData(page);
   expect(saved.players[0].games.hirsipuu).toMatchObject({ attempts: [750], finished: true, checkpoint: null });
 
+  // Valikossa hirsipuu on nyt harmaana ja arvoitukset valittuna
+  await press(page, 'Enter');
+  await waitForScene(page, 'Menu');
+  expect(await sceneState(page, 'Menu')).toMatchObject({ selected: 'arvoitukset', total: 750 });
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  const riddles = await playRiddlesCorrectly(page);
+  expect(riddles).toBeGreaterThan(500);
+
   // Kiitosnäkymä lataa varmuuskopion automaattisesti
   const firstBackup = page.waitForEvent('download');
   await press(page, 'Enter');
@@ -72,7 +85,7 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   expect(download.suggestedFilename()).toMatch(BACKUP_NAME);
   const backup = JSON.parse(await readFile((await download.path())!, 'utf8'));
   expect(backup.players[0]).toMatchObject({ name: 'Äijö Testi', games: { hirsipuu: { attempts: [750] } } });
-  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750, backupOk: true });
+  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles, backupOk: true });
 
   // Seuraava pelaaja: sama nimi pienillä kirjaimilla ei kelpaa
   await press(page, 'Enter');
@@ -93,6 +106,11 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   }
   await waitForScene(page, 'AttemptResult');
   expect((await sceneState(page, 'AttemptResult')).score).toBe(1000);
+  await press(page, 'Enter');
+  await waitForScene(page, 'Menu');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  await playRiddlesCorrectly(page);
   const secondBackup = page.waitForEvent('download');
   await press(page, 'Enter');
   await waitForScene(page, 'Thanks');

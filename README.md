@@ -18,6 +18,10 @@ Kun muutos tallennetaan main-haaraan, peli julkaistaan automaattisesti muutaman 
 - [`CLAUDE.md`](CLAUDE.md) – projektin säännöt ja suunnitelma
 - [`EDISTYMINEN.md`](EDISTYMINEN.md) – mitä on tehty ja mitä tehdään seuraavaksi
 
+## Lisenssit
+
+Emojit: [Twemoji](https://github.com/twitter/twemoji) (grafiikat CC-BY 4.0, fonttiversio [twemoji-colr-font](https://github.com/mrdrogdrog/twemoji-color-font), OFL-1.1). Fontit: Grenze Gotisch, Nunito ja Patrick Hand (OFL-1.1).
+
 ## Kehittäjälle
 
 Phaser 3, Vite ja TypeScript.
