@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test, type Page } from '@playwright/test';
 import {
+  activeScenes,
   createPlayer,
   expectNoRuntimeErrors,
   hangman,
@@ -39,7 +40,16 @@ async function answerDialog(page: Page, confirm: boolean): Promise<void> {
   const wanted = confirm ? state.buttons[0] : state.buttons[state.buttons.length - 1];
   if (state.selected !== wanted) await press(page, 'ArrowLeft', 150);
   expect((await sceneState(page, 'Dialog')).selected).toBe(wanted);
-  await press(page, 'Enter', 500);
+  await press(page, 'Enter', 150);
+  // Wait until this dialog has closed and the scene below (or the next dialog) takes keys again
+  await expect
+    .poll(async () => {
+      const active = await activeScenes(page);
+      if (active.includes('Dialog')) return (await sceneState(page, 'Dialog')).message !== state.message;
+      return active.some((key) => key !== 'Dialog');
+    }, { timeout: 30_000 })
+    .toBe(true);
+  await page.waitForTimeout(400);
 }
 
 test('Ctrl+Shift+K kesken pelin: peruutus palaa peliin ennallaan', async ({ page }) => {
@@ -55,8 +65,10 @@ test('Ctrl+Shift+K kesken pelin: peruutus palaa peliin ennallaan', async ({ page
   await waitForScene(page, 'Password');
   await typeText(page, 'xyz'); // goes to the password field, not to the game
   await press(page, 'Escape', 400);
+  await waitForScene(page, 'Hirsipuu');
   expect(await sceneState(page, 'Hirsipuu')).toEqual(before);
   await typeText(page, 'w');
+  await waitForState(page, 'Hirsipuu', (s) => s.wrong.length > before.wrong.length);
   expect((await sceneState(page, 'Hirsipuu')).wrong).toEqual([...before.wrong, 'W']);
   await expectNoRuntimeErrors(page);
 });
@@ -78,7 +90,8 @@ test('tuloksen muutos, poisto ja pelin antaminen uudelleen', async ({ page }) =>
   expect((await sceneState(page, 'Prompt')).error).toMatch(/0–1000/);
   for (let i = 0; i < 4; i++) await press(page, 'Backspace', 60);
   await typeText(page, '640');
-  await press(page, 'Enter', 500);
+  await press(page, 'Enter', 150);
+  await waitForScene(page, 'Correction');
   expect((await savedData(page)).players[0].games.hirsipuu).toMatchObject({ manualScore: 640, finished: true });
 
   // Aino: poista tulos
@@ -157,7 +170,7 @@ test('varmuuskopio, CSV, tuonti, pelaajan poisto ja tyhjennys kahdella vahvistuk
   expect(csvFile.suggestedFilename()).toMatch(/^halloween-tulokset-.*\.csv$/);
   const csv = await readFile((await csvFile.path())!, 'utf8');
   expect(csv.charCodeAt(0)).toBe(0xfeff);
-  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yhteensä', '1;Aino;800;;800']);
+  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Yhteensä', '1;Aino;800;;;800']);
 
   // Tuonti: varmuuskopioon lisätty pelaaja palaa tuonnissa
   backup.players.push({ ...backup.players[2], id: 'uusi', name: 'Tuotu' });

@@ -10,8 +10,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | Vaihe | Tila |
 | --- | --- |
 | 1. Pohja ja hirsipuu | Valmis, Pasi hyväksyi 20.10. |
-| 2. Kuva-arvoitukset | Valmis Pasin testattavaksi (20.10.) |
-| 3. Lentopeli | Ei aloitettu |
+| 2. Kuva-arvoitukset | Valmis, Pasi hyväksyi 20.10. |
+| 3. Lentopeli | Valmis Pasin testattavaksi (20.10.) |
 | 4. Räiskintä | Ei aloitettu |
 | 5. Ristikko | Ei aloitettu |
 | 6. Tasohyppely | Ei aloitettu |
@@ -24,6 +24,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **Hirsipuu:** jo kokeiltu kirjain ei tee mitään eikä vähennä pisteitä.
 - **Testipeliä ei tehdä valikkoon.** Kolmen yrityksen kulku testataan automaattisesti näkymättömällä testipelillä (`src/testGame.ts`), joka ei koskaan näy pelaajille.
 - **Tasapisteet:** pelaajat jakavat sijan (esimerkiksi 1., 2., 2., 4.).
+- **Hiominen lopuksi (20.10.):** kaikkien pelien kysymykset, kuvat ja yksityiskohdat muokataan vasta, kun kaikki pelit on tehty ja testattu toimiviksi. Pelit tehdään ensin toimiviksi yksi kerrallaan.
+- **Lentopeli:** maali on noin 90 sekunnin lennon päässä (säädetään testauksen perusteella). Maa on lattia, jota pitkin noita voi liukua; vain esteet ovat vaarallisia. Taivas on katto.
 - **Kuva-arvoitukset:** 5 kuva-arvoitusta (Pasi tekee kuvat, yksi kuva per arvoitus) ja 5 emojiarvoitusta (Claude Code). Kuva-arvoitukset: hirviö, ihmissusi, verikuu, silmämuna ja kummitusjuna. Arvoitukseen saa lisätä vihjeen (kohta `kysymys`). Ensimmäiset versiot tehdään nyt, ja niitä muokataan myöhemmin.
 - **GitHub Pages** on päällä (Source: GitHub Actions), Pasi kytki sen 19.10.2026.
 
@@ -84,9 +86,21 @@ Kesken:
 Seuraavaksi:
 - Pasin palautteen mukaiset korjaukset, sitten vaihe 3 (lentopeli).
 
+### 20.10.2026 – rupeama 4 (vaihe 3)
+
+Tehty:
+- Lentopeli "Yölento": noita lentää välilyönnillä, esteinä riippuvat häkit ja pylväillä seisovat inkvisiittorit, mustat kissat lisäelämiä (enintään 3), törmäys vie kissan ja pysäyttää vauhdin, maali noin 90 sekunnin lennon päässä (29 330 px). Ensimmäiset 20 sekuntia helppoja, sitten vauhti kasvaa ja aukot kapenevat vähitellen. Rata on kaikille sama. Pisteet: maali 1000, muuten matkan osuus.
+- Simulaatio: rata on lennettävissä maaliin ilman törmäyksiä.
+
+Kesken:
+- Pasi testaa lentopelin. Vaikeutta (painovoima, hyppy, aukkojen koko, vauhti, maalin etäisyys) säädetään palautteen perusteella tiedostossa `src/config.ts`.
+
+Seuraavaksi:
+- Vaihe 4, räiskintä.
+
 ## Aikataulu
 
-Iltaan on 11 päivää, ja jäljellä on viisi peliä ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
+Iltaan on 11 päivää, ja jäljellä on neljä peliä ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
 
 ## Tekninen muistio Claude Codelle
 
@@ -97,4 +111,4 @@ Iltaan on 11 päivää, ja jäljellä on viisi peliä ja viimeistely. Aikataulu 
 - Näppäimet aina `onKeys`/`onChar`-apureilla (`src/ui/input.ts`). Käsittelijä palauttaa `false`, jos se ei käyttänyt näppäintä; muuten painallus merkitään käytetyksi kaikissa näkymissä.
 - Phaser-sudenkuopat: näkymäolio käytetään uudelleen, joten tila nollataan `init`/`create`-metodeissa. Näkymäluokassa ei saa olla kenttiä nimeltä `data`, `input`, `game` tai `scene`. Tween-animaatiot pysäytetään ennen kohteiden tuhoamista. Pelisilmukka on suojattu poikkeuksilta (`main.ts`).
 - Koordinaatit ovat aina 1280 × 720 (`W`, `H`). Isolla näytöllä kangas piirretään kaksinkertaisena, ja kamerat zoomataan automaattisesti.
-- Selaintestit: `npm run e2e` (Playwright, tuotantoversio, 1280 × 720). Ä, Ö ja Å lähetetään synteettisinä näppäintapahtumina. Testiselain piirtää ohjelmallisesti ja hitaasti, joten ajastimiin perustuvat vaiheet (esim. rumpujen pärinä) kestävät testissä pidempään kuin oikeasti.
+- Selaintestit: `npm run e2e` (Playwright, tuotantoversio, 1280 × 720). Ä, Ö ja Å lähetetään synteettisinä näppäintapahtumina. Testiselain piirtää ohjelmallisesti ja hitaasti, joten ajastimiin perustuvat vaiheet (esim. rumpujen pärinä) kestävät testissä pidempään kuin oikeasti. Pausella tai ikkunalla peitetty näkymä jatkuu vasta seuraavassa ruudunpäivityksessä: odota testissä `waitForScene`, ennen kuin painat näppäimiä sille, ja tarkista tulos `waitForState`-odotuksella.

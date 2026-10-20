@@ -73,4 +73,37 @@ export const CONFIG = {
     /** The ticking sound plays during the last seconds. */
     tickFromSecondsLeft: 5,
   },
+
+  /** 3. Lentopeli. Distances are in pixels of the 1280-wide game space. */
+  lentopeli: {
+    /** The finish is this many seconds of flight away for a flight without crashes. */
+    goalSeconds: 90,
+    /** The first seconds are easy: constant speed and wide gaps. */
+    easySeconds: 20,
+    /** Flying speed at the start (px/s) … */
+    startSpeed: 250,
+    /** … rising to this at the hardest. */
+    maxSpeed: 420,
+    /** Distance after the easy part over which speed and gaps reach their hardest. */
+    rampDistance: 18000,
+    /** Speed builds up again after a crash (px/s²). */
+    acceleration: 260,
+    /** Gravity (px/s²), the upward kick of one Space press (px/s) and the fastest fall (px/s). */
+    gravity: 1500,
+    flapVelocity: -470,
+    maxFallSpeed: 650,
+    /** Distance between obstacles: easy → hard. */
+    gateSpacingEasy: 560,
+    gateSpacingHard: 400,
+    /** Height of the opening between the top and bottom obstacle: easy → hard. */
+    gapEasy: 260,
+    gapHard: 190,
+    /** A black cat waits in every n-th opening (the first one in opening number catFirstGate). */
+    catEveryGates: 5,
+    catFirstGate: 3,
+    /** Cats are extra lives; at most this many. */
+    maxCats: 3,
+    /** After losing a cat the witch cannot be hit for this long (and until she is clear of the obstacle). */
+    invulnerableSeconds: 1.5,
+  },
 } as const;

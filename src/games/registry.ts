@@ -9,6 +9,7 @@ const modules = import.meta.glob<{ default: GameDefinition }>('./*/index.ts', { 
 export const GAME_ORDER: readonly string[] = [
   'hirsipuu',
   'arvoitukset',
+  'lentopeli',
 ];
 
 export const GAMES: readonly GameDefinition[] = GAME_ORDER.map((id) => {

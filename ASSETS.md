@@ -210,3 +210,115 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Kuva-arvoitus, jonka vastaus on KUMMITUSJUNA: vasemmalla valkoinen lakanakummitus, keskellä plusmerkki ja oikealla vanha höyryjuna. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+## Yölento (lentopeli)
+
+### `valikko-lentopeli.png` – Lentopelin esikatselukuva valikkoon
+
+- **Koko:** 360 × 200 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni valikkokuva lentopelille: noita lentää luudalla yötaivaalla kohti aukkoa, jonka yläpuolella roikkuu häkki ja alapuolella seisoo kaapuun pukeutunut inkvisiittori soihtu kädessä. Täysikuu taustalla. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `lentopeli-tausta.png` – Lentopelin taivas
+
+- **Koko:** 1280 × 720 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Leveä yötaivas: tummanvioletti liukuväri, tähtiä ja oikealla ylhäällä suuri täysikuu hehkuineen. Ei maata, ei rakennuksia, ei tekstiä. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `lentopeli-kaukaiset.png` – Kaukaiset kukkulat, linna ja kirkko
+
+- **Koko:** 1280 × 260 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kaukaisia kukkuloita siluettina, niillä pieni linna torneineen ja kirkko suippoine torneineen. Kuva toistuu vaakasuunnassa saumattomasti: vasen ja oikea reuna jatkuvat toisiinsa. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 260 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `lentopeli-maa.png` – Maa
+
+- **Koko:** 1280 × 80 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kapea tumma maakaistale, jossa kuivaa heinää ja muutama pieni hautakivi. Kuva toistuu vaakasuunnassa saumattomasti. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 80 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `lentopeli-noita.png` – Noita luudalla
+
+- **Koko:** 150 × 100 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Noita lentää luudalla oikealle: suippo musta hattu, violetti viitta liehuu, oranssit hiukset, vaaleanvihreät kasvot. Ystävällinen mutta ei lapsellinen. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 150 × 100 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `lentopeli-kissa.png` – Musta kissa
+
+- **Koko:** 70 × 60 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Istuva musta kissa keltaisin silmin ja kiemuraisella hännällä, sivulta katsottuna. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 70 × 60 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `lentopeli-inkvisiittori.png` – Inkvisiittori
+
+- **Koko:** 100 × 150 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Keksitty keskiaikainen noitavainoaja: tummanpunainen kaapu, suippo huppu jonka alta näkyvät vain hehkuvat silmät, palava soihtu kädessä, seisoo edestä katsottuna. Ei oikea henkilö. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 100 × 150 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `lentopeli-pylvas.png` – Kivipylväs (pala)
+
+- **Koko:** 80 × 100 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pala harmaata kivipylvästä edestä katsottuna, tiilimäiset kivet. Kuva toistuu pystysuunnassa saumattomasti: ylä- ja alareuna jatkuvat toisiinsa. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 80 × 100 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `lentopeli-hakki.png` – Riippuva häkki
+
+- **Koko:** 96 × 120 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Ruosteinen rautahäkki, joka roikkuu ylhäältä, sisällä lepakko. Edestä katsottuna. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 96 × 120 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `lentopeli-ketju.png` – Ketju (pala)
+
+- **Koko:** 28 × 56 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pala pystysuoraa rautaketjua. Kuva toistuu pystysuunnassa saumattomasti. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 28 × 56 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `lentopeli-maali.png` – Maali: maaginen portti
+
+- **Koko:** 240 × 560 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Korkea kivinen kaariportti, jonka keskellä hehkuu violetti taikaportaali. Portin juurella kaksi kurpitsalyhtyä. Edestä katsottuna. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 240 × 560 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.

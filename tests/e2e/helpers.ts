@@ -174,3 +174,22 @@ export async function playRiddlesCorrectly(page: Page): Promise<number> {
   await waitForScene(page, 'AttemptResult');
   return (await sceneState(page, 'AttemptResult')).score as number;
 }
+
+/** Flying game: from the instruction screen, play three quick attempts (each crashes at the first obstacle). Returns the best score. */
+export async function playFlightQuickly(page: Page): Promise<number> {
+  await press(page, 'Enter');
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    await waitForScene(page, 'AttemptIntro');
+    await press(page, 'Enter');
+    await waitForScene(page, 'Lentopeli');
+    await press(page, 'Space');
+    await page.evaluate(() => {
+      const scene = (window.__peli!.game as any).scene.getScene('Lentopeli');
+      const gate = scene.course[0];
+      scene.debugPlace(gate.x - 10, gate.gapTop - 30);
+    });
+    await waitForScene(page, 'AttemptResult', 120_000);
+    if (attempt < 3) await press(page, 'Enter');
+  }
+  return (await sceneState(page, 'AttemptResult')).best as number;
+}

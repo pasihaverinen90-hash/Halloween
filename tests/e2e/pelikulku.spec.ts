@@ -5,6 +5,7 @@ import {
   expectNoRuntimeErrors,
   failHangmanWord,
   openGame,
+  playFlightQuickly,
   playRiddlesCorrectly,
   press,
   savedData,
@@ -28,6 +29,7 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
     tiles: [
       { id: 'hirsipuu', status: 'unplayed', score: null },
       { id: 'arvoitukset', status: 'unplayed', score: null },
+      { id: 'lentopeli', status: 'unplayed', score: null },
     ],
   });
   await press(page, 'Enter');
@@ -76,6 +78,12 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await waitForScene(page, 'Instructions');
   const riddles = await playRiddlesCorrectly(page);
   expect(riddles).toBeGreaterThan(500);
+  await press(page, 'Enter');
+  await waitForScene(page, 'Menu');
+  expect((await sceneState(page, 'Menu')).selected).toBe('lentopeli');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  const flight = await playFlightQuickly(page);
 
   // Kiitosnäkymä lataa varmuuskopion automaattisesti
   const firstBackup = page.waitForEvent('download');
@@ -85,7 +93,7 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   expect(download.suggestedFilename()).toMatch(BACKUP_NAME);
   const backup = JSON.parse(await readFile((await download.path())!, 'utf8'));
   expect(backup.players[0]).toMatchObject({ name: 'Äijö Testi', games: { hirsipuu: { attempts: [750] } } });
-  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles, backupOk: true });
+  expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles + flight, backupOk: true });
 
   // Seuraava pelaaja: sama nimi pienillä kirjaimilla ei kelpaa
   await press(page, 'Enter');
@@ -111,6 +119,11 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
   await playRiddlesCorrectly(page);
+  await press(page, 'Enter');
+  await waitForScene(page, 'Menu');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  await playFlightQuickly(page);
   const secondBackup = page.waitForEvent('download');
   await press(page, 'Enter');
   await waitForScene(page, 'Thanks');
@@ -137,7 +150,9 @@ test('tauko pysäyttää hirsipuun, eikä mitään kulu tai katoa', async ({ pag
 
   await press(page, 'Enter', 400);
   expect(await sceneState(page, 'GameHost')).toMatchObject({ state: 'playing' });
+  await waitForScene(page, 'Hirsipuu'); // the game scene resumes on the next frame
   await typeText(page, 'w');
+  await waitForState(page, 'Hirsipuu', (s) => s.wrong.length > before.wrong.length);
   expect((await sceneState(page, 'Hirsipuu')).wrong).toEqual([...before.wrong, 'W']);
 
   // Esc again pauses, Esc resumes
