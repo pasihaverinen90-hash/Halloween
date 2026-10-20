@@ -6,35 +6,39 @@ import { addAsset } from '../../ui/place';
 import { H, W } from '../../ui/screen';
 import { COLORS, CSS, TEXT } from '../../ui/theme';
 import { assetKey, type AssetSpec, type GameContext, type GameSceneData } from '../types';
-import { CAGE, CAT, CHAIN, FAR, FINISH, GROUND, INQUISITOR, PILLAR, SKY, WITCH } from './assets';
+import { BAT, CAGE, CAT, CHAIN, FAR, FINISH, GROUND, INQUISITOR, PILLAR, SKY, WITCH } from './assets';
 import {
+  BAT_HEIGHT,
+  blockScreenX,
   buildCourse,
   distancePoints,
-  GATE_WIDTH,
   GOAL_DISTANCE,
   GROUND_Y,
-  hitsGate,
+  hitsColumn,
+  reachesCat,
   stepWitch,
   targetSpeed,
+  WITCH_RADIUS,
   WITCH_X,
-  type Gate,
+  type Block,
+  type Column,
 } from './logic';
 
 const C = CONFIG.lentopeli;
-const WITCH_RADIUS = 24;
-/** Witch hitbox half sizes (smaller than the picture, to be fair). */
-const HIT_HALF_W = 26;
-const HIT_HALF_H = 16;
-const CAT_PICKUP = 46;
 const BAR_X = 380;
 const BAR_W = 520;
 const BAR_Y = 34;
 
 type Phase = 'ready' | 'flying' | 'crashing' | 'finished';
 
-interface GateView {
+interface ColumnView {
+  /** Cages, chains, inquisitors and pillars: they stay in place. */
   container: Phaser.GameObjects.Container;
+  /** Bats fly towards the witch, so they move faster across the screen. */
+  bats: Phaser.GameObjects.Container | null;
   cat: Phaser.GameObjects.Image | null;
+  /** The bats have squeaked when they flew into view. */
+  heard: boolean;
 }
 
 /** A tiling image sized by the spec, so replacement pictures of any resolution tile at the right size. */
@@ -47,10 +51,10 @@ function addTile(scene: Phaser.Scene, spec: AssetSpec, x: number, y: number, w: 
   return tile;
 }
 
-/** Flying game: Space lifts the witch; avoid the obstacles, collect black cats, reach the gate. One attempt. */
+/** Flying game: Space lifts the witch; avoid the obstacles and bats, collect black cats, reach the gate. One attempt. */
 export class LentoScene extends Phaser.Scene {
   private ctx!: GameContext;
-  private course: Gate[] = [];
+  private course: Column[] = [];
   private phase: Phase = 'ready';
   private distance = 0;
   private speed = 0;
@@ -59,7 +63,7 @@ export class LentoScene extends Phaser.Scene {
   private cats = 0;
   private invulnerable = 0;
   private collected = new Set<number>();
-  private views = new Map<number, GateView>();
+  private views = new Map<number, ColumnView>();
   private finished = false;
 
   private far!: Phaser.GameObjects.TileSprite;
@@ -139,9 +143,9 @@ export class LentoScene extends Phaser.Scene {
     if (this.invulnerable > 0) {
       this.invulnerable = Math.max(0, this.invulnerable - dt);
       // Stay protected until clear of the obstacle that was hit.
-      if (this.invulnerable === 0 && this.touchingGate()) this.invulnerable = 0.2;
+      if (this.invulnerable === 0 && this.touchingObstacle()) this.invulnerable = 0.2;
       this.witch.setAlpha(this.invulnerable > 0 && Math.floor(time / 90) % 2 === 0 ? 0.35 : 1);
-    } else if (this.touchingGate()) {
+    } else if (this.touchingObstacle()) {
       this.hit();
     }
     this.collectCats();
@@ -150,7 +154,7 @@ export class LentoScene extends Phaser.Scene {
   }
 
   getTestState(): unknown {
-    const next = this.course.find((g) => g.x + GATE_WIDTH / 2 >= this.distance);
+    const next = this.course.find((c) => c.x + 40 >= this.distance);
     return {
       phase: this.phase,
       distance: Math.round(this.distance),
@@ -160,7 +164,7 @@ export class LentoScene extends Phaser.Scene {
       cats: this.cats,
       invulnerable: this.invulnerable > 0,
       points: this.points(),
-      nextGate: next ? { index: next.index, x: next.x, gapTop: next.gapTop, gapBottom: next.gapBottom, hasCat: next.hasCat } : null,
+      next: next ? { index: next.index, x: next.x, pattern: next.pattern, openings: next.openings, catY: next.catY } : null,
     };
   }
 
@@ -193,12 +197,11 @@ export class LentoScene extends Phaser.Scene {
     return distancePoints(this.distance, this.phase === 'finished');
   }
 
-  private touchingGate(): boolean {
-    for (const gate of this.course) {
-      const sx = WITCH_X + (gate.x - this.distance);
-      if (sx < WITCH_X - 120) continue;
-      if (sx > WITCH_X + 120) break;
-      if (hitsGate(gate, sx, this.y, HIT_HALF_W, HIT_HALF_H)) return true;
+  private touchingObstacle(): boolean {
+    for (const column of this.course) {
+      if (column.x < this.distance - 150) continue;
+      if (column.x > this.distance + 150) break;
+      if (hitsColumn(column, this.distance, this.y)) return true;
     }
     return false;
   }
@@ -220,17 +223,13 @@ export class LentoScene extends Phaser.Scene {
   }
 
   private collectCats(): void {
-    for (const gate of this.course) {
-      if (!gate.hasCat || this.collected.has(gate.index)) continue;
-      const sx = WITCH_X + (gate.x - this.distance);
-      if (sx > WITCH_X + 80) break;
-      if (sx < WITCH_X - 80) continue;
-      const cy = (gate.gapTop + gate.gapBottom) / 2;
-      if (Math.hypot(sx - WITCH_X, cy - this.y) > CAT_PICKUP) continue;
-      this.collected.add(gate.index);
+    for (const column of this.course) {
+      if (column.x > this.distance + 80) break;
+      if (column.catY === null || this.collected.has(column.index) || !reachesCat(column, this.distance, this.y)) continue;
+      this.collected.add(column.index);
       this.cats = Math.min(C.maxCats, this.cats + 1);
       this.ctx.sfx.play('correct');
-      const view = this.views.get(gate.index);
+      const view = this.views.get(column.index);
       if (view?.cat) {
         const icon = view.cat;
         view.cat = null;
@@ -267,46 +266,85 @@ export class LentoScene extends Phaser.Scene {
     this.far.tilePositionX = (this.distance * 0.3) / this.far.tileScaleX;
     this.ground.tilePositionX = this.distance / this.ground.tileScaleX;
     this.finishGate.setX(WITCH_X + (GOAL_DISTANCE - this.distance) + 60);
-    for (const gate of this.course) {
-      const sx = WITCH_X + (gate.x - this.distance);
+    for (const column of this.course) {
+      const sx = WITCH_X + (column.x - this.distance);
       const visible = sx > -160 && sx < W + 160;
-      let view = this.views.get(gate.index);
+      let view = this.views.get(column.index);
       if (visible && !view) {
-        view = this.buildGate(gate);
-        this.views.set(gate.index, view);
+        view = this.buildColumn(column);
+        this.views.set(column.index, view);
       } else if (!visible && view) {
-        this.tweens.killTweensOf([view.container, ...(view.cat ? [view.cat] : [])]);
-        view.container.destroy();
-        view.cat?.destroy();
-        this.views.delete(gate.index);
+        this.destroyView(view);
+        this.views.delete(column.index);
         continue;
       }
       if (view) {
         view.container.setX(sx);
         view.cat?.setX(sx);
+        if (view.bats) {
+          const bx = blockScreenX(column, 'bats', this.distance);
+          view.bats.setX(bx);
+          if (!view.heard && bx < W - 40 && this.phase === 'flying') {
+            view.heard = true;
+            this.ctx.sfx.tone({ freq: 2100, slideTo: 2900, duration: 0.07, type: 'sine', volume: 0.1 });
+          }
+        }
       }
       if (sx > W + 160) break;
     }
     this.refreshHud();
   }
 
-  private buildGate(gate: Gate): GateView {
+  private destroyView(view: ColumnView): void {
+    const parts = [view.container, ...(view.bats ? [view.bats, ...view.bats.list] : []), ...(view.cat ? [view.cat] : [])];
+    this.tweens.killTweensOf(parts);
+    view.container.destroy();
+    view.bats?.destroy();
+    view.cat?.destroy();
+  }
+
+  private buildColumn(column: Column): ColumnView {
     const container = this.add.container(0, 0).setDepth(2);
-    // Above: a chain from the sky and a hanging cage
-    const cageTop = gate.gapTop - CAGE.height;
-    if (cageTop > 0) container.add(addTile(this, CHAIN, 0, cageTop / 2, CHAIN.width, cageTop, true));
-    container.add(addAsset(this, CAGE, 0, gate.gapTop, { origin: [0.5, 1] }));
-    // Below: an inquisitor standing on a stone pillar
-    container.add(addAsset(this, INQUISITOR, 0, gate.gapBottom, { origin: [0.5, 0] }));
-    const pillarTop = gate.gapBottom + INQUISITOR.height - 6;
-    if (pillarTop < GROUND_Y) container.add(addTile(this, PILLAR, 0, (pillarTop + GROUND_Y) / 2, PILLAR.width, GROUND_Y - pillarTop, true));
-    let cat: Phaser.GameObjects.Image | null = null;
-    if (gate.hasCat && !this.collected.has(gate.index)) {
-      const cy = (gate.gapTop + gate.gapBottom) / 2;
-      cat = addAsset(this, CAT, 0, cy).setDepth(3);
-      this.tweens.add({ targets: cat, y: cy - 10, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+    let bats: Phaser.GameObjects.Container | null = null;
+    for (const block of column.blocks) {
+      if (block.kind === 'cage') this.addCage(container, block);
+      else if (block.kind === 'inquisitor') this.addInquisitor(container, block);
+      else bats = this.addBats(block, bats ?? this.add.container(WITCH_X + W * 2, 0).setDepth(3));
     }
-    return { container, cat };
+    let cat: Phaser.GameObjects.Image | null = null;
+    if (column.catY !== null && !this.collected.has(column.index)) {
+      const cy = column.catY;
+      cat = addAsset(this, CAT, 0, cy).setDepth(3);
+      this.tweens.add({ targets: cat, y: cy - 8, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+    }
+    return { container, bats, cat, heard: false };
+  }
+
+  /** A chain from the sky and a cage hanging at the bottom of the block. */
+  private addCage(container: Phaser.GameObjects.Container, block: Block): void {
+    const cageTop = block.bottom - CAGE.height;
+    if (cageTop > 0) container.add(addTile(this, CHAIN, 0, cageTop / 2, CHAIN.width, cageTop, true));
+    container.add(addAsset(this, CAGE, 0, block.bottom, { origin: [0.5, 1] }));
+  }
+
+  /** An inquisitor standing on a stone pillar that reaches the ground. */
+  private addInquisitor(container: Phaser.GameObjects.Container, block: Block): void {
+    container.add(addAsset(this, INQUISITOR, 0, block.top, { origin: [0.5, 0] }));
+    const pillarTop = block.top + INQUISITOR.height - 6;
+    if (pillarTop < GROUND_Y) container.add(addTile(this, PILLAR, 0, (pillarTop + GROUND_Y) / 2, PILLAR.width, GROUND_Y - pillarTop, true));
+  }
+
+  /** A flock of bats filling the block, flapping their wings. */
+  private addBats(block: Block, flock: Phaser.GameObjects.Container): Phaser.GameObjects.Container {
+    const count = Math.max(1, Math.round((block.bottom - block.top) / BAT_HEIGHT));
+    const step = (block.bottom - block.top) / count;
+    for (let i = 0; i < count; i++) {
+      const bat = addAsset(this, BAT, i % 2 === 0 ? -8 : 10, block.top + step * (i + 0.5));
+      flock.add(bat);
+      const scaleY = bat.scaleY;
+      this.tweens.add({ targets: bat, scaleY: scaleY * 0.55, duration: 130 + i * 17, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+    }
+    return flock;
   }
 
   private buildHud(): void {

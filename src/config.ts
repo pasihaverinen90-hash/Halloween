@@ -78,14 +78,14 @@ export const CONFIG = {
   lentopeli: {
     /** The finish is this many seconds of flight away for a flight without crashes. */
     goalSeconds: 90,
-    /** The first seconds are easy: constant speed and wide gaps. */
+    /** The first seconds are easy: slower speed, wide openings and calmer obstacles. */
     easySeconds: 20,
     /** Flying speed at the start (px/s) … */
-    startSpeed: 250,
+    startSpeed: 270,
     /** … rising to this at the hardest. */
-    maxSpeed: 420,
-    /** Distance after the easy part over which speed and gaps reach their hardest. */
-    rampDistance: 18000,
+    maxSpeed: 460,
+    /** Distance after the easy part over which speed, openings and obstacles reach their hardest. */
+    rampDistance: 20000,
     /** Speed builds up again after a crash (px/s²). */
     acceleration: 260,
     /** Gravity (px/s²), the upward kick of one Space press (px/s) and the fastest fall (px/s). */
@@ -93,14 +93,25 @@ export const CONFIG = {
     flapVelocity: -470,
     maxFallSpeed: 650,
     /** Distance between obstacles: easy → hard. */
-    gateSpacingEasy: 560,
-    gateSpacingHard: 400,
-    /** Height of the opening between the top and bottom obstacle: easy → hard. */
-    gapEasy: 260,
-    gapHard: 190,
-    /** A black cat waits in every n-th opening (the first one in opening number catFirstGate). */
-    catEveryGates: 5,
-    catFirstGate: 3,
+    gateSpacingEasy: 520,
+    gateSpacingHard: 350,
+    /** Height of the opening the witch must fit through: easy → hard. */
+    gapEasy: 240,
+    gapHard: 165,
+    /** How far the route may move up or down from one obstacle to the next (px): easy → hard. Never more than the witch can fly. */
+    routeSwingEasy: 150,
+    routeSwingHard: 320,
+    /**
+     * How often each obstacle appears (relative weights), easy → hard:
+     * gate = hanging cage and an inquisitor below, tower = only an inquisitor (fly over),
+     * hanging = only a cage (fly under), bats = a flock of bats flying towards the witch (over or under).
+     */
+    obstacleMixEasy: { gate: 6, tower: 2, hanging: 2, bats: 2 },
+    obstacleMixHard: { gate: 4, tower: 1, hanging: 1, bats: 4 },
+    /** Bats fly towards the witch at this share of her speed. */
+    batSpeedShare: 0.6,
+    /** A black cat waits about every n seconds of flight, in an awkward spot (none near the finish). */
+    catEverySeconds: 22,
     /** Cats are extra lives; at most this many. */
     maxCats: 3,
     /** After losing a cat the witch cannot be hit for this long (and until she is clear of the obstacle). */

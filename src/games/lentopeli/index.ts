@@ -16,8 +16,8 @@ const lentopeli: GameDefinition = {
     keys: [['Välilyönti', 'Lennä ylöspäin']],
     rules: [
       'Noita laskee koko ajan. Jokainen välilyönnin painallus nostaa sitä.',
-      'Varo riippuvia häkkejä ja pylväillä seisovia inkvisiittoreita. Maata pitkin voi liukua.',
-      `Kerää mustia kissoja: kissa on lisäelämä. Kissoja voi olla enintään ${maxCats}.`,
+      'Varo riippuvia häkkejä, pylväillä seisovia inkvisiittoreita ja vastaan lentäviä lepakoita. Usein esteen ohi pääsee sekä yli että ali. Maata pitkin voi liukua.',
+      `Matkan varrella on muutama musta kissa hankalissa paikoissa. Kissa on lisäelämä, ja kissoja voi olla enintään ${maxCats}.`,
       'Kun törmäät, menetät kissan ja vauhti pysähtyy. Ilman kissaa törmäys päättää yrityksen.',
       `Ensimmäiset ${easySeconds} sekuntia ovat helppoja, ja sen jälkeen peli vaikeutuu vähitellen.`,
     ],

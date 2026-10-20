@@ -55,7 +55,8 @@ export class AttemptResultScene extends Phaser.Scene {
 
     const lines: string[] = [];
     if (action && d.isFinal) {
-      lines.push(`Pelin tulos: ${fi(d.best)} pistettä`, 'Paras yritys jää voimaan.');
+      const perfectEarly = d.attempt < d.total;
+      lines.push(`Pelin tulos: ${fi(d.best)} pistettä`, perfectEarly ? 'Täydellinen tulos! Loput yritykset jäävät väliin.' : 'Paras yritys jää voimaan.');
     } else if (action) {
       lines.push(`Paras tulos tähän mennessä: ${fi(d.best)} p`);
     } else {

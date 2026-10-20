@@ -26,6 +26,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **Tasapisteet:** pelaajat jakavat sijan (esimerkiksi 1., 2., 2., 4.).
 - **Hiominen lopuksi (20.10.):** kaikkien pelien kysymykset, kuvat ja yksityiskohdat muokataan vasta, kun kaikki pelit on tehty ja testattu toimiviksi. Pelit tehdään ensin toimiviksi yksi kerrallaan.
 - **Lentopeli:** maali on noin 90 sekunnin lennon päässä (säädetään testauksen perusteella). Maa on lattia, jota pitkin noita voi liukua; vain esteet ovat vaarallisia. Taivas on katto.
+- **Lentopeli, Pasin palaute 20.10.:** kissoja liian usein, peli liian helppo ja esteet aina katosta asti (vain yksi reitti). Pasin ehdotuksesta mukaan tulivat vastaan lentävät lepakot. Nyt esteitä on neljää tyyppiä (häkki + inkvisiittori, pelkkä inkvisiittoritorni, pelkkä riippuva häkki ja lepakkoparvi), ja usein esteen ohi pääsee sekä yli että ali. Kissoja on kolme koko matkalla (noin 22 sekunnin välein), aina lepakoiden vieressä.
+- **Täydellinen tulos päättää pelin (Pasi 20.10.):** kun toimintapelin yrityksestä tulee 1000 pistettä, loput yritykset jäävät väliin. Koskee kaikkia toimintapelejä.
 - **Kuva-arvoitukset:** 5 kuva-arvoitusta (Pasi tekee kuvat, yksi kuva per arvoitus) ja 5 emojiarvoitusta (Claude Code). Kuva-arvoitukset: hirviö, ihmissusi, verikuu, silmämuna ja kummitusjuna. Arvoitukseen saa lisätä vihjeen (kohta `kysymys`). Ensimmäiset versiot tehdään nyt, ja niitä muokataan myöhemmin.
 - **GitHub Pages** on päällä (Source: GitHub Actions), Pasi kytki sen 19.10.2026.
 
@@ -92,11 +94,19 @@ Tehty:
 - Lentopeli "Yölento": noita lentää välilyönnillä, esteinä riippuvat häkit ja pylväillä seisovat inkvisiittorit, mustat kissat lisäelämiä (enintään 3), törmäys vie kissan ja pysäyttää vauhdin, maali noin 90 sekunnin lennon päässä (29 330 px). Ensimmäiset 20 sekuntia helppoja, sitten vauhti kasvaa ja aukot kapenevat vähitellen. Rata on kaikille sama. Pisteet: maali 1000, muuten matkan osuus.
 - Simulaatio: rata on lennettävissä maaliin ilman törmäyksiä.
 
+Pasin palaute: peli toimii, mutta kissoja tulee liian usein, peli on liian helppo ja esteet tulevat aina katosta asti. Lisäksi kolmea yritystä ei tarvita, jos ensimmäisellä pääsee maaliin.
+
+Korjattu samassa rupeamassa:
+- Rata rakennetaan nyt esteistä, joita on neljää tyyppiä, ja lepakot lentävät vastaan. Reittejä on usein kaksi (yli tai ali). Radan rakentaja tarkistaa, että jokaisesta aukosta ehtii seuraavaan esteeseen. Yksikkötestin autopilotti lentää radan maaliin ja kerää kaikki kissat törmäämättä.
+- Vaikeampi: vauhti nyt 270–460 (ennen 250–420), aukot 240–165 px (ennen 260–190) ja esteiden väli 520–350 px (ennen 560–400). Lisäksi reitti heittelee enemmän ylös ja alas. Maali on edelleen noin 90 sekunnin päässä (31 800 px).
+- Kissoja on 3 (noin 22, 44 ja 66 sekunnin kohdalla), ja ne ovat lepakoiden vieressä.
+- 1000 pistettä päättää toimintapelin heti (yhteinen ydin), ja ohjeruudussa kerrotaan siitä.
+
 Kesken:
-- Pasi testaa lentopelin. Vaikeutta (painovoima, hyppy, aukkojen koko, vauhti, maalin etäisyys) säädetään palautteen perusteella tiedostossa `src/config.ts`.
+- Pasi testaa lentopelin uudelleen. Vaikeus säädetään tiedostossa `src/config.ts` (kohta `lentopeli`).
 
 Seuraavaksi:
-- Vaihe 4, räiskintä.
+- Vaihe 4, räiskintä, kun Pasi hyväksyy lentopelin.
 
 ## Aikataulu
 

@@ -65,6 +65,13 @@ describe('attempts', () => {
     expect(rec).toMatchObject({ attempts: [124, 0, 1000], finished: true, checkpoint: null });
   });
 
+  it('skips the remaining attempts after a perfect score', () => {
+    const { db } = setup();
+    const p = db.createPlayer('Eero');
+    expect(db.recordAttempt(p.id, 'lento', 1000, 3)).toMatchObject({ attempts: [1000], finished: true });
+    expect(() => db.recordAttempt(p.id, 'lento', 500, 3)).toThrow(/jo pelattu loppuun/);
+  });
+
   it('never adds an attempt to a finished game', () => {
     const { db } = setup();
     const p = db.createPlayer('Eero');

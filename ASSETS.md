@@ -221,7 +221,7 @@ Hyvä tietää:
 
 **Kuvaus generaattorille:**
 
-> Pieni valikkokuva lentopelille: noita lentää luudalla yötaivaalla kohti aukkoa, jonka yläpuolella roikkuu häkki ja alapuolella seisoo kaapuun pukeutunut inkvisiittori soihtu kädessä. Täysikuu taustalla. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+> Pieni valikkokuva lentopelille: noita lentää luudalla yötaivaalla kohti aukkoa, jonka yläpuolella roikkuu häkki ja alapuolella seisoo kaapuun pukeutunut inkvisiittori soihtu kädessä. Oikealta lentää vastaan pari lepakkoa. Täysikuu taustalla. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
 
 ### `lentopeli-tausta.png` – Lentopelin taivas
 
@@ -312,6 +312,16 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Pala pystysuoraa rautaketjua. Kuva toistuu pystysuunnassa saumattomasti. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 28 × 56 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `lentopeli-lepakko.png` – Lepakko
+
+- **Koko:** 84 × 56 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Lepakko lentää suoraan katsojaa kohti siivet levällään: tumma violetti siipikalvo, jonka alareuna on aaltoileva, pienet terävät korvat ja hehkuvat oranssit silmät. Ohut vaalea ääriviiva erottaa sen yötaivaasta. Peli heiluttaa siipiä itse, joten yksi kuva riittää. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 84 × 56 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
 ### `lentopeli-maali.png` – Maali: maaginen portti
 

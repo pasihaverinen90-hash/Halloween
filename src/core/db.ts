@@ -33,7 +33,7 @@ export interface ResultsDb {
   deletePlayer(id: string): void;
   getRecord(playerId: string, gameId: string): GameRecord | undefined;
   /**
-   * Appends clampScore(score); finished = attempts.length >= attemptsTotal; checkpoint = null; saves.
+   * Appends clampScore(score); finished = attempts.length >= attemptsTotal or a perfect score; checkpoint = null; saves.
    * Throws ResultsDbError 'already-finished' if the game is finished or all attempts are used
    * (never silently adds an extra attempt), 'unknown-player' if the player does not exist.
    */
@@ -170,8 +170,10 @@ class StoredResultsDb implements ResultsDb {
         throw new ResultsDbError('already-finished', ALREADY_FINISHED);
       }
       const record = existing ?? addRecord(player, gameId, now);
-      record.attempts.push(clampScore(score));
-      record.finished = record.attempts.length >= total;
+      const points = clampScore(score);
+      record.attempts.push(points);
+      // A perfect score cannot be bettered, so the remaining attempts are skipped.
+      record.finished = record.attempts.length >= total || points >= CONFIG.maxScore;
       record.checkpoint = null;
       record.updatedAt = now;
       saved = record;

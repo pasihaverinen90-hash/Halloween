@@ -185,8 +185,8 @@ export async function playFlightQuickly(page: Page): Promise<number> {
     await press(page, 'Space');
     await page.evaluate(() => {
       const scene = (window.__peli!.game as any).scene.getScene('Lentopeli');
-      const gate = scene.course[0];
-      scene.debugPlace(gate.x - 10, gate.gapTop - 30);
+      const gate = scene.course[0]; // always a cage above and an inquisitor below
+      scene.debugPlace(gate.x - 10, gate.blocks[1].top + 40);
     });
     await waitForScene(page, 'AttemptResult', 120_000);
     if (attempt < 3) await press(page, 'Enter');
