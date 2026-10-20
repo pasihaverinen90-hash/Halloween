@@ -12,8 +12,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | 1. Pohja ja hirsipuu | Valmis, Pasi hyväksyi 20.10. |
 | 2. Kuva-arvoitukset | Valmis, Pasi hyväksyi 20.10. |
 | 3. Lentopeli | Valmis, Pasi hyväksyi 20.10. ("riittävän hyvä tähän vaiheeseen") |
-| 4. Räiskintä | Valmis Pasin testattavaksi (20.10.) |
-| 5. Ristikko | Ei aloitettu |
+| 4. Räiskintä | Valmis, Pasi hyväksyi 20.10. ("Paljon parempi"; Paholaiselle +10 % kestävyyttä) |
+| 5. Ristikko | Aloitettu 20.10.: kysymykset Pasille |
 | 6. Tasohyppely | Ei aloitettu |
 | 7. Kurpitsalinko | Ei aloitettu |
 | 8. Viimeistely | Ei aloitettu (CSV-vienti ja kuvien vaihtaminen tehtiin jo vaiheessa 1) |
@@ -129,7 +129,7 @@ Pasin palaute ensimmäiseen versioon: vihollisia liian vähän, kuva lähemmäs 
 - Kuva on kauempaa (kaikki 72 % koosta, `viewScale`), ja tausta toistuu saumattomasti myös sivusuunnassa.
 - Paavi liikkuu nuolilla neljään suuntaan ruudun alaosassa.
 - Vihollisia on noin 690 (ennen 256). Uudet, vaikeammat viholliset: pikkupirut syöksyvät paavia kohti, ja viikatemiehet kestävät 10 osumaa ja ampuvat viiden kirouspallon viuhkoja. Kurpitsat ampuvat lopussa kolme tulipalloa kerralla.
-- Paholainen raivostuu kahdesti (2/3 ja 1/3 kestävyydestä), ja raivon vaiheet näkyvät palkissa. Hyökkäyksiä on kahdeksan: tuliviuhka, tähdätty sarja, tulisade, tulikierre, tulirengas, pikkupirujen kutsu, rynnäkkö paavia kohti ja katoaminen. Kestävyys on 420.
+- Paholainen raivostuu kahdesti (2/3 ja 1/3 kestävyydestä), ja raivon vaiheet näkyvät palkissa. Hyökkäyksiä on kahdeksan: tuliviuhka, tähdätty sarja, tulisade, tulikierre, tulirengas, pikkupirujen kutsu, rynnäkkö paavia kohti ja katoaminen. Kestävyys on 462 (Pasi 20.10.: +10 %).
 - JSON-varmuuskopiot otettiin pois käytöstä Pasin pyynnöstä (ks. yllä).
 
 Pasin palaute toiseen versioon: vaikeahko, mutta hän pääsi Paholaisen viimeiseen vaiheeseen, kun keskittyi ampumiseen. Vihollismäärä saa pysyä, kunhan aseisiin tulee enemmän apua. Lisäelämiä saa pudota pari, koska loppuun jäi vain 3. Väliaikaisten boostien pitää pudota sattumalta tuhotuista vihollisista. Lisää pysyviä parannuksia, esimerkiksi paavia kiertävä suojapallo, ja alkuun noin 3 ruudun tyhjentävää pommia. Korjattu samassa rupeamassa:
