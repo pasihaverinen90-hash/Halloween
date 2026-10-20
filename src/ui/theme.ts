@@ -108,3 +108,15 @@ export const TEXT = {
     color: CSS.bone,
   },
 } satisfies Record<string, Style>;
+
+/** Drawing order of the shared UI layers inside a scene (game content uses the default 0). */
+export const DEPTH = {
+  /** Shared background image (addBackdrop). */
+  backdrop: -100,
+  /** Optional darkening layer over the background. */
+  backdropDim: -99,
+  /** Key hints at the bottom of the screen (addKeyHints). */
+  hints: 900,
+  /** Short messages near the top (showToast). */
+  toast: 2000,
+} as const;

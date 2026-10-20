@@ -6,7 +6,12 @@ import type Phaser from 'phaser';
  * screen changes so no overlay is ever left behind.
  */
 export function switchTo(from: Phaser.Scene, key: string, data?: object): void {
-  const manager = from.game.scene;
+  switchScenes(from.game, key, data);
+}
+
+/** Same as switchTo, for code that has the game but no scene (e.g. the global Ctrl+Shift+K hotkey). */
+export function switchScenes(game: Phaser.Game, key: string, data?: object): void {
+  const manager = game.scene;
   for (const scene of manager.getScenes(false)) {
     const sceneKey = scene.sys.settings.key;
     if (sceneKey === key) continue;

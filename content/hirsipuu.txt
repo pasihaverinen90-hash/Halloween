@@ -1,0 +1,29 @@
+# HIRSIPUUN SANAT
+#
+# Pelissä arvataan tasan 5 sanaa tai lausetta tässä järjestyksessä.
+# Jokainen sana on oma korttinsa: ensin rivi "sana:", sitten rivi "vihje:".
+# Korttien väliin jätetään yksi tyhjä rivi.
+#
+# - Sanassa saa olla kirjaimia A–Ö, välilyöntejä ja välimerkkejä (- , . ! ? ' : ; ( ) ").
+#   Numerot kirjoitetaan kirjaimin.
+# - Yksi sana saa olla enintään 14 kirjainta, ja koko lause mahtuu kolmelle riville.
+# - Vihje saa olla enintään 90 merkkiä.
+# - Isoilla ja pienillä kirjaimilla ei ole väliä.
+# - #-merkillä alkavat rivit ovat ohjeita, eikä peli lue niitä.
+#
+# Aloita helpolla sanalla, jotta alku on armollinen.
+
+sana: Lepakko
+vihje: Siivekäs yölentäjä, joka nukkuu pää alaspäin.
+
+sana: Kurpitsalyhty
+vihje: Kaiverrettu valo, joka irvistää kuistilla.
+
+sana: Karkki vai kepponen
+vihje: Näin lapset kysyvät ovella Halloween-iltana.
+
+sana: Hämähäkki
+vihje: Kahdeksanjalkainen kutoja ullakon nurkassa.
+
+sana: Täysikuun yö
+vihje: Silloin ihmissudet heräävät.

@@ -8,7 +8,7 @@ import '@fontsource/patrick-hand/400.css';
 import { ALL_SCENES } from './scenes';
 import { installAdminHotkey } from './scenes/adminHotkey';
 import { installTestHooks } from './testHooks';
-import { H, TEXT_RESOLUTION, W, ZOOM, applyCameraZoom } from './ui/screen';
+import { H, TEXT_RESOLUTION, W, ZOOM, attachCameraZoom } from './ui/screen';
 import { COLORS } from './ui/theme';
 
 const errors: string[] = [];
@@ -47,6 +47,23 @@ function reportError(message: string): void {
 window.addEventListener('error', (event) => reportError(event.message || String(event.error)));
 window.addEventListener('unhandledrejection', (event) => reportError(String(event.reason)));
 
+/**
+ * Phaser stops its frame loop for good if one frame throws (the next frame is
+ * never requested), which would freeze the evening. Catch, report and carry on.
+ */
+function keepLoopAlive(): void {
+  const proto = Phaser.Game.prototype as unknown as { step: (time: number, delta: number) => void };
+  const step = proto.step;
+  proto.step = function (this: Phaser.Game, time: number, delta: number) {
+    try {
+      step.call(this, time, delta);
+    } catch (error) {
+      reportError(error instanceof Error ? `${error.message}` : String(error));
+      console.error(error);
+    }
+  };
+}
+
 /** Every this.add.text(...) renders at TEXT_RESOLUTION unless the style says otherwise. */
 function patchTextResolution(): void {
   const factory = Phaser.GameObjects.GameObjectFactory.prototype as unknown as {
@@ -79,10 +96,7 @@ function installKeyboardPolicy(): void {
 
 /** Zoom each scene's main camera so the 1280×720 world fills the ZOOM× canvas. */
 function installCameraZoom(game: Phaser.Game): void {
-  for (const scene of game.scene.getScenes(false)) {
-    scene.sys.events.on(Phaser.Scenes.Events.READY, () => applyCameraZoom(scene.cameras.main));
-    if (scene.sys.isActive() && scene.cameras?.main) applyCameraZoom(scene.cameras.main);
-  }
+  for (const scene of game.scene.getScenes(false)) attachCameraZoom(scene);
 }
 
 async function loadFonts(): Promise<void> {
@@ -102,6 +116,7 @@ async function loadFonts(): Promise<void> {
 async function start(): Promise<void> {
   await loadFonts();
   patchTextResolution();
+  keepLoopAlive();
 
   const game = new Phaser.Game({
     type: Phaser.AUTO,

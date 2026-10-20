@@ -1,34 +1,39 @@
+import { CONFIG } from '../../config';
 import type { GameDefinition } from '../types';
+import { ASSETS, PREVIEW } from './assets';
 import { HirsipuuScene } from './HirsipuuScene';
+import { META } from './meta';
 
-/** PLACEHOLDER definition – the real hangman replaces this. */
+const { wordsPerRound, pointsPerWord, penaltyPerWrongLetter, maxWrongLetters } = CONFIG.hirsipuu;
+const ORDINALS: Record<number, string> = { 5: 'Viides', 6: 'Kuudes', 7: 'Seitsemäs', 8: 'Kahdeksas', 9: 'Yhdeksäs', 10: 'Kymmenes' };
+const failingLetter = ORDINALS[maxWrongLetters] ?? `${maxWrongLetters}.`;
+
+/** 1. Hirsipuu – drawn style. Rules: CLAUDE.md, game 1. */
 const hirsipuu: GameDefinition = {
-  id: 'hirsipuu',
-  name: 'Viimeinen sana',
-  genre: 'Hirsipuu',
-  kind: 'puzzle',
+  ...META,
   sceneKey: 'Hirsipuu',
   sceneClass: HirsipuuScene,
   instructions: {
-    goal: 'Arvaa viisi sanaa kirjain kerrallaan.',
-    keys: [['A–Ö', 'Arvaa kirjain']],
-    rules: ['Väärä kirjain saa tulla 8 kertaa.'],
-    scoring: ['Jokaisesta sanasta saa 200 pistettä, ja jokainen väärä kirjain vähentää 25.'],
+    goal: `Arvaa ${wordsPerRound} Halloween-aiheista sanaa tai sanontaa kirjain kerrallaan. Jokaisessa sanassa näkyy vihje.`,
+    keys: [
+      ['A–Ö', 'Arvaa kirjain'],
+      ['Enter', 'Seuraava sana'],
+    ],
+    rules: [
+      'Välilyönnit ja välimerkit näkyvät valmiina.',
+      'Sana on ratkaistu, kun kaikki sen kirjaimet ovat paikallaan. Koko sanaa ei arvata erikseen.',
+      `Jokainen väärä kirjain lisää luurankoon yhden osan. ${failingLetter} väärä kirjain kaataa sanan, ja peli siirtyy seuraavaan sanaan.`,
+      'Jo kokeiltu kirjain ei maksa mitään.',
+      'Aikarajaa ei ole.',
+    ],
+    scoring: [
+      `${pointsPerWord} pistettä jokaisesta sanasta.`,
+      `Jokainen väärä kirjain: −${penaltyPerWrongLetter} pistettä.`,
+      'Epäonnistunut sana: 0 pistettä.',
+    ],
   },
-  preview: {
-    file: 'valikko-hirsipuu.png',
-    width: 360,
-    height: 200,
-    title: 'Hirsipuun esikatselukuva',
-    prompt: 'Väliaikainen',
-    style: 'Pelkistetty piirroskuva',
-    transparent: false,
-    draw(ctx, width, height) {
-      ctx.fillStyle = '#22163b';
-      ctx.fillRect(0, 0, width, height);
-    },
-  },
-  assets: [],
+  preview: PREVIEW,
+  assets: ASSETS,
 };
 
 export default hirsipuu;

@@ -1,5 +1,6 @@
 import type Phaser from 'phaser';
 import { CONFIG } from './config';
+import { addTestActionGame } from './testGame';
 
 /**
  * Automated browser tests (Playwright) cannot read text drawn on a canvas, so
@@ -20,6 +21,8 @@ export interface PeliTestApi {
   saved(): unknown;
   /** Recent runtime error messages. */
   errors: string[];
+  /** Register the invisible test-only action game (src/testGame.ts). Call on the Start screen. */
+  addTestActionGame(): void;
 }
 
 declare global {
@@ -53,5 +56,6 @@ export function installTestHooks(game: Phaser.Game, errors: string[]): void {
       }
     },
     errors,
+    addTestActionGame: () => addTestActionGame(game),
   };
 }

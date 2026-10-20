@@ -21,7 +21,7 @@ concurrency:
 jobs:
   rakenna:
     name: Tarkista ja rakenna
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Hae koodi
         uses: actions/checkout@v7
@@ -55,7 +55,7 @@ jobs:
   julkaise:
     name: Julkaise GitHub Pagesiin
     needs: rakenna
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.julkaisu.outputs.page_url }}

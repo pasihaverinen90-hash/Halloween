@@ -33,3 +33,13 @@ export function applyCameraZoom(camera: Phaser.Cameras.Scene2D.Camera): void {
   camera.setZoom(ZOOM);
   camera.centerOn(W / 2, H / 2);
 }
+
+/**
+ * Zoom the scene's main camera every time the scene starts. main.ts does this
+ * for every scene; call it yourself only for scenes added at runtime.
+ */
+export function attachCameraZoom(scene: Phaser.Scene): void {
+  // 'ready' = Phaser.Scenes.Events.READY, emitted on every (re)start after the main camera exists.
+  scene.sys.events.on('ready', () => applyCameraZoom(scene.cameras.main));
+  if (scene.sys.isActive() && scene.cameras?.main) applyCameraZoom(scene.cameras.main);
+}
