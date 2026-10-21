@@ -198,36 +198,62 @@ export function drawHunter(ctx: CanvasRenderingContext2D): void {
   });
 }
 
-/** The whip in three levels (Pasi 21.10.): leather, chain, flaming. 56 × 8 pixels a frame, the handle end on the left. */
+/** The whip in five levels (Pasi 21.10.): leather, spiked chain, silver, flaming, lightning. 56 × 8 pixels a frame, the handle end on the left. */
 export function drawWhip(ctx: CanvasRenderingContext2D, lengths: readonly number[]): void {
   frames(
     ctx,
-    3,
+    5,
     56,
     8,
     (p, i) => {
       const length = Math.min(55, lengths[i]);
+      const wave = (x: number): number => 4 + Math.round(Math.sin((x / length) * Math.PI * 1.5) * (i === 1 || i === 2 ? 0.6 : 1.2));
       for (let x = 0; x < length; x++) {
-        const y = 4 + Math.round(Math.sin((x / length) * Math.PI * 1.5) * (i === 1 ? 0.6 : 1.2));
+        const y = i === 4 ? 4 + ((Math.floor(x / 3) % 2) * 2 - 1) : wave(x);
         if (i === 0) {
           p.set(x, y, x % 3 === 0 ? '#5b3b24' : '#8a5a34');
         } else if (i === 1) {
-          p.set(x, y, x % 2 === 0 ? '#c8ccd8' : '#7c8294');
-          if (x % 4 === 0) p.set(x, y - 1, '#9aa0b0');
-        } else {
+          // Iron links with spikes.
+          p.set(x, y, x % 2 === 0 ? '#9aa0b0' : '#5c6272');
+          if (x % 5 === 0) p.set(x, y - 1, '#c8ccd8').set(x, y + 1, '#c8ccd8');
+        } else if (i === 2) {
+          p.set(x, y, x % 2 === 0 ? '#f4f8ff' : '#b8c8e0');
+          if (x % 6 === 3) p.set(x, y - 1, '#e0f0ff');
+        } else if (i === 3) {
           p.set(x, y, x % 2 === 0 ? '#ffd24a' : '#ff8a1f');
           if (x % 3 === 0) p.set(x, y - 1, '#ffb030');
           if (x % 5 === 2) p.set(x, y + 1, '#e5484d');
+        } else {
+          // Lightning: a white-hot zigzag with a blue glow.
+          p.set(x, y, '#ffffff');
+          p.set(x, y - 1, '#8fd8ff').set(x, y + 1, '#4aa8ff');
         }
       }
       // Handle.
-      p.rect(0, 3, 3, 3, '#3a2416');
-      // Tip.
-      const tipY = 4 + Math.round(Math.sin(Math.PI * 1.5) * (i === 1 ? 0.6 : 1.2));
-      p.set(length, tipY, i === 2 ? '#fff4b0' : i === 1 ? '#e8ecf4' : '#a8784a');
+      p.rect(0, 3, 3, 3, i === 2 ? '#7a6a8a' : '#3a2416');
+      const tipY = i === 4 ? 4 : wave(length);
+      p.set(length, tipY, ['#a8784a', '#e8ecf4', '#ffffff', '#fff4b0', '#e0f8ff'][i]);
     },
     false,
   );
+}
+
+/** Throwing dagger flying to the right: 10 × 4 pixels. */
+export function drawDagger(ctx: CanvasRenderingContext2D): void {
+  const pal: Palette = { s: '#e6ebf2', d: '#9aa0b0', h: '#5b3b24', g: '#e0b54a' };
+  frames(ctx, 1, 10, 4, (p) => p.grid(0, 0, ['..g.......', 'hhgssssss.', 'hhgdddddds', '..g.......'], pal), false);
+}
+
+/** A bundle of five daggers (a pick-up): 10 × 10 pixels. */
+export function drawDaggerItem(ctx: CanvasRenderingContext2D): void {
+  frames(ctx, 1, 10, 10, (p) => {
+    for (let k = 0; k < 3; k++) {
+      p.line(1 + k, 8 - k * 0, 8, 1 + k * 2, '#c8ccd8');
+      p.set(1 + k, 8, '#5b3b24').set(2 + k, 8, '#5b3b24');
+    }
+    p.set(8, 1, '#ffffff');
+    p.rect(3, 6, 3, 1, '#e0b54a');
+  });
 }
 
 // ---------------------------------------------------------------- graveyard enemies

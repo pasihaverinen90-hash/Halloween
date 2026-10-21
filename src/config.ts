@@ -248,9 +248,9 @@ export const CONFIG = {
     coyoteSeconds: 0.1,
     jumpBufferSeconds: 0.12,
 
-    /** Whip levels (Pasi 21.10.: 3): reach in game units and damage per hit. Leather → chain → flaming. */
-    whipReach: [100, 135, 165],
-    whipDamage: [1, 1.5, 2],
+    /** Whip levels (Pasi 21.10.: 5): reach in game units and damage per hit. Leather → spiked chain → silver → flaming → lightning. */
+    whipReach: [100, 120, 140, 160, 180],
+    whipDamage: [1, 1.25, 1.5, 1.75, 2],
     /** Whip timing: wind-up, the moment it hurts, recovery. */
     whipWindupSeconds: 0.09,
     whipActiveSeconds: 0.13,
@@ -258,8 +258,17 @@ export const CONFIG = {
 
     /** Enemies drop an item by chance (Pasi 21.10.: about every tenth). */
     dropChance: 0.1,
-    /** Share of random drops that are a whip upgrade (the rest are half hearts) while the whip can still improve. */
-    whipDropShare: 0.4,
+    /** Shares of random drops: a whip upgrade (while the whip can still improve) and daggers; the rest are half hearts. */
+    whipDropShare: 0.3,
+    daggerDropShare: 0.35,
+    /** Throwing daggers (Pasi 21.10.: C throws, a limited number): at the start of an attempt, per pick-up and at most. */
+    daggersStart: 5,
+    daggersPerPickup: 5,
+    daggersMax: 15,
+    /** Dagger speed, seconds between throws, and damage (like the basic whip). */
+    daggerSpeed: 650,
+    daggerCooldown: 0.3,
+    daggerDamage: 1,
     /** If the whip has not improved in a level by this share of the level, the next enemy defeated drops an upgrade (Pasi 21.10.). */
     whipGuaranteeAt: 0.5,
 

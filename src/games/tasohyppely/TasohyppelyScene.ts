@@ -13,6 +13,8 @@ import {
   BAT,
   BLADE,
   CANDLE,
+  DAGGER,
+  DAGGER_ITEM,
   GATE,
   HEART_ITEM,
   HUD_HEART,
@@ -74,7 +76,8 @@ const C = CONFIG.tasohyppely;
 /** Room below the level for the key hints. */
 const BOTTOM_MARGIN = 60;
 const STEP = 1 / 60;
-const WHIP_NAMES = ['Nahkaruoska', 'Ketjuruoska', 'Liekehtivä ruoska'];
+const WHIP_NAMES = ['Nahkaruoska', 'Piikkiketju', 'Hopearuoska', 'Liekehtivä ruoska', 'Salamaruoska'];
+const MAX_WHIP = C.whipReach.length;
 
 type Phase = 'intro' | 'play' | 'levelDone' | 'boss' | 'won' | 'dead';
 
@@ -126,6 +129,13 @@ export class TasohyppelyScene extends Phaser.Scene {
   private world!: World;
   private keys!: HeldKeys;
   private lashQueued = false;
+  private throwQueued = false;
+  /** Throwing daggers left, flying daggers and the time until the next throw. */
+  private daggers: number = C.daggersStart;
+  private flying: Array<{ x: number; y: number; vx: number; image: Phaser.GameObjects.Image }> = [];
+  private throwCooldown = 0;
+  /** The hunter shows the throwing pose this much longer. */
+  private throwPose = 0;
   /** Enemies the current lash has already hit (each lash hits each enemy once). */
   private struck = new Set<number>();
   private health: number = C.maxHealth;
@@ -167,6 +177,7 @@ export class TasohyppelyScene extends Phaser.Scene {
   private bossImage: Phaser.GameObjects.Image | null = null;
   private hearts: Phaser.GameObjects.Image[] = [];
   private whipText!: Phaser.GameObjects.Text;
+  private daggerText!: Phaser.GameObjects.Text;
   private levelText!: Phaser.GameObjects.Text;
   private pointsText!: Phaser.GameObjects.Text;
   private candleText!: Phaser.GameObjects.Text;
@@ -175,7 +186,7 @@ export class TasohyppelyScene extends Phaser.Scene {
   private bossLabel!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
   private subMessage!: Phaser.GameObjects.Text;
-  private shown = { points: -1, health: -1, whip: -1, candles: '', level: -1, progress: -1, boss: -1 };
+  private shown = { points: -1, health: -1, whip: -1, daggers: -1, candles: '', level: -1, progress: -1, boss: -1 };
 
   constructor() {
     super('Tasohyppely');
@@ -188,6 +199,11 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.levelIndex = 0;
     this.levelTime = 0;
     this.lashQueued = false;
+    this.throwQueued = false;
+    this.daggers = C.daggersStart;
+    this.flying = [];
+    this.throwCooldown = 0;
+    this.throwPose = 0;
     this.struck = new Set();
     this.health = C.maxHealth;
     this.whipLevel = 1;
@@ -212,7 +228,7 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.bossImage = null;
     this.hearts = [];
     this.lookAhead = 0;
-    this.shown = { points: -1, health: -1, whip: -1, candles: '', level: -1, progress: -1, boss: -1 };
+    this.shown = { points: -1, health: -1, whip: -1, daggers: -1, candles: '', level: -1, progress: -1, boss: -1 };
   }
 
   create(): void {
@@ -240,7 +256,9 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.buildHud();
     this.keys = heldKeys(this, ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ']);
     onChar(this, (char) => {
-      if (char.toLowerCase() === 'x') this.lashQueued = true;
+      const key = char.toLowerCase();
+      if (key === 'x') this.lashQueued = true;
+      else if (key === 'c') this.throwQueued = true;
     });
     this.startLevel(0);
   }
@@ -277,6 +295,8 @@ export class TasohyppelyScene extends Phaser.Scene {
       facing: h.facing,
       health: this.health,
       whip: this.whipLevel,
+      daggers: this.daggers,
+      flyingDaggers: this.flying.length,
       invulnerable: h.invulnerable > 0,
       candles: this.candlesBroken,
       candlesHere: this.broken.size,
@@ -334,7 +354,7 @@ export class TasohyppelyScene extends Phaser.Scene {
   }
 
   debugWhip(level: number): void {
-    this.whipLevel = Phaser.Math.Clamp(level, 1, 3);
+    this.whipLevel = Phaser.Math.Clamp(level, 1, MAX_WHIP);
   }
 
   /** Test helper: break every candle of this level. */
@@ -372,6 +392,8 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.levelObjects = [];
     for (const shot of this.shots) shot.image.destroy();
     for (const item of this.items) item.image.destroy();
+    for (const d of this.flying) d.image.destroy();
+    this.flying = [];
     this.enemyImages.clear();
     this.candleImages.clear();
     this.moverImages.clear();
@@ -499,7 +521,7 @@ export class TasohyppelyScene extends Phaser.Scene {
       if (safeFooting(h, this.world)) this.lastSafe = { x: h.x, y: h.y };
       if (this.phase === 'play') {
         this.bestProgress = Math.max(this.bestProgress, levelProgress(this.level, h.x, h.y));
-        if (!this.whipDroppedHere && this.whipLevel < 3 && this.bestProgress >= C.whipGuaranteeAt) this.guaranteeArmed = true;
+        if (!this.whipDroppedHere && this.whipLevel < MAX_WHIP && this.bestProgress >= C.whipGuaranteeAt) this.guaranteeArmed = true;
       }
     }
     if (inPit(h, this.level)) {
@@ -507,9 +529,11 @@ export class TasohyppelyScene extends Phaser.Scene {
       if (this.isOver()) return;
     }
 
+    this.throwDagger(dt);
     this.updateEnemies(dt);
     this.updateShots(dt);
     this.updateItems(dt);
+    this.updateDaggers(dt);
     this.checkLash();
     this.checkHazards();
     if (this.phase === 'boss') this.stepBoss(dt);
@@ -729,7 +753,7 @@ export class TasohyppelyScene extends Phaser.Scene {
       this.whipDroppedHere = true;
       this.guaranteeArmed = false;
     }
-    const spec = kind === 'whip' ? WHIP_ITEM : HEART_ITEM;
+    const spec = kind === 'whip' ? WHIP_ITEM : kind === 'dagger' ? DAGGER_ITEM : HEART_ITEM;
     const image = this.levelObject(addAsset(this, spec, x, y).setDepth(12));
     this.items.push({ kind, x, y, vy: -260, resting: false, t: 0, image });
   }
@@ -764,7 +788,13 @@ export class TasohyppelyScene extends Phaser.Scene {
   private collect(item: Item): void {
     this.tweens.killTweensOf(item.image);
     item.image.destroy();
-    if (item.kind === 'whip' && this.whipLevel < 3) {
+    if (item.kind === 'dagger') {
+      this.daggers = Math.min(C.daggersMax, this.daggers + C.daggersPerPickup);
+      this.ctx.sfx.tone({ freq: 900, slideTo: 1400, duration: 0.15, type: 'triangle', volume: 0.07 });
+      this.floatText(item.x, item.y - 30, `+${C.daggersPerPickup} tikaria`, CSS.silver);
+      return;
+    }
+    if (item.kind === 'whip' && this.whipLevel < MAX_WHIP) {
       this.whipLevel++;
       this.ctx.sfx.tone({ freq: 520, slideTo: 1040, duration: 0.35, type: 'square', volume: 0.08 });
       this.ctx.sfx.tone({ freq: 780, slideTo: 1560, duration: 0.35, type: 'triangle', volume: 0.06, delay: 0.12 });
@@ -775,6 +805,66 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.health = Math.min(C.maxHealth, this.health + C.heartHeal);
     this.ctx.sfx.play('correct');
     this.floatText(item.x, item.y - 30, '+½', CSS.red);
+  }
+
+  // ---------------------------------------------------------------- throwing daggers
+
+  private throwDagger(dt: number): void {
+    const h = this.hunter;
+    const wanted = this.throwQueued;
+    this.throwQueued = false;
+    this.throwPose = Math.max(0, this.throwPose - dt);
+    this.throwCooldown = Math.max(0, this.throwCooldown - dt);
+    if (!wanted || this.throwCooldown > 0 || h.knockback > 0 || h.lash) return;
+    if (this.daggers <= 0) {
+      this.ctx.sfx.play('error');
+      return;
+    }
+    this.daggers--;
+    this.throwCooldown = C.daggerCooldown;
+    this.throwPose = 0.18;
+    const y = h.y - (h.crouching ? 26 : 58);
+    const x = h.x + h.facing * 24;
+    const image = this.levelObject(addAsset(this, DAGGER, x, y).setDepth(22).setFlipX(h.facing < 0));
+    this.flying.push({ x, y, vx: h.facing * C.daggerSpeed, image });
+    this.ctx.sfx.noise({ duration: 0.1, volume: 0.08, filterFreq: 3000, filterType: 'bandpass' });
+  }
+
+  private updateDaggers(dt: number): void {
+    this.flying = this.flying.filter((d) => {
+      d.x += d.vx * dt;
+      d.image.setPosition(d.x, d.y);
+      const rect = { x: d.x - 14, y: d.y - 6, w: 28, h: 12 };
+      const gone = (): boolean => {
+        this.tweens.killTweensOf(d.image);
+        d.image.destroy();
+        return false;
+      };
+      if (tileAt(this.level, Math.floor(d.x / TILE), Math.floor(d.y / TILE)) === '#' || d.x < this.camX - TILE || d.x > this.camX + W + TILE) return gone();
+      for (const e of this.enemies) {
+        if (e.state === 'gone') continue;
+        const er = enemyRect(e);
+        if (!er || !overlaps(rect, er)) continue;
+        e.hp -= C.daggerDamage;
+        e.flash = 0.12;
+        this.ctx.sfx.noise({ duration: 0.06, volume: 0.12, filterFreq: 1800 });
+        if (e.hp <= 0) this.killEnemy(e);
+        return gone();
+      }
+      for (const candle of this.level.candles) {
+        if (!this.broken.has(candle.id) && overlaps(rect, { x: candle.x - 12, y: candle.y - 18, w: 24, h: 42 })) {
+          this.breakCandle(candle.id);
+          return gone();
+        }
+      }
+      if (this.boss && bossHittable(this.boss) && overlaps(rect, bossRect(this.boss))) {
+        hitBoss(this.boss, C.daggerDamage);
+        this.ctx.sfx.noise({ duration: 0.1, volume: 0.16, filterFreq: 1400 });
+        if (this.boss.mode === 'dead') this.bossDefeated();
+        return gone();
+      }
+      return true;
+    });
   }
 
   // ---------------------------------------------------------------- the whip and the dangers
@@ -821,10 +911,12 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.ctx.sfx.tone({ freq: 500, slideTo: 160, duration: 0.18, type: 'triangle', volume: 0.08 });
     if (e.summoned) return;
     const y = WALKERS.has(e.kind) ? e.y - 40 : e.y;
-    if (this.guaranteeArmed && this.whipLevel < 3) {
+    if (this.guaranteeArmed && this.whipLevel < MAX_WHIP) {
       this.dropItem('whip', e.x, y);
     } else if (this.random.frac() < C.dropChance) {
-      this.dropItem(this.whipLevel < 3 && this.random.frac() < C.whipDropShare ? 'whip' : 'heart', e.x, y);
+      const roll = this.random.frac();
+      const whip = this.whipLevel < MAX_WHIP ? C.whipDropShare : 0;
+      this.dropItem(roll < whip ? 'whip' : roll < whip + C.daggerDropShare ? 'dagger' : 'heart', e.x, y);
     }
   }
 
@@ -840,7 +932,7 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.burst(candle.x, candle.y - 8, 0xffb030, 10);
     this.floatText(candle.x, candle.y - 30, `+${Math.round((C.candlePoints / totalCandles()) * 10) / 10}`, CSS.orange);
     this.ctx.sfx.tone({ freq: 880, slideTo: 1320, duration: 0.12, type: 'triangle', volume: 0.07 });
-    if (candle.drop) this.dropItem(candle.drop === 'whip' && this.whipLevel >= 3 ? 'heart' : candle.drop, candle.x, candle.y);
+    if (candle.drop) this.dropItem(candle.drop === 'whip' && this.whipLevel >= MAX_WHIP ? 'heart' : candle.drop, candle.x, candle.y);
   }
 
   private checkHazards(): void {
@@ -1005,6 +1097,7 @@ export class TasohyppelyScene extends Phaser.Scene {
       if (windup) return HUNTER_FRAME.windup;
       return h.lash.kind === 'up' ? HUNTER_FRAME.lashUp : HUNTER_FRAME.lash;
     }
+    if (this.throwPose > 0) return h.crouching ? HUNTER_FRAME.lashLow : HUNTER_FRAME.lash;
     if (h.crouching) return HUNTER_FRAME.crouch;
     if (!h.onGround) return HUNTER_FRAME.jump;
     if (Math.abs(h.vx) > 30) {
@@ -1188,11 +1281,12 @@ export class TasohyppelyScene extends Phaser.Scene {
   private buildHud(): void {
     const panel = this.add.graphics();
     panel.fillStyle(COLORS.night, 0.72);
-    panel.fillRoundedRect(16, 12, 300, 82, 14);
+    panel.fillRoundedRect(16, 12, 300, 108, 14);
     panel.fillRoundedRect(W - 316, 12, 300, 82, 14);
     panel.fillRoundedRect(W / 2 - 200, 12, 400, 56, 14);
     for (let i = 0; i < C.maxHealth; i++) this.hearts.push(addAsset(this, HUD_HEART, 44 + i * 40, 38, { width: 34, height: 31, frame: 0 }));
     this.whipText = this.add.text(30, 72, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.gold }).setOrigin(0, 0.5);
+    this.daggerText = this.add.text(30, 100, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.silver }).setOrigin(0, 0.5);
     this.levelText = this.add.text(W / 2, 30, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.bone }).setOrigin(0.5, 0.5);
     this.progressBar = this.add.graphics();
     this.pointsText = this.add.text(W - 30, 36, '', { ...TEXT.bodyBold, fontSize: '26px', color: CSS.orange }).setOrigin(1, 0.5);
@@ -1208,6 +1302,7 @@ export class TasohyppelyScene extends Phaser.Scene {
       ['Välilyönti', 'Hyppää'],
       ['X', 'Lyö'],
       ['↑ + X', 'Ylös'],
+      ['C', 'Tikari'],
       ['↓', 'Kyyristy'],
       ['Esc', 'Tauko'],
     ]);
@@ -1225,7 +1320,11 @@ export class TasohyppelyScene extends Phaser.Scene {
     }
     if (this.whipLevel !== this.shown.whip) {
       this.shown.whip = this.whipLevel;
-      this.whipText.setText(`${WHIP_NAMES[this.whipLevel - 1]} (${this.whipLevel}/3)`);
+      this.whipText.setText(`${WHIP_NAMES[this.whipLevel - 1]} (${this.whipLevel}/${MAX_WHIP})`);
+    }
+    if (this.daggers !== this.shown.daggers) {
+      this.shown.daggers = this.daggers;
+      this.daggerText.setText(`Tikarit: ${this.daggers}`).setAlpha(this.daggers > 0 ? 1 : 0.5);
     }
     const points = this.points();
     if (points !== this.shown.points) {

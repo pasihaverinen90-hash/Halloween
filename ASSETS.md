@@ -615,11 +615,11 @@ Hyvä tietää:
 - **Koko:** 168 × 24 px
 - **Tausta:** läpinäkyvä
 - **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
-- **Animaatio:** 3 kuvaa vierekkäin vasemmalta oikealle: nahkaruoska, ketjuruoska, liekehtivä ruoska
+- **Animaatio:** 5 kuvaa vierekkäin vasemmalta oikealle: nahkaruoska, piikkiketju, hopearuoska, liekehtivä ruoska, salamaruoska
 
 **Kuvaus generaattorille:**
 
-> Ojennettu ruoska sivulta, kahvan pää vasemmassa reunassa keskellä. Kolme tasoa: nahkaruoska (lyhyt), ketjuruoska (pidempi) ja liekehtivä ruoska (pisin). Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 3 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (nahkaruoska, ketjuruoska, liekehtivä ruoska). Yksi ruutu on 168 × 24 pikseliä, koko kuva 504 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+> Ojennettu ruoska sivulta, kahvan pää vasemmassa reunassa keskellä. Viisi tasoa lyhimmästä pisimpään: nahkaruoska, piikkiketju, hopearuoska, liekehtivä ruoska ja salamaruoska. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 5 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (nahkaruoska, piikkiketju, hopearuoska, liekehtivä ruoska, salamaruoska). Yksi ruutu on 168 × 24 pikseliä, koko kuva 840 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
 ### `tasohyppely-zombi.png` – Zombi
 
@@ -803,6 +803,26 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Kerällä oleva kultainen ruoska, kerättävä esine. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 30 × 30 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-tikari.png` – Heitettävä tikari
+
+- **Koko:** 30 × 12 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Lentävä heittotikari sivulta, kärki oikealle. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 30 × 12 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-tikarit-esine.png` – Tikarinippu
+
+- **Koko:** 30 × 30 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Viuhkaksi aseteltu nippu heittotikareita, kerättävä esine. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 30 × 30 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
 ### `tasohyppely-sydan.png` – Sydän tilarivillä
 

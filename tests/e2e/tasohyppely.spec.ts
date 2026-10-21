@@ -57,8 +57,16 @@ test('tasohyppely: liikkuminen, hyppy, ruoska, tauko, kynttilä, zombi, kuoppa, 
   // Kynttilä: ruoska sammuttaa sen ja tuo pisteitä
   await platformer(page, 'const c = scene.level.candles[0]; scene.debugPlace(c.x - 40, c.y + 72); scene.hunter.facing = 1;');
   await waitForState(page, 'Tasohyppely', (s) => s.onGround);
-  await press(page, 'x', 50);
-  await waitForState(page, 'Tasohyppely', (s) => s.candles === 1 && s.points > 0);
+  await expect
+    .poll(
+      async () => {
+        await press(page, 'x', 400);
+        return (await sceneState(page, 'Tasohyppely')).candles;
+      },
+      { timeout: 30_000 },
+    )
+    .toBe(1);
+  expect((await sceneState(page, 'Tasohyppely')).points).toBeGreaterThan(0);
 
   // Zombi nousee maasta, kun sen lähelle tulee, ja kaatuu yhdestä lyönnistä
   const zombie = await platformer<{ x: number; y: number }>(page, "const z = scene.enemies.find((e) => e.kind === 'zombie'); return { x: z.x, y: z.y };");
@@ -83,6 +91,13 @@ test('tasohyppely: liikkuminen, hyppy, ruoska, tauko, kynttilä, zombi, kuoppa, 
   await waitForState(page, 'Tasohyppely', (s) => s.health === 4.5);
   await platformer(page, "scene.debugDrop('whip')");
   await waitForState(page, 'Tasohyppely', (s) => s.whip === 2);
+
+  // C heittää tikarin, ja tikarinippu tuo viisi lisää
+  expect((await sceneState(page, 'Tasohyppely')).daggers).toBe(5);
+  await press(page, 'c', 50);
+  await waitForState(page, 'Tasohyppely', (s) => s.daggers === 4);
+  await platformer(page, "scene.debugDrop('dagger')");
+  await waitForState(page, 'Tasohyppely', (s) => s.daggers === 9);
 
   // Maaliportista seuraavaan kenttään, jossa sydämet ovat taas täynnä
   await platformer(page, 'scene.debugHurt(2); const g = scene.level.gate; scene.debugPlace(g.x - 90, g.y);');

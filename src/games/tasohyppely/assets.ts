@@ -9,6 +9,8 @@ import {
   drawBat,
   drawBlade,
   drawCandle,
+  drawDagger,
+  drawDaggerItem,
   drawGate,
   drawHeartItem,
   drawHudHeart,
@@ -58,11 +60,11 @@ export const HUNTER = sprite(
 export const WHIP = sprite(
   'tasohyppely-ruoska.png',
   'Ruoska',
-  'Ojennettu ruoska sivulta, kahvan pää vasemmassa reunassa keskellä. Kolme tasoa: nahkaruoska (lyhyt), ketjuruoska (pidempi) ja liekehtivä ruoska (pisin).',
+  'Ojennettu ruoska sivulta, kahvan pää vasemmassa reunassa keskellä. Viisi tasoa lyhimmästä pisimpään: nahkaruoska, piikkiketju, hopearuoska, liekehtivä ruoska ja salamaruoska.',
   168,
   24,
   (ctx) => drawWhip(ctx, WHIP_PIXELS),
-  { count: 3, order: 'nahkaruoska, ketjuruoska, liekehtivä ruoska' },
+  { count: 5, order: 'nahkaruoska, piikkiketju, hopearuoska, liekehtivä ruoska, salamaruoska' },
 );
 
 export const ZOMBIE = sprite('tasohyppely-zombi.png', 'Zombi', `Laahustava zombi, harmaanvihreä iho, repaleiset vaatteet, kädet ojossa. ${SPRITE}`, 48, 96, drawZombie, {
@@ -96,6 +98,8 @@ export const ORB = sprite('tasohyppely-taikapallo.png', 'Taikapallo', 'Hehkuva v
 export const CANDLE = sprite('tasohyppely-kynttila.png', 'Kynttilä', 'Palava kynttilä rautaisella jalustalla.', 24, 48, drawCandle, { count: 2, order: 'liekki 1, liekki 2' });
 export const HEART_ITEM = sprite('tasohyppely-sydan-esine.png', 'Puolikas sydän', 'Puolikas punainen sydän (vasen puolisko), kerättävä esine.', 24, 24, drawHeartItem);
 export const WHIP_ITEM = sprite('tasohyppely-ruoska-esine.png', 'Ruoskan päivitys', 'Kerällä oleva kultainen ruoska, kerättävä esine.', 30, 30, drawWhipItem);
+export const DAGGER = sprite('tasohyppely-tikari.png', 'Heitettävä tikari', 'Lentävä heittotikari sivulta, kärki oikealle.', 30, 12, drawDagger);
+export const DAGGER_ITEM = sprite('tasohyppely-tikarit-esine.png', 'Tikarinippu', 'Viuhkaksi aseteltu nippu heittotikareita, kerättävä esine.', 30, 30, drawDaggerItem);
 export const HUD_HEART = sprite('tasohyppely-sydan.png', 'Sydän tilarivillä', 'Pieni sydän, joka näyttää jäljellä olevat health-pisteet.', 30, 27, drawHudHeart, { count: 3, order: 'täysi, puolikas, tyhjä' });
 export const BLADE = sprite('tasohyppely-heilurin-tera.png', 'Heilurin terä', 'Kuunsirpin muotoinen terästerä, kiinnityslenkki ylhäällä keskellä. Peli piirtää tangon.', 72, 48, drawBlade);
 export const GATE = sprite('tasohyppely-portti.png', 'Kentän maaliportti', 'Goottilainen kivikaari, jonka rautaovien raoista hohtaa lämmin valo.', 96, 144, drawGate);
@@ -205,6 +209,8 @@ export const ASSETS: AssetSpec[] = [
   CANDLE,
   HEART_ITEM,
   WHIP_ITEM,
+  DAGGER,
+  DAGGER_ITEM,
   HUD_HEART,
   BLADE,
   GATE,

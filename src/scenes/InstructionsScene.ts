@@ -108,7 +108,8 @@ export class InstructionsScene extends Phaser.Scene {
           .text(LEFT_X + Math.max(cap.width, 64) + 14, y + 18, action, { ...TEXT.body, fontSize: `${size}px`, wordWrap: { width: LEFT_W - 90 } })
           .setOrigin(0, 0.5);
         objects.push(cap, label);
-        y += 46;
+        // Rows tighten with the font, so a game with many keys still fits.
+        y += size >= 22 ? 46 : 40;
       }
       y += 14;
       heading('Pisteet');

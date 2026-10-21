@@ -101,6 +101,29 @@ describe('levels', () => {
     }
   });
 
+  it('has no place the hunter can get to but not out of (Pasi 21.10.: a soft lock on the castle roof)', { timeout: 180_000 }, () => {
+    for (const level of getLevels()) {
+      const { found, edges } = surfaceGraph(level);
+      const atGoal = (p: Spot): boolean =>
+        level.gate ? Math.abs(p.x - level.gate.x) < TILE * 1.5 && p.y === level.gate.y : level.arena !== null && p.x > level.arena.left + TILE;
+      // Walk the moves backwards from the goal.
+      const back = new Map<string, string[]>();
+      for (const [from, tos] of edges) for (const to of tos) back.set(to, [...(back.get(to) ?? []), from]);
+      const ok = new Set([...found].filter(([, p]) => atGoal(p)).map(([k]) => k));
+      const queue = [...ok];
+      while (queue.length > 0) {
+        for (const from of back.get(queue.pop()!) ?? []) {
+          if (!ok.has(from)) {
+            ok.add(from);
+            queue.push(from);
+          }
+        }
+      }
+      const stuck = [...found].filter(([k]) => !ok.has(k)).map(([, p]) => `sarake ${Math.floor(p.x / TILE) + 1}, rivi ${p.y / TILE}`);
+      expect(stuck, `${level.name}: jumipaikat`).toEqual([]);
+    }
+  });
+
   it('the reachability check notices a gap that is too wide and a ledge that is too high', () => {
     const wide = testLevel(['.S...........G', '###.........##', '###.........##']);
     expect([...reachableSurfaces(wide).values()].some((p) => p.x > 12 * TILE)).toBe(false);
@@ -221,6 +244,10 @@ describe('moving', () => {
     expect(side.x).toBeGreaterThan(h.x);
     expect(side.w).toBe(C.whipReach[0]);
     expect(whipRect(h, 3)!.w).toBe(C.whipReach[2]);
+    // Pasi 21.10.: five whip levels, each longer than the last.
+    expect(C.whipReach).toHaveLength(5);
+    expect(whipRect(h, 5)!.w).toBe(C.whipReach[4]);
+    expect([...C.whipReach].sort((a, b) => a - b)).toEqual([...C.whipReach]);
     run(h, world, 30, () => ({}));
     expect(h.lash).toBeNull();
     stepHunter(h, { ...NO_INPUT, up: true, lashPressed: true }, DT, world);
@@ -306,6 +333,11 @@ interface Spot {
  * their whole track, crumbling floors as floors.
  */
 function reachableSurfaces(level: Level): Map<string, Spot> {
+  return surfaceGraph(level).found;
+}
+
+/** The surfaces and where the hunter can get from each of them ("col,y" keys). */
+function surfaceGraph(level: Level): { found: Map<string, Spot>; edges: Map<string, Set<string>> } {
   const platforms: Array<{ id: number; rect: { x: number; y: number; w: number; h: number } }> = [];
   for (const m of level.movers) {
     const steps = Math.max(1, Math.round(m.length / TILE));
@@ -317,9 +349,15 @@ function reachableSurfaces(level: Level): Map<string, Spot> {
   const world: World = { level, gone: new Set(), platforms };
   const key = (s: Spot): string => `${Math.floor(s.x / TILE)},${Math.round(s.y)}`;
   const found = new Map<string, Spot>();
+  const edges = new Map<string, Set<string>>();
   const queue: Spot[] = [];
-  const add = (s: Spot): void => {
+  const add = (s: Spot, from?: Spot): void => {
     const k = key(s);
+    if (from) {
+      const fk = key(from);
+      if (!edges.has(fk)) edges.set(fk, new Set());
+      edges.get(fk)!.add(k);
+    }
     if (found.has(k)) return;
     found.set(k, s);
     queue.push(s);
@@ -355,10 +393,10 @@ function reachableSurfaces(level: Level): Map<string, Spot> {
             else if (airborne || i > 40) break;
             if (inPit(h, level)) break;
           }
-          if (h.onGround && !inPit(h, level)) add({ x: h.x, y: h.y });
+          if (h.onGround && !inPit(h, level)) add({ x: h.x, y: h.y }, spot);
         }
       }
     }
   }
-  return found;
+  return { found, edges };
 }
