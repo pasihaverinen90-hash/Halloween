@@ -52,7 +52,7 @@ export interface GameSceneData {
 export interface AssetSpec {
   /** File name Pasi uses, e.g. 'hirsipuu-luuranko-1.png'. Texture key = name without extension. */
   file: string;
-  /** Size in the 1280×720 game space. Replacement images are scaled to fit this box. */
+  /** Size in the 1280×720 game space (of one frame, for animations). Replacement images are scaled to fit this box. */
   width: number;
   height: number;
   /** Short Finnish title, e.g. 'Luurangon pääkallo'. */
@@ -68,6 +68,7 @@ export interface AssetSpec {
   /**
    * Code-drawn fallback. Draws in width×height units; the canvas is already
    * scaled for the render resolution, so just draw in game-space units.
+   * With frames, `width` is the whole strip (frame width × count).
    */
   draw(ctx: CanvasRenderingContext2D, width: number, height: number): void;
 }

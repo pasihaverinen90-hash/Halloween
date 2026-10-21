@@ -14,7 +14,7 @@ test('toimintapelissä on kolme yritystä putkeen ja paras jää voimaan', async
   await openGame(page);
   await page.evaluate(() => window.__peli!.addTestActionGame());
   await createPlayer(page, 'Yrittäjä');
-  expect((await sceneState(page, 'Menu')).tiles.map((t: { id: string }) => t.id)).toEqual(['hirsipuu', 'arvoitukset', 'lentopeli', 'raiskinta', 'ristikko', 'testipeli']);
+  expect((await sceneState(page, 'Menu')).tiles.map((t: { id: string }) => t.id)).toEqual(['hirsipuu', 'arvoitukset', 'lentopeli', 'raiskinta', 'ristikko', 'tasohyppely', 'testipeli']);
   await selectGame(page, 'testipeli');
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
@@ -68,6 +68,7 @@ test('toimintapelissä on kolme yritystä putkeen ja paras jää voimaan', async
     { id: 'lentopeli', status: 'unplayed', score: null },
     { id: 'raiskinta', status: 'unplayed', score: null },
     { id: 'ristikko', status: 'unplayed', score: null },
+    { id: 'tasohyppely', status: 'unplayed', score: null },
     { id: 'testipeli', status: 'finished', score: 900 },
   ]);
   // Pelattua peliä ei voi valita uudelleen
@@ -105,7 +106,7 @@ test('keskeytynyt toimintapeli jatkuu seuraavasta yrityksestä', async ({ page }
   await press(page, 'Enter');
   await press(page, 'Enter'); // the only unfinished player
   await waitForScene(page, 'Menu');
-  expect((await sceneState(page, 'Menu')).tiles[5]).toEqual({ id: 'testipeli', status: 'inProgress', score: 500 });
+  expect((await sceneState(page, 'Menu')).tiles.find((t: { id: string }) => t.id === 'testipeli')).toEqual({ id: 'testipeli', status: 'inProgress', score: 500 });
   await selectGame(page, 'testipeli');
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');

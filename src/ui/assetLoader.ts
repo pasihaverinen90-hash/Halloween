@@ -76,17 +76,19 @@ export function createMissingTextures(scene: Phaser.Scene, specs: readonly Asset
   for (const spec of specs) {
     const key = assetKey(spec);
     if (!scene.textures.exists(key)) {
-      const texture = scene.textures.createCanvas(key, Math.round(spec.width * ZOOM), Math.round(spec.height * ZOOM));
+      // Animation frames are drawn side by side: the canvas is one frame wide per frame.
+      const width = spec.width * (spec.frames?.count ?? 1);
+      const texture = scene.textures.createCanvas(key, Math.round(width * ZOOM), Math.round(spec.height * ZOOM));
       if (!texture) continue;
       const ctx = texture.context;
       ctx.save();
       ctx.scale(ZOOM, ZOOM);
       try {
-        spec.draw(ctx, spec.width, spec.height);
+        spec.draw(ctx, width, spec.height);
       } catch (error) {
         console.error(`Kuvan ${spec.file} piirtäminen epäonnistui:`, error);
         ctx.fillStyle = '#2f2052';
-        ctx.fillRect(0, 0, spec.width, spec.height);
+        ctx.fillRect(0, 0, width, spec.height);
       }
       ctx.restore();
       texture.refresh();

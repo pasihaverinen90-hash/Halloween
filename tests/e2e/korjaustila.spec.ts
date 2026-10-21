@@ -45,7 +45,9 @@ async function answerDialog(page: Page, confirm: boolean): Promise<void> {
   await expect
     .poll(async () => {
       const active = await activeScenes(page);
-      if (active.includes('Dialog')) return (await sceneState(page, 'Dialog')).message !== state.message;
+      // The dialog may close between the two reads; then there is no state to compare.
+      const dialog = active.includes('Dialog') ? await sceneState(page, 'Dialog') : null;
+      if (dialog) return dialog.message !== state.message;
       return active.some((key) => key !== 'Dialog');
     }, { timeout: 30_000 })
     .toBe(true);
@@ -181,7 +183,7 @@ test('ei JSON-varmuuskopioita; CSV, pelaajan poisto ja tyhjennys kahdella vahvis
   expect(csvFile.suggestedFilename()).toMatch(/^halloween-tulokset-.*\.csv$/);
   const csv = await readFile((await csvFile.path())!, 'utf8');
   expect(csv.charCodeAt(0)).toBe(0xfeff);
-  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Kiirastuli;Kalmanristikko;Yhteensä', '1;Aino;800;;;;;800']);
+  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Kiirastuli;Kalmanristikko;MonsterSlayer3000;Yhteensä', '1;Aino;800;;;;;;800']);
 
   // Pelaajan poisto
   await chooseAction(page, 'Poista pelaaja');

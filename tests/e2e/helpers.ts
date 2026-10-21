@@ -219,6 +219,20 @@ export async function playShooterQuickly(page: Page): Promise<number> {
   return (await sceneState(page, 'AttemptResult')).best as number;
 }
 
+/** Platformer: from the instruction screen, lose all hearts in each of the three attempts. Returns the best score. */
+export async function playPlatformerQuickly(page: Page): Promise<number> {
+  await press(page, 'Enter');
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    await waitForScene(page, 'AttemptIntro');
+    await press(page, 'Enter');
+    await waitForScene(page, 'Tasohyppely');
+    await page.evaluate(() => (window.__peli!.game as any).scene.getScene('Tasohyppely').debugHurt(5));
+    await waitForScene(page, 'AttemptResult', 120_000);
+    if (attempt < 3) await press(page, 'Enter');
+  }
+  return (await sceneState(page, 'AttemptResult')).best as number;
+}
+
 /** Crossword: from the instruction screen, let the time run out at once. Returns the score. */
 export async function playCrosswordQuickly(page: Page): Promise<number> {
   await press(page, 'Enter');

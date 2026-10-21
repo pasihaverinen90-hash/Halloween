@@ -210,4 +210,74 @@ export const CONFIG = {
     /** Graveyard scrolling speed (px/s). */
     scrollSpeed: 60,
   },
+
+  /**
+   * 6. Tasohyppely. Distances in the 1280×720 game space (one tile = 48), times in seconds of play.
+   * Rules: CLAUDE.md, game 6, and Pasi's choices 21.10. (EDISTYMINEN.md). The levels themselves are in src/games/tasohyppely/levels.ts.
+   */
+  tasohyppely: {
+    /** Points (Pasi 21.10.): distance over the three levels (equal share per level), candles (share of all) and the head witch (share of her health taken). */
+    distancePoints: 600,
+    candlePoints: 100,
+    bossPoints: 300,
+    /** Health at the start of every level (Pasi 21.10.: 5, not 3). Pick-ups only heal, never above this. */
+    maxHealth: 5,
+    /** A hit by an enemy, a projectile or a blade, and a fall into a pit, each take this much. */
+    hitDamage: 1,
+    /** A heart pick-up heals this much. */
+    heartHeal: 0.5,
+    /** After a hit (or a fall into a pit) the hunter cannot be hit for this long. */
+    invulnerableSeconds: 1.5,
+    /** Small knockback after a hit (never into a pit), and how long the controls are off meanwhile. */
+    knockbackSpeed: 230,
+    knockbackLift: 330,
+    knockbackSeconds: 0.25,
+
+    /** Running speed and how quickly it is reached on the ground and in the air. */
+    runSpeed: 270,
+    groundAccel: 2600,
+    airAccel: 1700,
+    /** Jumping: gravity, the take-off speed (about 3 tiles high), the double jump (about 2 tiles more) and the fastest fall. */
+    gravity: 2400,
+    jumpSpeed: 830,
+    doubleJumpSpeed: 700,
+    maxFallSpeed: 960,
+    /** Letting go of the jump key early cuts the rise to this share (a short hop). */
+    jumpCutFactor: 0.45,
+    /** A jump still works this long after running off a ledge, and a press this early before landing is remembered. */
+    coyoteSeconds: 0.1,
+    jumpBufferSeconds: 0.12,
+
+    /** Whip levels (Pasi 21.10.: 3): reach in game units and damage per hit. Leather → chain → flaming. */
+    whipReach: [100, 135, 165],
+    whipDamage: [1, 1.5, 2],
+    /** Whip timing: wind-up, the moment it hurts, recovery. */
+    whipWindupSeconds: 0.09,
+    whipActiveSeconds: 0.13,
+    whipRecoverSeconds: 0.12,
+
+    /** Enemies drop an item by chance (Pasi 21.10.: about every tenth). */
+    dropChance: 0.1,
+    /** Share of random drops that are a whip upgrade (the rest are half hearts) while the whip can still improve. */
+    whipDropShare: 0.4,
+    /** If the whip has not improved in a level by this share of the level, the next enemy defeated drops an upgrade (Pasi 21.10.). */
+    whipGuaranteeAt: 0.5,
+
+    /** Crumbling floor: shakes this long after it is stepped on, then stays gone this long. */
+    crumbleSeconds: 0.55,
+    crumbleRespawnSeconds: 4,
+    /** Moving platforms (units per second). */
+    moverSpeed: 95,
+    /** Swinging blades: swing angle each way (degrees) and the time of one full swing there and back. */
+    pendulumAngle: 62,
+    pendulumSeconds: 2.6,
+
+    /** Head witch: health in hits of the basic whip; she grows angrier at 2/3 and 1/3 of it. */
+    bossHealth: 30,
+    /** Seconds between her attacks: calm → furious. */
+    bossAttackGapStart: 2.2,
+    bossAttackGapEnd: 1.3,
+    /** After a whip hit she cannot be hit again for this long (one swing = one hit). */
+    bossHitCooldown: 0.35,
+  },
 } as const;

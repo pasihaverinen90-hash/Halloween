@@ -586,3 +586,377 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Hämärä vanha työhuone: tumma violetti seinä, hämähäkinseitit yläkulmissa, oikeassa yläkulmassa langassa roikkuva hämähäkki ja alakulmissa palavat kynttilät. Keskiosa on rauhallinen, koska ristikko ja vihjeet piirretään sen päälle. Ei tekstiä. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+## MonsterSlayer3000 (tasohyppely)
+
+### `tasohyppely-esikatselu.png` – Valikon esikatselukuva
+
+- **Koko:** 360 × 200 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Vampyyrimetsästäjä lyö ruoskalla zombia kuutamoisella hautausmaalla, kynttilä palaa taustalla. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `tasohyppely-metsastaja.png` – Vampyyrimetsästäjä
+
+- **Koko:** 72 × 96 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 11 kuvaa vierekkäin vasemmalta oikealle: seisoo, juoksee 1, juoksee 2, juoksee 3, hyppää, kyykistyy, nostaa ruoskan, lyö, lyö kyykyssä, lyö ylöspäin, saa osuman
+
+**Kuvaus generaattorille:**
+
+> Pelin sankari: vampyyrimetsästäjä, jolla on valkoinen tukka, pitkä tummanpunainen takki, harmaa kaulahuivi, tummat housut ja ruskeat nahkasaappaat. Ruoskaa ei piirretä kuvaan, sillä peli piirtää sen erikseen. Hahmo katsoo oikealle. Kaikki ruudut ovat samankokoisia, ja hahmon jalat ovat ruudun alareunassa. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 11 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (seisoo, juoksee 1, juoksee 2, juoksee 3, hyppää, kyykistyy, nostaa ruoskan, lyö, lyö kyykyssä, lyö ylöspäin, saa osuman). Yksi ruutu on 72 × 96 pikseliä, koko kuva 792 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-ruoska.png` – Ruoska
+
+- **Koko:** 168 × 24 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 3 kuvaa vierekkäin vasemmalta oikealle: nahkaruoska, ketjuruoska, liekehtivä ruoska
+
+**Kuvaus generaattorille:**
+
+> Ojennettu ruoska sivulta, kahvan pää vasemmassa reunassa keskellä. Kolme tasoa: nahkaruoska (lyhyt), ketjuruoska (pidempi) ja liekehtivä ruoska (pisin). Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 3 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (nahkaruoska, ketjuruoska, liekehtivä ruoska). Yksi ruutu on 168 × 24 pikseliä, koko kuva 504 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-zombi.png` – Zombi
+
+- **Koko:** 48 × 96 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: kävely 1, kävely 2
+
+**Kuvaus generaattorille:**
+
+> Laahustava zombi, harmaanvihreä iho, repaleiset vaatteet, kädet ojossa. Hahmo katsoo oikealle. Kaikki ruudut ovat samankokoisia, ja hahmon jalat ovat ruudun alareunassa. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (kävely 1, kävely 2). Yksi ruutu on 48 × 96 pikseliä, koko kuva 96 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-lepakko.png` – Lepakko
+
+- **Koko:** 48 × 36 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 3 kuvaa vierekkäin vasemmalta oikealle: roikkuu siivet suljettuina, siivet ylhäällä, siivet alhaalla
+
+**Kuvaus generaattorille:**
+
+> Tumma lepakko punaisin silmin. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 3 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (roikkuu siivet suljettuina, siivet ylhäällä, siivet alhaalla). Yksi ruutu on 48 × 36 pikseliä, koko kuva 144 × 36 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-korppi.png` – Korppi
+
+- **Koko:** 48 × 42 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 3 kuvaa vierekkäin vasemmalta oikealle: istuu, siivet ylhäällä, siivet alhaalla
+
+**Kuvaus generaattorille:**
+
+> Musta korppi keltaisella nokalla, katsoo oikealle. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 3 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (istuu, siivet ylhäällä, siivet alhaalla). Yksi ruutu on 48 × 42 pikseliä, koko kuva 144 × 42 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-haarniska.png` – Haarniska
+
+- **Koko:** 60 × 96 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 3 kuvaa vierekkäin vasemmalta oikealle: kävely 1, kävely 2, kirves nostettuna heittoon
+
+**Kuvaus generaattorille:**
+
+> Tyhjä, liikkuva ritarihaarniska, jossa on punainen kypäräntöyhtö ja kirves. Hahmo katsoo oikealle. Kaikki ruudut ovat samankokoisia, ja hahmon jalat ovat ruudun alareunassa. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 3 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (kävely 1, kävely 2, kirves nostettuna heittoon). Yksi ruutu on 60 × 96 pikseliä, koko kuva 180 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-kirves.png` – Kirves
+
+- **Koko:** 30 × 30 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Heitetty pieni kirves (peli pyörittää sitä). Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 30 × 30 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-kallo.png` – Liekehtivä kallo
+
+- **Koko:** 48 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: liekit 1, liekit 2
+
+**Kuvaus generaattorille:**
+
+> Lentävä pääkallo, jonka perässä liekit loimuavat vasemmalle. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (liekit 1, liekit 2). Yksi ruutu on 48 × 48 pikseliä, koko kuva 96 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-hamahakki.png` – Hämähäkki
+
+- **Koko:** 42 × 36 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: jalat 1, jalat 2
+
+**Kuvaus generaattorille:**
+
+> Iso musta hämähäkki ylhäältä päin, punainen merkki selässä. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (jalat 1, jalat 2). Yksi ruutu on 42 × 36 pikseliä, koko kuva 84 × 36 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-virvatuli.png` – Virvatuli
+
+- **Koko:** 36 × 36 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: hehku 1, hehku 2
+
+**Kuvaus generaattorille:**
+
+> Leijuva kylmä virvatuli, turkoosi hehku ja valkoinen ydin. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (hehku 1, hehku 2). Yksi ruutu on 36 × 36 pikseliä, koko kuva 72 × 36 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-sieni.png` – Myrkkysieni
+
+- **Koko:** 48 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: paikallaan, puhaltaa itiöitä
+
+**Kuvaus generaattorille:**
+
+> Vihainen myrkkysieni, violetti lakki ja vihreät pilkut. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (paikallaan, puhaltaa itiöitä). Yksi ruutu on 48 × 48 pikseliä, koko kuva 96 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-itio.png` – Itiö
+
+- **Koko:** 18 × 18 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Pieni hehkuvan vihreä myrkkyitiö. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 18 × 18 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-susi.png` – Susi
+
+- **Koko:** 78 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 3 kuvaa vierekkäin vasemmalta oikealle: istuu ja ulvoo, juoksee 1, juoksee 2
+
+**Kuvaus generaattorille:**
+
+> Tummanharmaa susi keltaisin silmin, katsoo oikealle. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 3 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (istuu ja ulvoo, juoksee 1, juoksee 2). Yksi ruutu on 78 × 48 pikseliä, koko kuva 234 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-luuranko.png` – Luuranko
+
+- **Koko:** 48 × 96 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: kävely 1, kävely 2
+
+**Kuvaus generaattorille:**
+
+> Maasta noussut luuranko, kädet ojossa. Hahmo katsoo oikealle. Kaikki ruudut ovat samankokoisia, ja hahmon jalat ovat ruudun alareunassa. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (kävely 1, kävely 2). Yksi ruutu on 48 × 96 pikseliä, koko kuva 96 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-paanoita.png` – Päänoita
+
+- **Koko:** 96 × 96 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 4 kuvaa vierekkäin vasemmalta oikealle: lento 1, lento 2, loitsii käsi ylhäällä, saa osuman
+
+**Kuvaus generaattorille:**
+
+> Pelin loppuvastus: vanha päänoita lentää luudalla. Musta suippo hattu, violetti kaapu, harmaa tukka, vihertävä iho ja punaiset silmät. Katsoo oikealle. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 4 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (lento 1, lento 2, loitsii käsi ylhäällä, saa osuman). Yksi ruutu on 96 × 96 pikseliä, koko kuva 384 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-taikapallo.png` – Taikapallo
+
+- **Koko:** 24 × 24 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: sykkii 1, sykkii 2
+
+**Kuvaus generaattorille:**
+
+> Hehkuva violetti taikapallo. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (sykkii 1, sykkii 2). Yksi ruutu on 24 × 24 pikseliä, koko kuva 48 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-kynttila.png` – Kynttilä
+
+- **Koko:** 24 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: liekki 1, liekki 2
+
+**Kuvaus generaattorille:**
+
+> Palava kynttilä rautaisella jalustalla. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (liekki 1, liekki 2). Yksi ruutu on 24 × 48 pikseliä, koko kuva 48 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-sydan-esine.png` – Puolikas sydän
+
+- **Koko:** 24 × 24 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Puolikas punainen sydän (vasen puolisko), kerättävä esine. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 24 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-ruoska-esine.png` – Ruoskan päivitys
+
+- **Koko:** 30 × 30 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kerällä oleva kultainen ruoska, kerättävä esine. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 30 × 30 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-sydan.png` – Sydän tilarivillä
+
+- **Koko:** 30 × 27 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 3 kuvaa vierekkäin vasemmalta oikealle: täysi, puolikas, tyhjä
+
+**Kuvaus generaattorille:**
+
+> Pieni sydän, joka näyttää jäljellä olevat health-pisteet. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 3 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (täysi, puolikas, tyhjä). Yksi ruutu on 30 × 27 pikseliä, koko kuva 90 × 27 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-heilurin-tera.png` – Heilurin terä
+
+- **Koko:** 72 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kuunsirpin muotoinen terästerä, kiinnityslenkki ylhäällä keskellä. Peli piirtää tangon. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 72 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-portti.png` – Kentän maaliportti
+
+- **Koko:** 96 × 144 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Goottilainen kivikaari, jonka rautaovien raoista hohtaa lämmin valo. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 96 × 144 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-palat-hautausmaa.png` – Maaston palat: hautausmaa
+
+- **Koko:** 48 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 6 kuvaa vierekkäin vasemmalta oikealle: pinta, sisus, taso, sortuva lattia, liikkuva taso vasen, liikkuva taso oikea
+
+**Kuvaus generaattorille:**
+
+> Maaston ruudut, jotka toistuvat saumattomasti vierekkäin. Hautausmaan multaa: pinta, jossa on ruohoa, multaa sisältä (kiviä ja luita), kivilaatta, halkeillut kivi, joka sortuu, ja puinen lankku. Taso, liikkuvan tason puolikkaat ja pinta ovat ruudun yläreunassa. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 6 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (pinta, sisus, taso, sortuva lattia, liikkuva taso vasen, liikkuva taso oikea). Yksi ruutu on 48 × 48 pikseliä, koko kuva 288 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-taivas-hautausmaa.png` – Taivas: hautausmaa
+
+- **Koko:** 1280 × 720 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Violetti yötaivas, iso vaalea täysikuu oikealla ylhäällä ja tähtiä. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `tasohyppely-maisema-hautausmaa.png` – Kaukainen maisema: hautausmaa
+
+- **Koko:** 1280 × 400 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kaukaisia kumpuja, pieni kappeli kukkulalla, kuolleita puita ja ristejä tummina siluetteina. Kuvan vasen ja oikea reuna jatkuvat saumattomasti toisiinsa, koska kuva toistuu sivuttain. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 400 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-koriste-hautausmaa.png` – Koristeet: hautausmaa
+
+- **Koko:** 48 × 96 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 4 kuvaa vierekkäin vasemmalta oikealle: hautakivi, risti, kurpitsalyhty, kuollut pensas
+
+**Kuvaus generaattorille:**
+
+> Pieniä koristeita, jotka seisovat maassa (ruudun alareunassa). Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 4 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (hautakivi, risti, kurpitsalyhty, kuollut pensas). Yksi ruutu on 48 × 96 pikseliä, koko kuva 192 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-palat-linna.png` – Maaston palat: linna
+
+- **Koko:** 48 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 6 kuvaa vierekkäin vasemmalta oikealle: pinta, sisus, taso, sortuva lattia, liikkuva taso vasen, liikkuva taso oikea
+
+**Kuvaus generaattorille:**
+
+> Maaston ruudut, jotka toistuvat saumattomasti vierekkäin. Linnan kivitiiliä: pinta, tiilet sisältä, puinen palkki, halkeillut tiili, joka sortuu, ja rautaritilä. Taso, liikkuvan tason puolikkaat ja pinta ovat ruudun yläreunassa. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 6 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (pinta, sisus, taso, sortuva lattia, liikkuva taso vasen, liikkuva taso oikea). Yksi ruutu on 48 × 48 pikseliä, koko kuva 288 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-taivas-linna.png` – Taivas: linna
+
+- **Koko:** 1280 × 720 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Tumma yötaivas ja punainen verikuu vasemmalla ylhäällä. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `tasohyppely-maisema-linna.png` – Kaukainen maisema: linna
+
+- **Koko:** 1280 × 720 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Linnan sisäseinä: tummaa kiveä, pylväitä, korkeita kuunvalaisia ikkunoita ja punaisia viirejä. Kuvan vasen ja oikea reuna jatkuvat saumattomasti toisiinsa, koska kuva toistuu sivuttain. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 720 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-koriste-linna.png` – Koristeet: linna
+
+- **Koko:** 48 × 96 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 4 kuvaa vierekkäin vasemmalta oikealle: kallokasa, rikkinäinen pylväs, ketjut, kivipatsas
+
+**Kuvaus generaattorille:**
+
+> Pieniä koristeita, jotka seisovat maassa (ruudun alareunassa). Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 4 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (kallokasa, rikkinäinen pylväs, ketjut, kivipatsas). Yksi ruutu on 48 × 96 pikseliä, koko kuva 192 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-palat-metsa.png` – Maaston palat: noidan metsä
+
+- **Koko:** 48 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 6 kuvaa vierekkäin vasemmalta oikealle: pinta, sisus, taso, sortuva lattia, liikkuva taso vasen, liikkuva taso oikea
+
+**Kuvaus generaattorille:**
+
+> Maaston ruudut, jotka toistuvat saumattomasti vierekkäin. Metsän maata: sammaleinen pinta, multaa ja juuria, oksa, laho tukki, joka sortuu, ja sammaloitunut kivilaatta. Taso, liikkuvan tason puolikkaat ja pinta ovat ruudun yläreunassa. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 6 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (pinta, sisus, taso, sortuva lattia, liikkuva taso vasen, liikkuva taso oikea). Yksi ruutu on 48 × 48 pikseliä, koko kuva 288 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-taivas-metsa.png` – Taivas: noidan metsä
+
+- **Koko:** 1280 × 720 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Tummanvihreä yötaivas, utuinen kuu oikealla ylhäällä ja sumua alhaalla. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `tasohyppely-maisema-metsa.png` – Kaukainen maisema: noidan metsä
+
+- **Koko:** 1280 × 420 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Tiheän noitametsän puunrunkoja ja oksia tummina siluetteina, välissä tulikärpäsiä. Kuvan vasen ja oikea reuna jatkuvat saumattomasti toisiinsa, koska kuva toistuu sivuttain. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1280 × 420 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `tasohyppely-koriste-metsa.png` – Koristeet: noidan metsä
+
+- **Koko:** 48 × 96 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 4 kuvaa vierekkäin vasemmalta oikealle: saniainen, kanto ja sieniä, pensas, sammaloitunut kivi
+
+**Kuvaus generaattorille:**
+
+> Pieniä koristeita, jotka seisovat maassa (ruudun alareunassa). Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 4 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (saniainen, kanto ja sieniä, pensas, sammaloitunut kivi). Yksi ruutu on 48 × 96 pikseliä, koko kuva 192 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.

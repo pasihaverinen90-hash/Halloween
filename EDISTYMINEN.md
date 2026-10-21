@@ -14,7 +14,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | 3. Lentopeli | Valmis, Pasi hyväksyi 20.10. ("riittävän hyvä tähän vaiheeseen") |
 | 4. Räiskintä | Valmis, Pasi hyväksyi 20.10. ("Paljon parempi"; Paholaiselle +10 % kestävyyttä) |
 | 5. Ristikko | Valmis, Pasi hyväksyi 21.10. ("toimii hyvin") |
-| 6. Tasohyppely | Seuraavaksi: kysy ensin Pasilta reilusti kysymyksiä |
+| 6. Tasohyppely | Ensimmäinen versio valmis 21.10., Pasi testaa |
 | 7. Kurpitsalinko | Ei aloitettu |
 | 8. Viimeistely | Ei aloitettu (CSV-vienti ja kuvien vaihtaminen tehtiin jo vaiheessa 1) |
 
@@ -32,13 +32,16 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **JSON-varmuuskopiot pois käytöstä (Pasi 20.10.):** kiitosnäkymä ei lataa varmuuskopiota, eikä korjaustilassa ole "Lataa varmuuskopio"- ja "Tuo varmuuskopio"-toimintoja. Tulokset tallentuvat edelleen selaimeen, ja CSV-vienti säilyy. Poikkeaa CLAUDE.md:n Tallennus-kohdasta Pasin päätöksellä. Kytkin: `CONFIG.storage.jsonBackups`.
 - **Ristikko (Pasi 20.10.):** Välilyönti vaihtaa suuntaa, ja nuoli ristisuuntaan kääntää ensin suunnan. Enter kahdesti antaa vihjeen. Pasi muutti 21.10.: vihje paljastaa 3 satunnaista puuttuvaa kirjainta koko ristikosta ja vie 10 s (ennen 1 kirjain kohdistimen kohdalta, −5 s). Ristikossa on 18–20 sanaa (nyt 20 Pasin listasta, loput varasanoina tiedostossa). Täydet 400 aikapistettä saa, kun ratkaisee alle 3 minuutissa, ja sen jälkeen pisteet vähenevät tasaisesti nollaan 10 minuutin kohdalla. Kokonaan paljastettu sana ei tuo sanapisteitä, mutta sana, johon on itse kirjoitettu vähintään yksi kirjain, tuo. Kun aika loppuu, ratkaisematta jääneet kirjaimet näytetään punaisina. Valmiin sanan jälkeen kohdistin siirtyy seuraavaan sanaan. Hiirellä voi valita ruudun tai vihjeen (poikkeus CLAUDE.md:n "ei hiirtä" -periaatteeseen, ja näppäimistö riittää edelleen). Tab-hyppyä ei tehty.
 - **Enteet (Pasi 20.10.):** vastausaika 12 s. Täydet 100 pistettä saa 5 sekunnin sisällä, ja sen jälkeen pisteet laskevat tasaisesti nollaan.
+- **Tasohyppely (Pasi 21.10.):** nimi "MonsterSlayer3000". Sankarina vampyyrimetsästäjä (valkoinen tukka, pitkä tummanpunainen takki). Kenttä kestää noin 90 sekuntia (ei 2 minuuttia), jotta ilta ei veny. Jokaisen kentän alussa on 5 health-pistettä (ei 3), ja kerätyt puolikkaat vain korjaavat, eivät nosta viiden yli. Vihollisen osuma vie 1, ja kuoppaan putoaminen vie 1 ja palauttaa reunalle. Osumasta tulee pieni kimpoaminen, joka ei koskaan heitä kuoppaan. Hyppy on moderni (suuntaa voi muuttaa ilmassa, pidempi painallus hyppää korkeammalle), ja tuplahyppy on käytössä. Alanuoli kyyristää, ja ylänuoli + X lyö ylöspäin. Portaita ei ole, mutta kentissä on kiipeilyosuuksia. Vaarat: kuopat, liikkuvat tasot, sortuvat lattiat ja heiluvat terät (ei piikkejä). Kaadetut viholliset eivät palaa. Pikselitaide on tarkempaa (yksi pikseli on 3 × 3 pistettä). Kentässä on noin 12 kynttilää. Kynttilät antavat pisteitä, ja aina samat 1–2 kynttilää pudottavat esineen. Viholliset pudottavat esineen sattumalta (noin joka 10.), ja ruoskan päivitys taataan kerran kentässä (jos sitä ei ole tullut puoliväliin mennessä, seuraava kaatuva vihollinen pudottaa sen). Ruoskassa on 3 tasoa, ja täyden ruoskan jälkeen päivitys muuttuu puolikkaaksi health-pisteeksi. Useimmat viholliset kaatuvat yhdestä lyönnistä, haarniskat, sudet ja sienet kestävät 2–3. Vaikeus kasvaa tasaisesti kentästä toiseen. Päänoita on keskivaikea, ja sillä on 3 vaihetta. Se kutsuu apuun korppeja ja maasta nousevia luurankoja. Health-pisteitä ei palauteta ennen päänoitaa. **Pisteet:** matka 600 (200 per kenttä), kynttilät 100 (osuus kaikista) ja päänoita 300 osuutena sen menettämästä kestävyydestä. Poikkeaa CLAUDE.md:n jaosta 700 + 300 Pasin päätöksellä. Viholliset: hautausmaalla maasta nousevat zombit, syöksyvät lepakot ja korpit, linnassa kirveitä heittävät haarniskat, aaltoillen lentävät liekehtivät kallot ja katosta laskeutuvat hämähäkit, ja noidan metsässä leijuvat virvatulet, itiöitä ampuvat myrkkysienet ja juoksevat sudet.
 - **Täydellinen tulos päättää pelin (Pasi 20.10.):** kun toimintapelin yrityksestä tulee 1000 pistettä, loput yritykset jäävät väliin. Koskee kaikkia toimintapelejä.
 - **Kuva-arvoitukset:** 5 kuva-arvoitusta (Pasi tekee kuvat, yksi kuva per arvoitus) ja 5 emojiarvoitusta (Claude Code). Kuva-arvoitukset: hirviö, ihmissusi, verikuu, silmämuna ja kummitusjuna. Arvoitukseen saa lisätä vihjeen (kohta `kysymys`). Ensimmäiset versiot tehdään nyt, ja niitä muokataan myöhemmin.
 - **GitHub Pages** on päällä (Source: GitHub Actions), Pasi kytki sen 19.10.2026.
 
 ## Claude Coden tekemät ratkaisut (Pasi voi muuttaa)
 
-- **Pelien väliaikaiset nimet:** 1. Viimeinen sana (hirsipuu). Ehdotukset seuraaville: 2. Enteet (kuva-arvoitukset), 3. Yölento (lentopeli), 4. Kiirastuli (räiskintä), 5. Kalmanristikko (ristikko), 6. Verikuu (tasohyppely), 7. Piiritys (kurpitsalinko).
+- **Pelien väliaikaiset nimet:** 1. Viimeinen sana (hirsipuu). Ehdotukset seuraaville: 2. Enteet (kuva-arvoitukset), 3. Yölento (lentopeli), 4. Kiirastuli (räiskintä), 5. Kalmanristikko (ristikko), 6. MonsterSlayer3000 (tasohyppely, Pasin valinta), 7. Piiritys (kurpitsalinko).
+- **Tasohyppelyn yksityiskohdat (Pasi voi muuttaa):** Päänoita kestää 30 osumaa perusruoskalla, ketjuruoskalla 20 ja liekehtivällä 15. Se lentää enimmäkseen korkealla, mutta laskeutuu välillä lepäämään matalalle ja syöksyy areenan poikki pään korkeudella. Syöksyn alta pääsee kyyristymällä, ja ruoskanisku keskeyttää syöksyn. Kolmannessa vaiheessa maasta nousee vihreitä tulipatsaita, joista varoitetaan hetkeä ennen. Heiluvan terän alta pääsee kyyristymällä. Vihollisista ei saa pisteitä, joten pisteet tulevat vain matkasta, kynttilöistä ja päänoidasta. Kynttilä on noin 2,8 pisteen arvoinen. Kentän alussa näytetään 1,6 sekunnin ajan kentän nimi. Kentät on mitoitettu noin 75–90 sekunniksi, ja pituus säädetään testauksen jälkeen. Kentät ovat tekstikarttoina tiedostossa `src/games/tasohyppely/levels.ts`, ja luvut ovat tiedostossa `src/config.ts` (kohta `tasohyppely`).
+- **Tasohyppelyn maasto ei tuhoudu:** sortuvat lattiat palaavat 4 sekunnin kuluttua, jotta kiipeilyosuudella ei voi jäädä jumiin.
 - **Sisältötiedostot** ovat korttimuodossa (`sana: …` / `vihje: …`, korttien välissä tyhjä rivi). Ohje: `content/README.md`.
 - **Kesken jäänyt kierros jatkuu:** hirsipuu tallentaa tilanteen jokaisen arvauksen jälkeen. Jos selain suljetaan kesken, Pasi jatkaa vuoroa korjaustilasta, ja peli jatkuu täsmälleen samasta kohdasta. Toimintapeleissä kesken jäänyt yritys ei kulu, ja peli jatkuu seuraavasta yrityksestä.
 - **Korjaustila:** "Poista tulos" tekee pelistä pelaamattoman. "Anna peli uudelleen" tekee saman ja tarjoaa pelaajan vuoron aloittamista heti. Lisäksi korjaustilasta voi poistaa yksittäisen pelaajan (esimerkiksi testipelaajat).
@@ -166,11 +169,35 @@ Kesken:
 Seuraavaksi:
 - Vaihe 6, tasohyppely, kun Pasi hyväksyy ristikon. Kysy ensin reilusti kysymyksiä (Pasin toive 20.10.).
 
+### 21.10.2026 – rupeama 7 (vaihe 6)
+
+Pasi vastasi noin 30 kysymykseen tasohyppelystä (päätökset kohdassa "Pasin kanssa sovitut asiat").
+
+Tehty:
+- Tasohyppely "MonsterSlayer3000": vampyyrimetsästäjä juoksee, hyppää (myös tuplahyppy), kyyristyy ja lyö ruoskalla eteen, ylös ja matalalta. Kolme kenttää: hautausmaa (helppo), linna (keskivaikea, tornin kiipeily ja muurit) ja noidan metsä (vaikein, jättipuun kiipeily ja latvusto). Viimeisen kentän lopussa on päänoita, jolla on kolme vaihetta.
+- Viholliset Pasin listan mukaan: zombit, lepakot, korpit, haarniskat (heittävät kirveitä), liekehtivät kallot, hämähäkit, virvatulet, myrkkysienet (ampuvat itiöitä) ja sudet. Päänoita kutsuu apuun korppeja ja luurankoja. Vaarat: kuopat, liikkuvat tasot (sivu- ja pystysuunnassa), sortuvat lattiat ja heiluvat terät.
+- 36 kynttilää (12 per kenttä), joista neljä pudottaa aina esineen. Viholliset pudottavat esineen 10 %:n todennäköisyydellä, ja ruoskan päivitys taataan kerran kentässä.
+- Pisteet: matka 600, kynttilät 100 ja päänoita 300 osuutena sen menettämästä kestävyydestä. Pisteet näkyvät pelatessa.
+- Kaikki grafiikka on koodilla piirrettyä pikselitaidetta (yksi pikseli 3 × 3), ja `ASSETS.md`:ssä on 35 uutta korvattavaa kuvaa (valikon esikatselukuva mukaan lukien).
+- Testit: yksikkötesti pelaa jokaisen kentän läpi oikealla hyppyfysiikalla ja tarkistaa, että jokaiseen kynttilään ylettyy. Viholliset ja päänoita testataan erikseen, ja selaintesti pelaa koko kulun kolmella yrityksellä.
+
+Kesken:
+- Pasi testaa tasohyppelyn: kenttien pituus ja vaikeus, päänoidan kestävyys, ohjauksen tuntuma ja ulkonäkö.
+
+Seuraavaksi:
+- Pasin palautteen mukaiset korjaukset tasohyppelyyn.
+- Pasin toive 21.10.: salasana pelikertojen väliin (ks. "Tulossa"). Tarkenna ensin Pasilta.
+- Vaihe 7, kurpitsalinko. Kysy ensin Pasilta reilusti kysymyksiä.
+
+## Tulossa (Pasin toiveet)
+
+- **Salasana pelikertojen väliin (Pasi 21.10.):** kun pelaaja on pelannut kaikki pelit, näytetään iso kiitos, ja paluu aloitusnäkymään vaatii Pasin salasanan. Salasana kysytään myös, kun peli avataan ensimmäisen kerran, joten sivun uudelleenlataus ei anna kenellekään uutta kierrosta. Tehdään tasohyppelyn jälkeen. Tarkenna Pasilta ennen rakentamista.
+
 ## Aikataulu
 
-Iltaan on 11 päivää, ja jäljellä on kaksi peliä (tasohyppely ja kurpitsalinko) sekä viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
+Iltaan on 10 päivää (21.10.). Jäljellä on tasohyppelyn hiominen, salasanatoive, kurpitsalinko ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
 
-**Illan kesto:** kaikki pelaavat samalla koneella vuorotellen. Arvio yhden pelaajan koko vuorosta on 45–70 minuuttia (räiskintä enintään noin 12 minuuttia, ristikko 10, tasohyppely 3 yritystä × noin 6 minuuttia). Kahdeksalla pelaajalla vuorot kestävät siis useita tunteja. Pasille kerrottu 20.10.
+**Illan kesto:** kaikki pelaavat samalla koneella vuorotellen. Arvio yhden pelaajan koko vuorosta on 45–70 minuuttia (räiskintä enintään noin 12 minuuttia, ristikko 10, tasohyppely 3 yritystä × enintään noin 5 minuuttia). Kahdeksalla pelaajalla vuorot kestävät siis useita tunteja. Pasille kerrottu 20.10.
 
 ## Tekninen muistio Claude Codelle
 
@@ -181,8 +208,12 @@ Iltaan on 11 päivää, ja jäljellä on kaksi peliä (tasohyppely ja kurpitsali
 - Näppäimet aina `onKeys`/`onChar`-apureilla (`src/ui/input.ts`). Käsittelijä palauttaa `false`, jos se ei käyttänyt näppäintä; muuten painallus merkitään käytetyksi kaikissa näkymissä.
 - Phaser-sudenkuopat: näkymäolio käytetään uudelleen, joten tila nollataan `init`/`create`-metodeissa. Näkymäluokassa ei saa olla kenttiä nimeltä `data`, `input`, `game` tai `scene`. Tween-animaatiot pysäytetään ennen kohteiden tuhoamista. Pelisilmukka on suojattu poikkeuksilta (`main.ts`).
 - Koordinaatit ovat aina 1280 × 720 (`W`, `H`). Isolla näytöllä kangas piirretään kaksinkertaisena, ja kamerat zoomataan automaattisesti.
-- Selaintestejä on 17, ja niiden ajo kestää noin 20 minuuttia. Aja ne taustalla (`run_in_background`), ja odota tulosta silmukalla, joka lukee lokitiedostoa. Yksittäisen pelin testin voi ajaa erikseen: `npx playwright test tests/e2e/<peli>.spec.ts`.
+- Selaintestejä on 18, ja niiden ajo kestää noin 30 minuuttia. Playwright tyhjentää kansion `test-results` ajon alussa, joten älä kirjoita lokia sinne. Aja ne taustalla (`run_in_background`), ja odota tulosta silmukalla, joka lukee lokitiedostoa. Yksittäisen pelin testin voi ajaa erikseen: `npx playwright test tests/e2e/<peli>.spec.ts`.
 - Jokaisessa pelinäkymässä on `getTestState()` ja testiapurit (esim. `debugSkip`, `debugHurt`, `debugPlace`). Testit kutsuvat niitä `page.evaluate`-funktiossa. Menun peli valitaan `selectGame(page, id)`-apurilla, eikä sen paikkaa ruudukossa tarvitse tietää.
 - Hiiri on käytössä Phaser-asetuksissa (`main.ts`), mutta vain ristikko reagoi siihen. Muut pelit ovat pelkän näppäimistön varassa.
+- Animaatiokuvat (`AssetSpec.frames`): `width` ja `height` ovat yhden ruudun koko, ja `draw` saa koko nauhan leveyden (ruutu × määrä). Tasohyppely on ensimmäinen peli, joka käyttää niitä.
+- `heldKeys(...).takePress(key)` kertoo yksittäisen painalluksen, vaikka näppäin olisi pohjassa alle yhden ruudunpäivityksen ajan (tasohyppelyn hyppy).
+- Vierivä peli (tasohyppely): maailma on omassa `Layer`issa pääkameran alla, ja tilarivi on toisessa `Layer`issa omalla `hud`-kamerallaan, koska `scrollFactor(0)` siirtyy kameran zoomauksessa. Taustakuvat ovat maailmassa `scrollFactor(0)`:lla ja siirroksella `W*(ZOOM-1)/2` (`fixedOffset`).
+- Tasohyppelyn rakenne: `levels.ts` (kentät tekstinä), `logic.ts` (kartat, fysiikka, matka, pisteet), `enemies.ts` ja `boss.ts` (käytös ilman Phaseria), `pixel.ts`, `sprites.ts` ja `scenery.ts` (pikselitaide), `TasohyppelyScene.ts` (piirto, kamera, tilarivi). Läpipääsytesti (`logic.test.ts`, `reachableSurfaces`) varmistaa kenttämuutosten jälkeen, että maaliin ja jokaiseen kynttilään pääsee.
 - Pohjassa pidettävät näppäimet (esim. liikkuminen) luetaan `heldKeys`-apurilla (`src/ui/input.ts`). Se vapauttaa näppäimet tauon ja ikkunan vaihdon yhteydessä.
 - Selaintestit: `npm run e2e` (Playwright, tuotantoversio, 1280 × 720). Ä, Ö ja Å lähetetään synteettisinä näppäintapahtumina. Testiselain piirtää ohjelmallisesti ja hitaasti, joten ajastimiin perustuvat vaiheet (esim. rumpujen pärinä) kestävät testissä pidempään kuin oikeasti. Pausella tai ikkunalla peitetty näkymä jatkuu vasta seuraavassa ruudunpäivityksessä: odota testissä `waitForScene`, ennen kuin painat näppäimiä sille, ja tarkista tulos `waitForState`-odotuksella.
