@@ -13,8 +13,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | 2. Kuva-arvoitukset | Valmis, Pasi hyväksyi 20.10. |
 | 3. Lentopeli | Valmis, Pasi hyväksyi 20.10. ("riittävän hyvä tähän vaiheeseen") |
 | 4. Räiskintä | Valmis, Pasi hyväksyi 20.10. ("Paljon parempi"; Paholaiselle +10 % kestävyyttä) |
-| 5. Ristikko | Valmis Pasin testattavaksi (20.10.) |
-| 6. Tasohyppely | Ei aloitettu |
+| 5. Ristikko | Valmis, Pasi hyväksyi 21.10. ("toimii hyvin") |
+| 6. Tasohyppely | Seuraavaksi: kysy ensin Pasilta reilusti kysymyksiä |
 | 7. Kurpitsalinko | Ei aloitettu |
 | 8. Viimeistely | Ei aloitettu (CSV-vienti ja kuvien vaihtaminen tehtiin jo vaiheessa 1) |
 
@@ -158,8 +158,10 @@ Tehty:
 
 Pasin palaute 21.10.: "Toimi hyvin". Vihje muutettiin: 3 satunnaista puuttuvaa kirjainta koko ristikosta, −10 s. Huomio Pasille: jos pelaaja paljastaa koko ristikon pelkillä vihjeillä, hän saa noin 140 aikapistettä (sanapisteitä ei tule).
 
+Pasi hyväksyi ristikon 21.10. ("toimii hyvin"). Keskustelu tyhjennettiin tämän jälkeen, ja tasohyppely aloitetaan uudessa keskustelussa.
+
 Kesken:
-- Pasi testaa uuden vihjeen.
+- Ei mitään.
 
 Seuraavaksi:
 - Vaihe 6, tasohyppely, kun Pasi hyväksyy ristikon. Kysy ensin reilusti kysymyksiä (Pasin toive 20.10.).
@@ -179,4 +181,8 @@ Iltaan on 11 päivää, ja jäljellä on kaksi peliä (tasohyppely ja kurpitsali
 - Näppäimet aina `onKeys`/`onChar`-apureilla (`src/ui/input.ts`). Käsittelijä palauttaa `false`, jos se ei käyttänyt näppäintä; muuten painallus merkitään käytetyksi kaikissa näkymissä.
 - Phaser-sudenkuopat: näkymäolio käytetään uudelleen, joten tila nollataan `init`/`create`-metodeissa. Näkymäluokassa ei saa olla kenttiä nimeltä `data`, `input`, `game` tai `scene`. Tween-animaatiot pysäytetään ennen kohteiden tuhoamista. Pelisilmukka on suojattu poikkeuksilta (`main.ts`).
 - Koordinaatit ovat aina 1280 × 720 (`W`, `H`). Isolla näytöllä kangas piirretään kaksinkertaisena, ja kamerat zoomataan automaattisesti.
+- Selaintestejä on 17, ja niiden ajo kestää noin 20 minuuttia. Aja ne taustalla (`run_in_background`), ja odota tulosta silmukalla, joka lukee lokitiedostoa. Yksittäisen pelin testin voi ajaa erikseen: `npx playwright test tests/e2e/<peli>.spec.ts`.
+- Jokaisessa pelinäkymässä on `getTestState()` ja testiapurit (esim. `debugSkip`, `debugHurt`, `debugPlace`). Testit kutsuvat niitä `page.evaluate`-funktiossa. Menun peli valitaan `selectGame(page, id)`-apurilla, eikä sen paikkaa ruudukossa tarvitse tietää.
+- Hiiri on käytössä Phaser-asetuksissa (`main.ts`), mutta vain ristikko reagoi siihen. Muut pelit ovat pelkän näppäimistön varassa.
+- Pohjassa pidettävät näppäimet (esim. liikkuminen) luetaan `heldKeys`-apurilla (`src/ui/input.ts`). Se vapauttaa näppäimet tauon ja ikkunan vaihdon yhteydessä.
 - Selaintestit: `npm run e2e` (Playwright, tuotantoversio, 1280 × 720). Ä, Ö ja Å lähetetään synteettisinä näppäintapahtumina. Testiselain piirtää ohjelmallisesti ja hitaasti, joten ajastimiin perustuvat vaiheet (esim. rumpujen pärinä) kestävät testissä pidempään kuin oikeasti. Pausella tai ikkunalla peitetty näkymä jatkuu vasta seuraavassa ruudunpäivityksessä: odota testissä `waitForScene`, ennen kuin painat näppäimiä sille, ja tarkista tulos `waitForState`-odotuksella.
