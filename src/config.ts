@@ -138,10 +138,12 @@ export const CONFIG = {
     maxRows: 16,
     /** Time for the whole crossword (CLAUDE.md: 10 minutes). */
     seconds: 600,
-    /** A wrong word and each revealed letter take this many seconds off the remaining time. */
+    /** A wrong word takes this many seconds off the remaining time. */
     wrongWordPenaltySeconds: 5,
-    revealPenaltySeconds: 5,
-    /** The second Enter must come within this many seconds of the first to reveal a letter (Pasi 20.10.: Enter twice). */
+    /** A hint reveals this many missing letters, chosen at random from the whole crossword, and costs this many seconds (Pasi 21.10.). */
+    revealCount: 3,
+    revealPenaltySeconds: 10,
+    /** The second Enter must come within this many seconds of the first to give a hint (Pasi 20.10.: Enter twice). */
     revealConfirmSeconds: 3,
     /** Points: correct words as a share of all (60 %) and the remaining time (40 %). */
     wordPoints: 600,

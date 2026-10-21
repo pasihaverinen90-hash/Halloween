@@ -36,7 +36,7 @@ async function startCrossword(page: Page, name: string): Promise<void> {
   await waitForScene(page, 'Ristikko', 60_000);
 }
 
-test('ristikko: oikea ja väärä sana, paljastus, hiiri ja koko ristikon ratkaisu', async ({ page }) => {
+test('ristikko: oikea ja väärä sana, vihje, hiiri ja koko ristikon ratkaisu', async ({ page }) => {
   test.setTimeout(300_000);
   await startCrossword(page, 'Ristikoija');
   const start = await sceneState(page, 'Ristikko');
@@ -55,13 +55,13 @@ test('ristikko: oikea ja väärä sana, paljastus, hiiri ja koko ristikon ratkai
   await waitForState(page, 'Ristikko', (s) => s.secondsLeft <= before - 5);
   expect(await sceneState(page, 'Ristikko')).toMatchObject({ solved: 1, word: wrongWord });
 
-  // Kirjaimen paljastus: Enter kahdesti
+  // Vihje: Enter kahdesti paljastaa 3 satunnaista puuttuvaa kirjainta (−10 s)
   await press(page, 'Enter', 300);
   expect((await sceneState(page, 'Ristikko')).prompt).toBe(true);
   const beforeReveal = (await sceneState(page, 'Ristikko')).secondsLeft;
   await press(page, 'Enter', 300);
-  await waitForState(page, 'Ristikko', (s) => s.revealed === 1);
-  expect((await sceneState(page, 'Ristikko')).secondsLeft).toBeLessThanOrEqual(beforeReveal - 5);
+  await waitForState(page, 'Ristikko', (s) => s.revealed === 3);
+  expect((await sceneState(page, 'Ristikko')).secondsLeft).toBeLessThanOrEqual(beforeReveal - 10);
 
   // Hiirellä valitaan ruutu
   const target = await crossword<{ row: number; col: number; x: number; y: number }>(

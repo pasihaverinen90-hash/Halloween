@@ -30,7 +30,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 - **Räiskintä (Pasi 20.10.):** Paholainen saapuu 3 minuutin kohdalla (ei 5), jotta ilta ei veny. Vihollispisteet (400) ovat osuus kaikista vihollisista, ja viholliset tulevat kaikille samassa järjestyksessä. Liitonarkku ja pyhä malja lasketaan vihollisiin. Paholaisesta saa 300 pistettä vain kaatamalla sen. Paavi kestää 10 osumaa. Pasi muutti myöhemmin 20.10.: matkan varrella putoaa kolme kultaista ristiä (noin 50, 100 ja 150 s), joista kukin palauttaa yhden.
 - **Räiskintä, Pasin palaute 20.10.:** vihollisia aivan liian vähän, kuva saa olla kauempaa (enemmän pelialuetta), paavi saa liikkua myös pystysuunnassa, lisää vaikeampia vihollisia, ja Paholainen oli tylsä. Boosteihin voi myöhemmin lisätä erilaisia lisäaseita (ei vielä).
 - **JSON-varmuuskopiot pois käytöstä (Pasi 20.10.):** kiitosnäkymä ei lataa varmuuskopiota, eikä korjaustilassa ole "Lataa varmuuskopio"- ja "Tuo varmuuskopio"-toimintoja. Tulokset tallentuvat edelleen selaimeen, ja CSV-vienti säilyy. Poikkeaa CLAUDE.md:n Tallennus-kohdasta Pasin päätöksellä. Kytkin: `CONFIG.storage.jsonBackups`.
-- **Ristikko (Pasi 20.10.):** Välilyönti vaihtaa suuntaa, ja nuoli ristisuuntaan kääntää ensin suunnan. Enter kahdesti paljastaa kirjaimen (−5 s). Ristikossa on 18–20 sanaa (nyt 20 Pasin listasta, loput varasanoina tiedostossa). Täydet 400 aikapistettä saa, kun ratkaisee alle 3 minuutissa, ja sen jälkeen pisteet vähenevät tasaisesti nollaan 10 minuutin kohdalla. Kokonaan paljastettu sana ei tuo sanapisteitä, mutta sana, johon on itse kirjoitettu vähintään yksi kirjain, tuo. Kun aika loppuu, ratkaisematta jääneet kirjaimet näytetään punaisina. Valmiin sanan jälkeen kohdistin siirtyy seuraavaan sanaan. Hiirellä voi valita ruudun tai vihjeen (poikkeus CLAUDE.md:n "ei hiirtä" -periaatteeseen, ja näppäimistö riittää edelleen). Tab-hyppyä ei tehty.
+- **Ristikko (Pasi 20.10.):** Välilyönti vaihtaa suuntaa, ja nuoli ristisuuntaan kääntää ensin suunnan. Enter kahdesti antaa vihjeen. Pasi muutti 21.10.: vihje paljastaa 3 satunnaista puuttuvaa kirjainta koko ristikosta ja vie 10 s (ennen 1 kirjain kohdistimen kohdalta, −5 s). Ristikossa on 18–20 sanaa (nyt 20 Pasin listasta, loput varasanoina tiedostossa). Täydet 400 aikapistettä saa, kun ratkaisee alle 3 minuutissa, ja sen jälkeen pisteet vähenevät tasaisesti nollaan 10 minuutin kohdalla. Kokonaan paljastettu sana ei tuo sanapisteitä, mutta sana, johon on itse kirjoitettu vähintään yksi kirjain, tuo. Kun aika loppuu, ratkaisematta jääneet kirjaimet näytetään punaisina. Valmiin sanan jälkeen kohdistin siirtyy seuraavaan sanaan. Hiirellä voi valita ruudun tai vihjeen (poikkeus CLAUDE.md:n "ei hiirtä" -periaatteeseen, ja näppäimistö riittää edelleen). Tab-hyppyä ei tehty.
 - **Enteet (Pasi 20.10.):** vastausaika 12 s. Täydet 100 pistettä saa 5 sekunnin sisällä, ja sen jälkeen pisteet laskevat tasaisesti nollaan.
 - **Täydellinen tulos päättää pelin (Pasi 20.10.):** kun toimintapelin yrityksestä tulee 1000 pistettä, loput yritykset jäävät väliin. Koskee kaikkia toimintapelejä.
 - **Kuva-arvoitukset:** 5 kuva-arvoitusta (Pasi tekee kuvat, yksi kuva per arvoitus) ja 5 emojiarvoitusta (Claude Code). Kuva-arvoitukset: hirviö, ihmissusi, verikuu, silmämuna ja kummitusjuna. Arvoitukseen saa lisätä vihjeen (kohta `kysymys`). Ensimmäiset versiot tehdään nyt, ja niitä muokataan myöhemmin.
@@ -156,8 +156,10 @@ Tehty:
 - Hiiri otettiin käyttöön Phaser-asetuksissa, mutta vain ristikko käyttää sitä.
 - Enteiden ajoitus muutettiin Pasin toiveen mukaan.
 
+Pasin palaute 21.10.: "Toimi hyvin". Vihje muutettiin: 3 satunnaista puuttuvaa kirjainta koko ristikosta, −10 s. Huomio Pasille: jos pelaaja paljastaa koko ristikon pelkillä vihjeillä, hän saa noin 140 aikapistettä (sanapisteitä ei tule).
+
 Kesken:
-- Pasi testaa ristikon.
+- Pasi testaa uuden vihjeen.
 
 Seuraavaksi:
 - Vaihe 6, tasohyppely, kun Pasi hyväksyy ristikon. Kysy ensin reilusti kysymyksiä (Pasin toive 20.10.).

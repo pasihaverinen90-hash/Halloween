@@ -99,7 +99,7 @@ export class RistikkoScene extends Phaser.Scene {
     addKeyHints(this, [
       ['←→↑↓', 'Liiku'],
       ['Välilyönti', 'Suunta'],
-      ['Enter ×2', 'Paljasta kirjain (−5 s)'],
+      ['Enter ×2', `Vihje: ${C.revealCount} kirjainta (−${C.revealPenaltySeconds} s)`],
       ['Esc', 'Tauko'],
     ]);
 
@@ -194,21 +194,20 @@ export class RistikkoScene extends Phaser.Scene {
       return true;
     }
     if (this.phase !== 'playing') return false;
-    const x = this.crossword;
-    if (x.locked(x.key)) {
-      this.flashPrompt('Tämä kirjain on jo valmis.');
-      return true;
-    }
-    if (this.revealArmed > 0 && this.revealKey === x.key) {
+    if (this.revealArmed > 0 && this.revealKey === 'hint') {
+      // Pasi 21.10.: a hint reveals a few missing letters anywhere in the crossword
       this.disarm();
-      this.apply(x.reveal());
-      this.penaltyText();
+      this.apply(this.crossword.reveal());
+      this.penaltyText(C.revealPenaltySeconds);
       this.redraw();
       return true;
     }
     this.revealArmed = C.revealConfirmSeconds;
-    this.revealKey = x.key;
-    this.promptText.setText(`Paina Enter uudelleen, niin kirjain paljastetaan (−${C.revealPenaltySeconds} s).`).setColor(CSS.orange).setVisible(true);
+    this.revealKey = 'hint';
+    this.promptText
+      .setText(`Paina Enter uudelleen: ${C.revealCount} puuttuvaa kirjainta paljastetaan (−${C.revealPenaltySeconds} s).`)
+      .setColor(CSS.orange)
+      .setVisible(true);
     this.ctx.sfx.play('move');
     return true;
   }
@@ -246,10 +245,14 @@ export class RistikkoScene extends Phaser.Scene {
 
   /** Sounds and animations for what happened, then save. */
   private apply(events: CrosswordEvent[]): void {
+    const revealed = events.flatMap((e) => (e.type === 'revealed' ? [e.key] : []));
+    if (revealed.length > 0) {
+      this.ctx.sfx.play('select');
+      this.pulse(revealed, COLORS.gold);
+    }
     for (const event of events) {
       if (event.type === 'typed') this.ctx.sfx.play('type');
       else if (event.type === 'erased') this.ctx.sfx.play('erase');
-      else if (event.type === 'revealed') this.ctx.sfx.play('select');
       else if (event.type === 'locked') this.flashPrompt('Tämä kirjain on jo valmis.');
       else if (event.type === 'solved') {
         this.ctx.sfx.play('success');
@@ -257,7 +260,7 @@ export class RistikkoScene extends Phaser.Scene {
       } else if (event.type === 'wrong') {
         this.ctx.sfx.play('wrong');
         this.pulse(this.crossword.cellsOf(event.word), COLORS.red);
-        this.penaltyText();
+        this.penaltyText(C.wrongWordPenaltySeconds);
       }
     }
     if (events.length > 0) this.save();
@@ -311,7 +314,7 @@ export class RistikkoScene extends Phaser.Scene {
       .setOrigin(0.5);
     this.clueText.setShadow(0, 2, '#000000', 4, true, true);
     this.promptText = this.add
-      .text(GRID_AREA.x + GRID_AREA.w / 2, 84, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.orange })
+      .text(W / 2, 80, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.orange })
       .setOrigin(0.5)
       .setVisible(false);
     this.promptText.setShadow(0, 2, '#000000', 4, true, true);
@@ -423,8 +426,8 @@ export class RistikkoScene extends Phaser.Scene {
     this.timeText.setText(text).setColor(left <= 60 ? CSS.red : CSS.orange);
   }
 
-  private penaltyText(): void {
-    const text = this.add.text(200, 34, '−5 s', { ...TEXT.bodyBold, fontSize: '26px', color: CSS.red }).setOrigin(0, 0.5);
+  private penaltyText(seconds: number): void {
+    const text = this.add.text(200, 34, `−${seconds} s`, { ...TEXT.bodyBold, fontSize: '26px', color: CSS.red }).setOrigin(0, 0.5);
     this.tweens.add({ targets: text, y: 64, alpha: 0, duration: 1100, onComplete: () => text.destroy() });
   }
 

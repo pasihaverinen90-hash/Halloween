@@ -58,26 +58,33 @@ describe('crossword round', () => {
     expect(x.values.get('1,0')).toBe('I');
   });
 
-  it('reveals a letter for 5 seconds; a word revealed completely gives no word points', () => {
+  it('a hint reveals 3 random missing letters anywhere for 10 seconds', () => {
     const x = new Crossword(LAYOUT);
     typeAll(x, 'KALMA');
-    x.selectWord(2);
-    expect([x.row, x.col]).toEqual([1, 4]);
-    for (let i = 0; i < 3; i++) x.reveal();
-    expect(x.solved.has(2)).toBe(true); // A was typed in KALMA, so AAVE counts
-    expect(x.secondsLeft).toBe(C.seconds - 3 * C.revealPenaltySeconds);
-    expect(x.counted()).toBe(2);
-    expect([x.row, x.col]).toEqual([1, 0]); // on to the next unsolved word
-    x.select(2, 4);
-    expect(x.reveal()).toEqual([{ type: 'locked', key: '2,4' }]);
+    const events = x.reveal(() => 0); // always the first missing cell
+    expect(events.filter((e) => e.type === 'revealed')).toHaveLength(C.revealCount);
+    expect([...x.revealed]).toEqual(['1,0', '2,0', '3,0']);
+    expect(x.secondsLeft).toBe(C.seconds - C.revealPenaltySeconds);
+    for (const key of x.revealed) expect(x.locked(key)).toBe(true);
   });
 
-  it('does not count a word whose every letter was revealed', () => {
+  it('reveals only missing letters, and a word revealed completely gives no word points', () => {
     const x = new Crossword(LAYOUT);
-    x.selectWord(2);
-    for (let i = 0; i < 4; i++) x.reveal();
-    expect(x.solved.has(2)).toBe(true);
+    typeAll(x, 'KAL'); // three right letters, not locked yet
+    for (let i = 0; i < 3; i++) x.reveal(() => 0.99);
+    expect([...x.revealed].some((key) => ['0,0', '0,1', '0,2'].includes(key))).toBe(false);
+    expect(x.allSolved()).toBe(true);
+    // KALMA and KISSA have letters typed by the player; every letter of AAVE was revealed
+    expect(x.counted()).toBe(2);
+    expect(x.reveal()).toEqual([]);
+  });
+
+  it('gives only time points when everything was revealed', () => {
+    const x = new Crossword(LAYOUT);
+    while (!x.allSolved()) x.reveal();
     expect(x.counted()).toBe(0);
+    expect(x.secondsLeft).toBe(C.seconds - 4 * C.revealPenaltySeconds);
+    expect(x.points()).toBe(C.timePoints);
   });
 
   it('moves with arrows: an arrow across the direction first turns, gaps are skipped', () => {

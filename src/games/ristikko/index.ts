@@ -17,13 +17,13 @@ const ristikko: GameDefinition = {
       ['←→↑↓', 'Liiku (tai valitse ruutu hiirellä)'],
       ['Välilyönti', 'Vaihda suuntaa (vaaka / pysty)'],
       ['Backspace', 'Pyyhi kirjain'],
-      ['Enter ×2', `Paljasta kirjain (−${C.revealPenaltySeconds} s)`],
+      ['Enter ×2', `Vihje: ${C.revealCount} kirjainta (−${C.revealPenaltySeconds} s)`],
     ],
     rules: [
       `Aikaa on ${C.seconds / 60} minuuttia. Kirjoita kirjaimet näppäimistöltä.`,
       'Kun sanan kaikki ruudut on täytetty, peli tarkistaa sen. Oikea sana lukittuu, ja kohdistin siirtyy seuraavaan sanaan.',
       `Väärä sana välähtää punaisena, sen väärät kirjaimet poistuvat ja ajasta lähtee ${C.wrongWordPenaltySeconds} sekuntia.`,
-      `Kirjaimen paljastus vie ${C.revealPenaltySeconds} sekuntia. Kokonaan paljastettu sana ei tuo pisteitä.`,
+      `Vihje paljastaa ${C.revealCount} satunnaista puuttuvaa kirjainta koko ristikosta ja vie ${C.revealPenaltySeconds} sekuntia. Kokonaan paljastettu sana ei tuo pisteitä.`,
     ],
     scoring: [
       `Oikeat sanat: enintään ${C.wordPoints}.`,

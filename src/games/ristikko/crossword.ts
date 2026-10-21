@@ -7,8 +7,8 @@ import { cellKey, crosswordPoints, solutionCells, wordCells, type Direction, typ
  *  - typing fills the cell under the cursor and moves on in the word;
  *  - when every cell of a word is filled it is checked: a correct word locks,
  *    a wrong one loses its wrong unlocked letters and costs 5 seconds;
- *  - revealing a letter costs 5 seconds; a word revealed completely gives no
- *    word points;
+ *  - a hint reveals 3 missing letters at random from the whole crossword and
+ *    costs 10 seconds; a word revealed completely gives no word points;
  *  - after a solved word the cursor jumps to the next unsolved word.
  * Operations return events, so the scene can animate them.
  */
@@ -217,18 +217,27 @@ export class Crossword {
     return [{ type: 'erased', key }];
   }
 
-  /** Reveals the correct letter of the cursor cell; costs time. */
-  reveal(): CrosswordEvent[] {
-    const key = this.key;
-    if (this.locked(key)) return [{ type: 'locked', key }];
-    this.values.set(key, this.solution.get(key)!);
-    this.typed.delete(key);
-    this.revealed.add(key);
+  /**
+   * A hint (Pasi 21.10.): reveals revealCount missing letters chosen at random
+   * from the whole crossword and costs revealPenaltySeconds. Words completed
+   * by it are checked as usual.
+   */
+  reveal(random: () => number = Math.random): CrosswordEvent[] {
+    const missing = [...this.solution.keys()].filter((key) => !this.locked(key) && this.values.get(key) !== this.solution.get(key));
+    if (missing.length === 0) return [];
+    const picks: string[] = [];
+    while (picks.length < C.revealCount && missing.length > 0) picks.push(missing.splice(Math.floor(random() * missing.length), 1)[0]);
     this.penalty(C.revealPenaltySeconds);
+    const events: CrosswordEvent[] = [];
+    for (const key of picks) {
+      this.values.set(key, this.solution.get(key)!);
+      this.typed.delete(key);
+      this.revealed.add(key);
+      events.push({ type: 'revealed', key });
+    }
+    for (const key of picks) events.push(...this.checkWordsAt(key));
     const word = this.currentWord();
-    const events: CrosswordEvent[] = [{ type: 'revealed', key }, ...this.checkWordsAt(key)];
     if (this.solved.has(word)) this.jumpToNextWord(word);
-    else this.moveTo(this.nextOpen(word, key, 1) ?? key);
     return events;
   }
 
