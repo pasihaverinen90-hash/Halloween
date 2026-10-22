@@ -14,8 +14,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | 3. Lentopeli | Valmis, Pasi hyväksyi 20.10. ("riittävän hyvä tähän vaiheeseen") |
 | 4. Räiskintä | Valmis, Pasi hyväksyi 20.10. ("Paljon parempi"; Paholaiselle +10 % kestävyyttä) |
 | 5. Ristikko | Valmis, Pasi hyväksyi 21.10. ("toimii hyvin") |
-| 6. Tasohyppely | Ensimmäinen versio valmis 21.10., Pasi testaa |
-| 7. Kurpitsalinko | Ei aloitettu |
+| 6. Tasohyppely | Valmis, Pasi testasi kaiken 22.10. ja pyysi siirtymään kurpitsalinkoon |
+| 7. Kurpitsalinko | Aloitettu 22.10.: kysymykset Pasille |
 | 8. Viimeistely | Ei aloitettu (CSV-vienti ja kuvien vaihtaminen tehtiin jo vaiheessa 1) |
 
 ## Pasin kanssa sovitut asiat
@@ -219,8 +219,10 @@ Tehty:
 - Kiitosnäkymän "Seuraava pelaaja" vaatii salasanan. Peruutus jättää kiitosnäkymän näkyviin.
 - Selaintestit avaavat pelin salasanalla (`unlock`), ja uusi testi `lukitus.spec.ts` tarkistaa lukituksen.
 
+Pasi 22.10.: "salasana toimi hyvin, testasin kaiken". Siirrytään kurpitsalinkoon.
+
 Kesken:
-- Pasi testaa tasohyppelyn (rupeama 7) ja lukituksen.
+- Ei mitään.
 
 Seuraavaksi:
 - Pasin palautteen mukaiset korjaukset tasohyppelyyn, sitten vaihe 7, kurpitsalinko. Kysy ensin reilusti kysymyksiä.
