@@ -19,6 +19,8 @@ test('peli aukeaa vain salasanalla, eikä Esc ohita lukkoa', async ({ page }) =>
   await typeText(page, PASSWORD);
   await press(page, 'Enter');
   await waitForScene(page, 'Start');
+  // Nothing of the lock is left running behind the start screen.
+  expect(await activeScenes(page)).toEqual(['Start']);
   await expectNoRuntimeErrors(page);
 });
 

@@ -14,8 +14,18 @@ function open(scene: Phaser.Scene, key: string, data: object): void {
   scene.scene.bringToTop(key);
 }
 
-function resume(scene: Phaser.Scene): void {
-  if (scene.sys.isPaused()) scene.scene.resume();
+/**
+ * Resume the caller, then continue. Phaser resumes a scene only on its next
+ * step, so `then` waits for that: a caller that switches screens right after
+ * a dialog must not be resumed again behind the new screen.
+ */
+function resume(scene: Phaser.Scene, then: () => void): void {
+  if (!scene.sys.isPaused()) {
+    then();
+    return;
+  }
+  scene.sys.events.once('resume', then);
+  scene.scene.resume();
 }
 
 /** Ask a yes/no question. Resolves true when the confirm button was chosen. */
@@ -23,10 +33,7 @@ export function confirmDialog(scene: Phaser.Scene, opts: Omit<DialogData, 'onClo
   return new Promise((resolve) => {
     const data: DialogData = {
       ...opts,
-      onClose: (confirmed) => {
-        resume(scene);
-        resolve(confirmed);
-      },
+      onClose: (confirmed) => resume(scene, () => resolve(confirmed)),
     };
     open(scene, SCENES.Dialog, data);
   });
@@ -42,10 +49,7 @@ export function promptText(scene: Phaser.Scene, opts: Omit<PromptData, 'onClose'
   return new Promise((resolve) => {
     const data: PromptData = {
       ...opts,
-      onClose: (value) => {
-        resume(scene);
-        resolve(value);
-      },
+      onClose: (value) => resume(scene, () => resolve(value)),
     };
     open(scene, SCENES.Prompt, data);
   });
@@ -57,14 +61,8 @@ export function askPassword(scene: Phaser.Scene, title: string, opts: { cancelab
     const data: PasswordData = {
       title,
       cancelable: opts.cancelable,
-      onSuccess: () => {
-        resume(scene);
-        resolve(true);
-      },
-      onCancel: () => {
-        resume(scene);
-        resolve(false);
-      },
+      onSuccess: () => resume(scene, () => resolve(true)),
+      onCancel: () => resume(scene, () => resolve(false)),
     };
     open(scene, SCENES.Password, data);
   });
