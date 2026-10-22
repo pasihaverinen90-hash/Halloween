@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CONFIG } from '../../config';
 import { LEVELS } from './levels';
-import { Battle, launchVelocity, powerAt, score, SKELETON_H, totalSkeletons, WEAPONS, type BattleEvent } from './logic';
+import { Battle, launchVelocity, levelScore, powerAt, SKELETON_H, totalSkeletons, WEAPONS, type BattleEvent } from './logic';
 import { CELL, Terrain } from './terrain';
 
 const C = CONFIG.kurpitsalinko;
@@ -46,21 +46,28 @@ describe('aiming and points', () => {
     expect(powerAt(C.powerSwingSeconds * 0.25)).toBeCloseTo(0.5, 5);
   });
 
-  it('gives 1000 × skeletons ÷ shots, never above 1000 (Pasi 22.10.)', () => {
-    const s = totalSkeletons();
-    expect(s).toBe(15);
-    expect(score(s, s)).toBe(1000);
-    expect(score(s, s - 3)).toBe(1000);
-    expect(score(s, s + 1)).toBe(938);
-    expect(score(s, s + 5)).toBe(750);
-    expect(score(s, 2 * s)).toBe(500);
-    // The first extra shot costs the most.
-    expect(score(s, s) - score(s, s + 1)).toBeGreaterThan(score(s, s + 1) - score(s, s + 2));
+  it('gives 200 a level, less in steps for extra shots (Pasi 22.10.)', () => {
+    expect(levelScore(6, 4)).toBe(200);
+    expect(levelScore(6, 6)).toBe(200);
+    expect(levelScore(6, 7)).toBe(200);
+    expect(levelScore(6, 8)).toBe(150);
+    expect(levelScore(6, 11)).toBe(150);
+    expect(levelScore(6, 12)).toBe(100);
+    expect(levelScore(6, 16)).toBe(100);
+    expect(levelScore(6, 17)).toBe(50);
+    expect(levelScore(6, 21)).toBe(50);
+    expect(levelScore(6, 22)).toBe(25);
+    expect(levelScore(6, 200)).toBe(25);
+    // Five levels at most 1000.
+    expect(LEVELS.length * levelScore(1, 1)).toBe(1000);
   });
 
   it('has five weapons and the levels of the skeleton castle', () => {
     expect(WEAPONS).toEqual(['pumpkin', 'cluster', 'homing', 'beam', 'bomb']);
-    expect(LEVELS.map((l) => l.skeletons.length)).toEqual([2, 2, 3, 4, 4]);
+    // Pasi 22.10.: 5–8 skeletons a level.
+    expect(LEVELS.map((l) => l.skeletons.length)).toEqual([5, 6, 6, 7, 8]);
+    expect(totalSkeletons()).toBe(32);
+    expect(C.attempts).toBe(2);
     // Moving skeletons only from level 3 (Pasi 22.10.).
     expect(LEVELS.slice(0, 2).some((l) => l.skeletons.some((s) => s.moves))).toBe(false);
     expect(LEVELS.slice(2).every((l) => l.skeletons.some((s) => s.moves))).toBe(true);
@@ -98,12 +105,12 @@ describe('battle', () => {
     const s = b.skeletons[0];
     b.explode(s.x + 20, s.y - 10, C.blastRadius, false);
     expect(s.alive).toBe(false);
-    expect(b.skeletonsLeft()).toBe(1);
+    expect(b.skeletonsLeft()).toBe(LEVELS[0].skeletons.length - 1);
   });
 
   it('a skeleton falls into the moat when the bridge is blown away (Pasi 22.10.)', () => {
     const b = new Battle(1);
-    const onBridge = b.skeletons[0];
+    const onBridge = b.skeletons.find((sk) => sk.x === 1100)!;
     b.explode(onBridge.x - 60, onBridge.y + 8, 30, false);
     b.explode(onBridge.x + 60, onBridge.y + 8, 30, false);
     // The bridge under its feet is gone, the skeleton itself was out of reach.
@@ -136,7 +143,7 @@ describe('battle', () => {
     // Far too weak to reach anything by itself.
     b.fire('homing', 60, 0.05);
     settle(b);
-    expect(b.skeletonsLeft()).toBeLessThan(2);
+    expect(b.skeletonsLeft()).toBeLessThan(LEVELS[0].skeletons.length);
   });
 
   it('a big bomb makes a larger hole than a pumpkin', () => {

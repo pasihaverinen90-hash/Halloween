@@ -91,10 +91,14 @@ export function powerAt(heldSeconds: number): number {
   return t <= half ? t / half : 2 - t / half;
 }
 
-/** Points (Pasi 22.10.): 1000 × skeletons ÷ shots, never above 1000. */
-export function score(skeletons: number, shots: number): number {
-  if (skeletons <= 0) return 0;
-  return Math.min(CONFIG.maxScore, Math.round((CONFIG.maxScore * skeletons) / Math.max(1, shots)));
+/**
+ * Points of one level (Pasi 22.10.): 200 when the shots are at most the
+ * skeletons + 1, then less in steps (+2–5: 150, +6–10: 100, +11–15: 50, more: 25).
+ */
+export function levelScore(skeletons: number, shots: number): number {
+  const extra = shots - skeletons;
+  for (const step of C.pointSteps) if (extra <= step.extra) return step.points;
+  return C.fewestPoints;
 }
 
 export function totalSkeletons(): number {

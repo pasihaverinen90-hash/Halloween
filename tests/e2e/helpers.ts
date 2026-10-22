@@ -277,8 +277,7 @@ export async function playCatapultQuickly(page: Page): Promise<number> {
     await waitForState(page, 'Kurpitsalinko', (s) => s.level === level && s.phase !== 'levelDone', 60_000);
     await page.evaluate(() => {
       const scene = (window.__peli!.game as any).scene.getScene('Kurpitsalinko');
-      scene.shots += scene.battle.skeletonsLeft();
-      scene.debugClearLevel();
+      scene.debugClearLevel(scene.battle.skeletonsLeft());
     });
     await waitForState(page, 'Kurpitsalinko', (s) => s.level > level || s.phase === 'won', 60_000);
   }

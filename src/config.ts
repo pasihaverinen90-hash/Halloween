@@ -314,13 +314,16 @@ export const CONFIG = {
    * Rules: CLAUDE.md, game 7, and Pasi's choices 22.10. (EDISTYMINEN.md). The levels are in src/games/kurpitsalinko/levels.ts.
    */
   kurpitsalinko: {
-    levelWidth: 1920,
+    /** Pasi 22.10.: two attempts; the first is a kind of practice round. */
+    attempts: 2,
+    /** Pasi 22.10.: levels about two screens wide, with hills, valleys and obstacles. */
+    levelWidth: 2560,
     levelHeight: 720,
     /** Falling speed gain of pumpkins, skeletons and barrels. */
     gravity: 900,
     /** Launch speed at no and full power. */
     minSpeed: 260,
-    maxSpeed: 1320,
+    maxSpeed: 1520,
     /** Pasi 22.10.: the power swings up and down while Space is held; one full swing up and down takes this long. */
     powerSwingSeconds: 2.2,
     /** Aim angle limits (degrees above the horizon), and how fast ↑↓ and ←→ (fine) turn it. */
@@ -342,6 +345,22 @@ export const CONFIG = {
     /** Pumpkin beam: width of the burnt corridor, and how long it glows. */
     beamWidth: 26,
     beamSeconds: 0.7,
+    /**
+     * Points per level (Pasi 22.10.): 200 when the shots are at most skeletons + 1, then less in steps.
+     * Each step: extra shots (beyond the skeletons) up to `extra` give `points`; more than all of them gives `fewest`.
+     */
+    levelPoints: 200,
+    pointSteps: [
+      { extra: 1, points: 200 },
+      { extra: 5, points: 150 },
+      { extra: 10, points: 100 },
+      { extra: 15, points: 50 },
+    ],
+    fewestPoints: 25,
+    /** Camera while aiming and while a pumpkin flies, and how fast A and D move it while aiming. */
+    aimZoom: 0.75,
+    flightZoom: 0.85,
+    panSpeed: 1100,
     /** A skeleton falling more than this breaks (Pasi 22.10.). */
     fallBreak: 110,
     /** Moving skeletons walk this far after each shot (from level 3, Pasi 22.10.). */

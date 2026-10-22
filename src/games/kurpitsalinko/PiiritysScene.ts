@@ -8,15 +8,25 @@ import { COLORS, CSS, TEXT } from '../../ui/theme';
 import { assetKey, type GameContext, type GameSceneData } from '../types';
 import { ARM, BARREL, CATAPULT, CRYPT, EARTH, PROJECTILES, SKELETON, SKY, STONE, WARRIOR, WOOD } from './assets';
 import { LEVELS } from './levels';
-import { Battle, powerAt, score, SKELETON_H, totalSkeletons, WEAPONS, type BattleEvent, type Weapon } from './logic';
+import { Battle, levelScore, powerAt, SKELETON_H, WEAPONS, type BattleEvent, type Weapon } from './logic';
 import type { Material, Shape } from './terrain';
 
 const C = CONFIG.kurpitsalinko;
 const LW = C.levelWidth;
 const LH = C.levelHeight;
 const TERRAIN_KEY = 'piiritys-maasto';
-/** Zoom that shows the whole level while aiming. */
-const OVERVIEW = W / LW;
+/** Camera zoom while aiming (the start of a level) and while a pumpkin flies. */
+const AIM_ZOOM: number = C.aimZoom;
+const FLIGHT_ZOOM: number = C.flightZoom;
+/** The catapult arm lies back (left and down) while loaded and swings up over the top when it throws. */
+const ARM_REST = 155;
+const ARM_THROWN = 290;
+/** Minimap of the whole level at the top of the screen (Pasi 22.10.). */
+const MAP_W = 400;
+const MAP_H = Math.round((MAP_W * LH) / LW);
+const MAP_X = W / 2 - MAP_W / 2;
+const MAP_Y = 14;
+const MAP_KEY = 'piiritys-kartta';
 /** The sky goes this far above the level, so high pumpkins and the zoomed-out view show sky. */
 const SKY_ABOVE = 420;
 /** The bottom of the level stays above the weapon bar (screen y). */
@@ -37,7 +47,13 @@ export class PiiritysScene extends Phaser.Scene {
   private phaseTime = 0;
   private levelIndex = 0;
   private battle!: Battle;
+  /** Shots in this attempt and in this level, and the points of the levels cleared (Pasi 22.10.: 200 a level). */
   private shots = 0;
+  private levelShots = 0;
+  private levelPoints: number[] = [];
+  /** While aiming, A and D move the camera along the level (Pasi 22.10.). */
+  private panX: number | null = null;
+  private mapDirty = false;
   private angle: number = C.startAngle;
   private charging = false;
   private chargeTime = 0;
@@ -49,7 +65,7 @@ export class PiiritysScene extends Phaser.Scene {
   private keys!: HeldKeys;
   private camX = 0;
   private camY = 0;
-  private camZoom = OVERVIEW;
+  private camZoom = AIM_ZOOM;
   private beams: Array<{ x0: number; y0: number; x1: number; y1: number; width: number; t: number }> = [];
   private bursts: Array<{ x: number; y: number; r: number; t: number; color: number }> = [];
 
@@ -77,6 +93,9 @@ export class PiiritysScene extends Phaser.Scene {
   private weaponBar!: Phaser.GameObjects.Graphics;
   private weaponTexts: Phaser.GameObjects.Text[] = [];
   private weaponIcons: Phaser.GameObjects.Image[] = [];
+  private mapTexture!: Phaser.Textures.CanvasTexture;
+  private mapDots!: Phaser.GameObjects.Graphics;
+  private loaded!: Phaser.GameObjects.Image;
   private message!: Phaser.GameObjects.Text;
   private subMessage!: Phaser.GameObjects.Text;
 
@@ -90,13 +109,16 @@ export class PiiritysScene extends Phaser.Scene {
     this.phaseTime = 0;
     this.levelIndex = 0;
     this.shots = 0;
+    this.levelShots = 0;
+    this.levelPoints = [];
+    this.panX = null;
     this.angle = C.startAngle;
     this.charging = false;
     this.chargeTime = 0;
     this.weapon = 'pumpkin';
     this.previousTrail = [];
     this.finished = false;
-    this.camZoom = OVERVIEW;
+    this.camZoom = AIM_ZOOM;
     this.beams = [];
     this.bursts = [];
     this.skeletonImages = new Map();
@@ -123,11 +145,12 @@ export class PiiritysScene extends Phaser.Scene {
     this.warrior = this.inWorld(addAsset(this, WARRIOR, 0, 0, { origin: [0.5, 1] }).setDepth(4));
     this.arm = this.inWorld(addAsset(this, ARM, 0, 0, { origin: [0.05, 0.5] }).setDepth(5));
     this.catapult = this.inWorld(addAsset(this, CATAPULT, 0, 0, { origin: [0.5, 1] }).setDepth(6));
+    this.loaded = this.inWorld(addAsset(this, PROJECTILES, 0, 0, { frame: 0 }).setDepth(5.5));
     this.aimLine = this.inWorld(this.add.graphics().setDepth(7));
     this.effects = this.inWorld(this.add.graphics().setDepth(20));
 
     this.buildHud();
-    this.keys = heldKeys(this, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ']);
+    this.keys = heldKeys(this, ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'a', 'A', 'd', 'D']);
     onChar(this, (char) => {
       const n = Number(char);
       if (Number.isInteger(n) && n >= 1 && n <= WEAPONS.length) this.choose(WEAPONS[n - 1]);
@@ -151,6 +174,9 @@ export class PiiritysScene extends Phaser.Scene {
       phase: this.phase,
       level: this.levelIndex,
       shots: this.shots,
+      levelShots: this.levelShots,
+      levelPoints: [...this.levelPoints],
+      panning: this.panX !== null,
       left: b.skeletonsLeft(),
       angle: Math.round(this.angle * 10) / 10,
       power: Math.round(this.power() * 100) / 100,
@@ -171,8 +197,10 @@ export class PiiritysScene extends Phaser.Scene {
     this.fire(power);
   }
 
-  /** Test helper: every skeleton of this level falls (no shots). */
-  debugClearLevel(): void {
+  /** Test helper: every skeleton of this level falls, as if this many shots had been used. */
+  debugClearLevel(shotsUsed = 0): void {
+    this.shots += shotsUsed;
+    this.levelShots += shotsUsed;
     for (const s of this.battle.skeletons) s.alive = false;
   }
 
@@ -183,6 +211,8 @@ export class PiiritysScene extends Phaser.Scene {
     this.battle = new Battle(index);
     this.ammo = { pumpkin: Infinity, cluster: 1, homing: 1, beam: 1, bomb: 1 };
     this.weapon = 'pumpkin';
+    this.levelShots = 0;
+    this.panX = null;
     this.previousTrail = [];
     this.charging = false;
     for (const img of [...this.skeletonImages.values(), ...this.barrelImages.values(), ...this.projectileImages.values()]) {
@@ -199,8 +229,8 @@ export class PiiritysScene extends Phaser.Scene {
 
     const ground = this.battle.terrain.surfaceBelow(level.catapultX, 0) ?? LH - 100;
     this.catapult.setPosition(level.catapultX, ground);
-    this.warrior.setPosition(level.catapultX - 70, ground);
-    this.arm.setPosition(level.catapultX, ground - 70);
+    this.warrior.setPosition(level.catapultX - 125, ground);
+    this.arm.setPosition(level.catapultX, ground - 70).setAngle(ARM_REST);
     for (const s of this.battle.skeletons) {
       this.skeletonImages.set(s.id, this.inWorld(addAsset(this, SKELETON, s.x, s.y, { origin: [0.5, 1], frame: 0 }).setDepth(8).setFlipX(false)));
     }
@@ -211,9 +241,10 @@ export class PiiritysScene extends Phaser.Scene {
     this.phase = 'intro';
     this.phaseTime = 0;
     this.showMessage(`Kenttä ${index + 1}/${LEVELS.length}`, level.name);
-    this.camZoom = OVERVIEW;
-    this.camX = LW / 2;
-    this.camY = LH + (H - LEVEL_BOTTOM_ON_SCREEN) / OVERVIEW - H / OVERVIEW / 2;
+    this.camZoom = AIM_ZOOM;
+    this.camX = this.homeX(AIM_ZOOM);
+    this.camY = LH + (H - LEVEL_BOTTOM_ON_SCREEN) / AIM_ZOOM - H / AIM_ZOOM / 2;
+    this.paintMap();
     this.refreshHud();
   }
 
@@ -367,6 +398,8 @@ export class PiiritysScene extends Phaser.Scene {
     const turn = (k.isDown('ArrowUp') ? 1 : 0) - (k.isDown('ArrowDown') ? 1 : 0);
     const fine = (k.isDown('ArrowLeft') ? 1 : 0) - (k.isDown('ArrowRight') ? 1 : 0);
     this.angle = Phaser.Math.Clamp(this.angle + turn * C.angleSpeed * dt + fine * C.fineAngleSpeed * dt, C.angleMin, C.angleMax);
+    const pan = (k.isDown('d') || k.isDown('D') ? 1 : 0) - (k.isDown('a') || k.isDown('A') ? 1 : 0);
+    if (pan !== 0) this.panX = (this.panX ?? this.camX) + pan * C.panSpeed * dt;
     const tapped = k.takePress(' ');
     if (k.isDown(' ')) {
       if (!this.charging) {
@@ -402,6 +435,8 @@ export class PiiritysScene extends Phaser.Scene {
     const weapon = this.ammo[this.weapon] > 0 ? this.weapon : 'pumpkin';
     if (weapon !== 'pumpkin') this.ammo[weapon]--;
     this.shots++;
+    this.levelShots++;
+    this.panX = null;
     this.battle.fire(weapon, this.angle, power);
     if (this.ammo[this.weapon] <= 0) this.weapon = 'pumpkin';
     this.phase = 'flight';
@@ -413,10 +448,16 @@ export class PiiritysScene extends Phaser.Scene {
       sfx.noise({ duration: 0.18, volume: 0.12, filterFreq: 400, filterType: 'lowpass' });
       sfx.noise({ duration: 0.35, volume: 0.05, filterFreq: 1800, filterType: 'bandpass', delay: 0.05 });
     }
-    // The arm swings forward.
+    // The arm swings up over the top, and comes back down for the next pumpkin.
     this.tweens.killTweensOf(this.arm);
-    this.arm.setAngle(30);
-    this.tweens.add({ targets: this.arm, angle: -this.angle - 20, duration: 140, ease: 'Back.Out' });
+    this.arm.angle = ARM_REST + 10 * this.armPull;
+    this.tweens.add({
+      targets: this.arm,
+      angle: ARM_THROWN,
+      duration: 160,
+      ease: 'Quad.In',
+      onComplete: () => this.tweens.add({ targets: this.arm, angle: ARM_REST, duration: 600, delay: 250, ease: 'Sine.InOut' }),
+    });
     this.handleEvents();
     this.refreshHud();
   }
@@ -425,6 +466,10 @@ export class PiiritysScene extends Phaser.Scene {
     const sfx = this.ctx.sfx;
     const events = this.battle.takeEvents();
     for (const e of events) this.showEvent(e, sfx);
+    if (this.mapDirty) {
+      this.mapDirty = false;
+      this.paintMap();
+    }
     if (events.length > 0) this.refreshHud();
   }
 
@@ -432,6 +477,7 @@ export class PiiritysScene extends Phaser.Scene {
     switch (e.type) {
       case 'blast': {
         this.carvePicture(e.x, e.y, e.r);
+        this.mapDirty = true;
         this.bursts.push({ x: e.x, y: e.y, r: e.r, t: 0, color: e.barrel ? 0xffd04a : 0xff8a1f });
         const big = e.r >= C.barrelRadius;
         sfx.noise({ duration: big ? 0.7 : 0.4, volume: big ? 0.2 : 0.14, filterFreq: big ? 260 : 500, filterType: 'lowpass' });
@@ -440,6 +486,7 @@ export class PiiritysScene extends Phaser.Scene {
       }
       case 'beam':
         this.carveBeam(e.x0, e.y0, e.x1, e.y1, e.width);
+        this.mapDirty = true;
         this.beams.push({ ...e, t: 0 });
         break;
       case 'kill': {
@@ -469,8 +516,10 @@ export class PiiritysScene extends Phaser.Scene {
     this.phase = 'levelDone';
     this.phaseTime = 0;
     this.charging = false;
+    const points = levelScore(this.battle.level.skeletons.length, this.levelShots);
+    this.levelPoints.push(points);
     this.ctx.sfx.play('success');
-    this.showMessage('Kenttä tyhjä!', this.levelIndex + 1 < LEVELS.length ? `Seuraavaksi: ${LEVELS[this.levelIndex + 1].name}` : '');
+    this.showMessage('Kenttä tyhjä!', `${this.levelShots} laukausta`);
   }
 
   private allCleared(): void {
@@ -481,7 +530,7 @@ export class PiiritysScene extends Phaser.Scene {
   }
 
   private points(): number {
-    return score(totalSkeletons(), Math.max(this.shots, 1));
+    return this.levelPoints.reduce((sum, p) => sum + p, 0);
   }
 
   private end(): void {
@@ -541,8 +590,16 @@ export class PiiritysScene extends Phaser.Scene {
       this.aimLine.lineStyle(4, 0xffd04a, 0.9).lineBetween(launch.x, launch.y, launch.x + Math.cos(a) * len, launch.y - Math.sin(a) * len);
       this.aimLine.fillStyle(0xffd04a, 1).fillCircle(launch.x + Math.cos(a) * len, launch.y - Math.sin(a) * len, 5);
     }
-    if (!this.charging) this.arm.setAngle(aiming ? -this.angle - 20 : this.arm.angle);
-    else this.arm.setAngle(-this.angle + 40 * this.power());
+    // Pulling back while the power swings; the chosen pumpkin waits in the bucket.
+    if (aiming && !this.tweens.isTweening(this.arm)) this.arm.setAngle(ARM_REST + 10 * this.armPull);
+    const bucket = Phaser.Math.DegToRad(this.arm.angle);
+    const reach = ARM.width * 0.84;
+    this.loaded
+      .setVisible(aiming || this.phase === 'intro')
+      .setFrame(PROJECTILE_FRAME[this.weapon === 'beam' ? 'homing' : this.weapon] ?? 0)
+      .setPosition(this.arm.x + Math.cos(bucket) * reach, this.arm.y + Math.sin(bucket) * reach - 10);
+    if (this.weapon === 'beam') this.loaded.setTint(0xffd04a);
+    else this.loaded.clearTint();
     this.trail.clear();
     const dots = this.phase === 'flight' ? b.trail : this.previousTrail;
     const alpha = this.phase === 'flight' ? 0.55 : 0.4;
@@ -590,43 +647,117 @@ export class PiiritysScene extends Phaser.Scene {
     }
   }
 
+  /** Camera x that shows the catapult near the left edge. */
+  private homeX(zoom: number): number {
+    return this.battle.level.catapultX - 160 + W / zoom / 2;
+  }
+
+  /** How far the arm is pulled back while charging (0..1). */
+  private get armPull(): number {
+    return this.charging ? this.power() : 0;
+  }
+
   private updateCamera(dt: number): void {
     const p = this.battle.projectiles[0];
-    let zoom = OVERVIEW;
-    let cx = LW / 2;
-    let cy = LH / 2;
-    if (this.phase === 'flight' && p) {
-      zoom = 1;
-      cx = p.x;
-      cy = p.y;
-    }
+    const flying = this.phase === 'flight' && p !== undefined;
+    const zoom = flying ? FLIGHT_ZOOM : AIM_ZOOM;
     const k = Math.min(1, dt * 4);
     this.camZoom += (zoom - this.camZoom) * k;
     const viewW = W / this.camZoom;
     const viewH = H / this.camZoom;
+    let cx = flying ? p.x : (this.panX ?? this.homeX(this.camZoom));
     cx = Phaser.Math.Clamp(cx, viewW / 2, LW - viewW / 2);
+    if (this.panX !== null) this.panX = cx;
     // The bottom of the level sits just above the weapon bar; above the level there is sky.
     const lowest = LH + (H - LEVEL_BOTTOM_ON_SCREEN) / this.camZoom - viewH / 2;
-    cy = this.phase === 'flight' && p ? Phaser.Math.Clamp(cy, -SKY_ABOVE + viewH / 2, lowest) : lowest;
-    this.camX += (cx - this.camX) * k;
+    const cy = flying ? Phaser.Math.Clamp(p.y, -SKY_ABOVE + viewH / 2, lowest) : lowest;
+    // Panning with A and D follows the keys at once.
+    const kx = this.panX !== null ? 1 : k;
+    this.camX += (cx - this.camX) * kx;
     this.camY += (cy - this.camY) * k;
     const cam = this.cameras.main;
     cam.setZoom(ZOOM * this.camZoom);
     cam.centerOn(this.camX, this.camY);
+    this.drawMapDots(viewW, viewH);
   }
+
+  // ---------------------------------------------------------------- minimap (Pasi 22.10.)
+
+  /** The ground of the whole level, small, from the ground cells. */
+  private paintMap(): void {
+    if (!this.mapTexture) return;
+    const tex = this.mapTexture;
+    const ctx = tex.context;
+    const w = tex.width;
+    const h = tex.height;
+    const image = ctx.createImageData(w, h);
+    const colors: Record<string, [number, number, number]> = { earth: [122, 90, 64], stone: [138, 138, 160], wood: [160, 112, 58] };
+    const t = this.battle.terrain;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const m = t.materialAt(((x + 0.5) / w) * LW, ((y + 0.5) / h) * LH);
+        const i = (y * w + x) * 4;
+        if (m) {
+          const [r, g, b] = colors[m];
+          image.data[i] = r;
+          image.data[i + 1] = g;
+          image.data[i + 2] = b;
+          image.data[i + 3] = 255;
+        }
+      }
+    }
+    for (const water of this.battle.level.water) {
+      for (let y = Math.floor((water.y / LH) * h); y < h; y++) {
+        for (let x = Math.floor((water.x0 / LW) * w); x < Math.ceil((water.x1 / LW) * w); x++) {
+          const i = (y * w + x) * 4;
+          if (image.data[i + 3] === 0) image.data.set([50, 90, 140, 255], i);
+        }
+      }
+    }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    ctx.putImageData(image, 0, 0);
+    tex.refresh();
+  }
+
+  private drawMapDots(viewW: number, viewH: number): void {
+    const g = this.mapDots.clear();
+    const sx = MAP_W / LW;
+    const sy = MAP_H / LH;
+    const b = this.battle;
+    g.fillStyle(0xff8a1f, 1).fillRect(MAP_X + b.level.catapultX * sx - 4, MAP_Y + (b.launch.y + 60) * sy - 4, 8, 8);
+    for (const s of b.skeletons) {
+      if (s.alive) g.fillStyle(0xf4ecd8, 1).fillCircle(MAP_X + s.x * sx, MAP_Y + (s.y - 30) * sy, 3.5);
+    }
+    for (const barrel of b.barrels) {
+      if (barrel.alive) g.fillStyle(0xe5484d, 1).fillCircle(MAP_X + barrel.x * sx, MAP_Y + (barrel.y - 20) * sy, 2.5);
+    }
+    for (const p of b.projectiles) g.fillStyle(0xffd04a, 1).fillCircle(MAP_X + p.x * sx, MAP_Y + Math.max(0, p.y) * sy, 3);
+    // What the camera shows now.
+    const left = this.camX - viewW / 2;
+    const top = Math.max(0, this.camY - viewH / 2);
+    g.lineStyle(2, 0xffffff, 0.8).strokeRect(MAP_X + left * sx, MAP_Y + top * sy, viewW * sx, Math.min(LH - top, viewH) * sy);
+  }
+
 
   // ---------------------------------------------------------------- HUD
 
   private buildHud(): void {
     const panel = this.add.graphics();
     panel.fillStyle(COLORS.night, 0.72);
-    panel.fillRoundedRect(16, 12, 420, 92, 14);
-    panel.fillRoundedRect(W - 336, 12, 320, 74, 14);
+    panel.fillRoundedRect(16, 12, 410, 92, 14);
+    panel.fillRoundedRect(W - 418, 12, 402, 74, 14);
     this.levelText = this.add.text(32, 36, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.bone }).setOrigin(0, 0.5);
     this.aimText = this.add.text(32, 66, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.gold }).setOrigin(0, 0.5);
     this.powerBar = this.add.graphics();
     this.shotText = this.add.text(W - 32, 34, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.orange }).setOrigin(1, 0.5);
     this.leftText = this.add.text(W - 32, 64, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.bone }).setOrigin(1, 0.5);
+    // Minimap between the panels: the ground of the whole level, skeletons, barrels and the camera's view.
+    panel.fillRoundedRect(MAP_X - 8, MAP_Y - 6, MAP_W + 16, MAP_H + 12, 10);
+    const existingMap = this.textures.exists(MAP_KEY) ? (this.textures.get(MAP_KEY) as Phaser.Textures.CanvasTexture) : null;
+    this.mapTexture = existingMap ?? this.textures.createCanvas(MAP_KEY, Math.round(MAP_W * ZOOM), Math.round(MAP_H * ZOOM))!;
+    this.add.image(MAP_X, MAP_Y, MAP_KEY).setOrigin(0, 0).setDisplaySize(MAP_W, MAP_H);
+    this.mapDots = this.add.graphics();
     this.weaponBar = this.add.graphics();
     WEAPONS.forEach((weapon, i) => {
       const x = W / 2 + (i - 2) * 190;
@@ -643,6 +774,7 @@ export class PiiritysScene extends Phaser.Scene {
       ['←→', 'Tarkka kulma'],
       ['Välilyönti', 'Lataa ja päästä irti'],
       ['1–5', 'Ase'],
+      ['A / D', 'Katso'],
       ['Esc', 'Tauko'],
     ]);
     // Everything made so far (except the world) belongs to the HUD camera.

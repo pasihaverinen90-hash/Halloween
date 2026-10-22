@@ -248,11 +248,14 @@ export function onChar(scene: Phaser.Scene, handler: (char: string, event: Keybo
   );
 }
 
+/** A key to hold: a named key, or a single character such as 'a' (event.key as typed). */
+export type HoldableKey = NamedKey | (string & {});
+
 /** Which of the watched keys are held down right now. */
 export interface HeldKeys {
-  isDown(key: NamedKey): boolean;
+  isDown(key: HoldableKey): boolean;
   /** True once for every new press of the key since the last call (a tap shorter than one frame still counts, and so does each of two quick taps). */
-  takePress(key: NamedKey): boolean;
+  takePress(key: HoldableKey): boolean;
 }
 
 /**
@@ -261,7 +264,7 @@ export interface HeldKeys {
  * the scene pauses, resumes or sleeps and when the window loses focus, so a
  * key let go during a pause never keeps moving the player.
  */
-export function heldKeys(scene: Phaser.Scene, keys: NamedKey[]): HeldKeys {
+export function heldKeys(scene: Phaser.Scene, keys: HoldableKey[]): HeldKeys {
   const watched = new Set<string>(keys);
   const down = new Set<string>();
   const keyboard = scene.input?.keyboard;
