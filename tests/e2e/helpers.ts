@@ -267,6 +267,25 @@ export async function playPlatformerQuickly(page: Page): Promise<number> {
   }
 }
 
+/** Catapult: from the instruction screen, clear all five levels with one shot per skeleton (1000 ends the game). Returns the score. */
+export async function playCatapultQuickly(page: Page): Promise<number> {
+  await press(page, 'Enter');
+  await waitForScene(page, 'AttemptIntro');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Kurpitsalinko');
+  for (let level = 0; level < 5; level++) {
+    await waitForState(page, 'Kurpitsalinko', (s) => s.level === level && s.phase !== 'levelDone', 60_000);
+    await page.evaluate(() => {
+      const scene = (window.__peli!.game as any).scene.getScene('Kurpitsalinko');
+      scene.shots += scene.battle.skeletonsLeft();
+      scene.debugClearLevel();
+    });
+    await waitForState(page, 'Kurpitsalinko', (s) => s.level > level || s.phase === 'won', 60_000);
+  }
+  await waitForScene(page, 'AttemptResult', 120_000);
+  return (await sceneState(page, 'AttemptResult')).score as number;
+}
+
 /** Crossword: from the instruction screen, let the time run out at once. Returns the score. */
 export async function playCrosswordQuickly(page: Page): Promise<number> {
   await press(page, 'Enter');

@@ -14,7 +14,7 @@ test('toimintapelissä on kolme yritystä putkeen ja paras jää voimaan', async
   await openGame(page);
   await page.evaluate(() => window.__peli!.addTestActionGame());
   await createPlayer(page, 'Yrittäjä');
-  expect((await sceneState(page, 'Menu')).tiles.map((t: { id: string }) => t.id)).toEqual(['hirsipuu', 'arvoitukset', 'lentopeli', 'raiskinta', 'ristikko', 'tasohyppely', 'testipeli']);
+  expect((await sceneState(page, 'Menu')).tiles.map((t: { id: string }) => t.id)).toEqual(['hirsipuu', 'arvoitukset', 'lentopeli', 'raiskinta', 'ristikko', 'tasohyppely', 'kurpitsalinko', 'testipeli']);
   await selectGame(page, 'testipeli');
   await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
@@ -69,6 +69,7 @@ test('toimintapelissä on kolme yritystä putkeen ja paras jää voimaan', async
     { id: 'raiskinta', status: 'unplayed', score: null },
     { id: 'ristikko', status: 'unplayed', score: null },
     { id: 'tasohyppely', status: 'unplayed', score: null },
+    { id: 'kurpitsalinko', status: 'unplayed', score: null },
     { id: 'testipeli', status: 'finished', score: 900 },
   ]);
   // Pelattua peliä ei voi valita uudelleen
