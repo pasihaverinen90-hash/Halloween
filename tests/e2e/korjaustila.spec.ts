@@ -13,6 +13,7 @@ import {
   sceneState,
   solveHangmanWord,
   typeText,
+  unlock,
   waitForScene,
   waitForState,
 } from './helpers';
@@ -138,8 +139,9 @@ test('kesken jäänyt hirsipuu jatkuu samasta kohdasta sivun uudelleenlatauksen 
   const before = await sceneState(page, 'Hirsipuu');
   expect(before).toMatchObject({ index: 1, scores: [175], tried: [letter, 'Q'], wrong: ['Q'] });
 
+  // Declining the offer to continue at the lock, the turn can still be continued in correction mode.
   await page.reload();
-  await waitForScene(page, 'Start');
+  await unlock(page);
   await openCorrection(page);
   await chooseAction(page, 'Jatka kesken jäänyttä vuoroa');
   expect((await sceneState(page, 'Correction')).popup).toBe('Katkonainen');

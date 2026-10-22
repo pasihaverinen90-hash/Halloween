@@ -52,10 +52,11 @@ export function promptText(scene: Phaser.Scene, opts: Omit<PromptData, 'onClose'
 }
 
 /** Ask for Pasi's password. Resolves true when the correct password was typed, false when cancelled. */
-export function askPassword(scene: Phaser.Scene, title: string): Promise<boolean> {
+export function askPassword(scene: Phaser.Scene, title: string, opts: { cancelable?: boolean } = {}): Promise<boolean> {
   return new Promise((resolve) => {
     const data: PasswordData = {
       title,
+      cancelable: opts.cancelable,
       onSuccess: () => {
         resume(scene);
         resolve(true);

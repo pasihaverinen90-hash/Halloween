@@ -20,6 +20,39 @@ export async function openGame(page: Page, data: unknown = null): Promise<void> 
     [STORAGE_KEY, data] as const,
   );
   await page.reload();
+  await unlock(page);
+}
+
+/**
+ * Pasi's password opens the game (every page load). If a turn was left
+ * unfinished, the game offers to continue it: continueTurn chooses.
+ */
+export async function unlock(page: Page, continueTurn = false): Promise<void> {
+  await waitForScene(page, 'Password');
+  await typeText(page, PASSWORD);
+  await press(page, 'Enter');
+  await expect
+    .poll(async () => {
+      const active = await activeScenes(page);
+      return active.includes('Start') || active.includes('Dialog') || active.includes('Menu');
+    }, { timeout: 30_000 })
+    .toBe(true);
+  if ((await activeScenes(page)).includes('Dialog')) {
+    await page.waitForTimeout(350);
+    const state = await sceneState(page, 'Dialog');
+    const wanted = continueTurn ? state.buttons[0] : state.buttons[state.buttons.length - 1];
+    if (state.selected !== wanted) await press(page, 'ArrowLeft', 150);
+    await press(page, 'Enter');
+  }
+  await waitForScene(page, continueTurn ? 'Menu' : 'Start');
+}
+
+/** Thanks screen: Enter and Pasi's password let the next player in. */
+export async function nextPlayer(page: Page): Promise<void> {
+  await press(page, 'Enter');
+  await waitForScene(page, 'Password');
+  await typeText(page, PASSWORD);
+  await press(page, 'Enter');
   await waitForScene(page, 'Start');
 }
 

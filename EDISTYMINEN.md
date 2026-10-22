@@ -207,7 +207,23 @@ Seuraavaksi:
 
 ## Tulossa (Pasin toiveet)
 
-- **Salasana pelikertojen väliin (Pasi 21.10.):** kun pelaaja on pelannut kaikki pelit, näytetään iso kiitos, ja paluu aloitusnäkymään vaatii Pasin salasanan. Salasana kysytään myös, kun peli avataan ensimmäisen kerran, joten sivun uudelleenlataus ei anna kenellekään uutta kierrosta. Tehdään tasohyppelyn jälkeen. Tarkenna Pasilta ennen rakentamista.
+- Ei mitään uutta. Salasana pelikertojen väliin tehtiin 22.10. (ks. rupeama 8).
+
+### 22.10.2026 – rupeama 8 (salasana pelikertojen väliin)
+
+Pasin toive 21.10. ja tarkennukset 22.10.: salasana pysyy ennallaan, ja isot ja pienet kirjaimet erotellaan.
+
+Tehty:
+- Peli aukeaa vain Pasin salasanalla, joka kerta kun sivu ladataan. Lukkoa ei voi ohittaa Escillä, joten uudelleenlataus ei anna kenellekään uutta kierrosta.
+- Jos jonkun vuoro jäi kesken, salasanan jälkeen kysytään, jatketaanko sitä. "Jatka vuoroa" vie suoraan pelaajan valikkoon. Korjaustilan "Jatka kesken jäänyttä vuoroa" toimii edelleen.
+- Kiitosnäkymän "Seuraava pelaaja" vaatii salasanan. Peruutus jättää kiitosnäkymän näkyviin.
+- Selaintestit avaavat pelin salasanalla (`unlock`), ja uusi testi `lukitus.spec.ts` tarkistaa lukituksen.
+
+Kesken:
+- Pasi testaa tasohyppelyn (rupeama 7) ja lukituksen.
+
+Seuraavaksi:
+- Pasin palautteen mukaiset korjaukset tasohyppelyyn, sitten vaihe 7, kurpitsalinko. Kysy ensin reilusti kysymyksiä.
 
 ## Aikataulu
 
@@ -224,7 +240,7 @@ Iltaan on 10 päivää (21.10.). Jäljellä on tasohyppelyn hiominen, salasanato
 - Näppäimet aina `onKeys`/`onChar`-apureilla (`src/ui/input.ts`). Käsittelijä palauttaa `false`, jos se ei käyttänyt näppäintä; muuten painallus merkitään käytetyksi kaikissa näkymissä.
 - Phaser-sudenkuopat: näkymäolio käytetään uudelleen, joten tila nollataan `init`/`create`-metodeissa. Näkymäluokassa ei saa olla kenttiä nimeltä `data`, `input`, `game` tai `scene`. Tween-animaatiot pysäytetään ennen kohteiden tuhoamista. Pelisilmukka on suojattu poikkeuksilta (`main.ts`).
 - Koordinaatit ovat aina 1280 × 720 (`W`, `H`). Isolla näytöllä kangas piirretään kaksinkertaisena, ja kamerat zoomataan automaattisesti.
-- Selaintestejä on 18, ja niiden ajo kestää noin 30 minuuttia. Playwright tyhjentää kansion `test-results` ajon alussa, joten älä kirjoita lokia sinne. Aja ne taustalla (`run_in_background`), ja odota tulosta silmukalla, joka lukee lokitiedostoa. Yksittäisen pelin testin voi ajaa erikseen: `npx playwright test tests/e2e/<peli>.spec.ts`.
+- Selaintestejä on 20, ja niiden ajo kestää noin 35 minuuttia. Aja ne erissä edustalla, ja käytä tarvittaessa `--output /tmp/pw-out`, jos `test-results` katoaa kesken ajon. Playwright tyhjentää kansion `test-results` ajon alussa, joten älä kirjoita lokia sinne. Aja ne taustalla (`run_in_background`), ja odota tulosta silmukalla, joka lukee lokitiedostoa. Yksittäisen pelin testin voi ajaa erikseen: `npx playwright test tests/e2e/<peli>.spec.ts`.
 - Jokaisessa pelinäkymässä on `getTestState()` ja testiapurit (esim. `debugSkip`, `debugHurt`, `debugPlace`). Testit kutsuvat niitä `page.evaluate`-funktiossa. Menun peli valitaan `selectGame(page, id)`-apurilla, eikä sen paikkaa ruudukossa tarvitse tietää.
 - Hiiri on käytössä Phaser-asetuksissa (`main.ts`), mutta vain ristikko reagoi siihen. Muut pelit ovat pelkän näppäimistön varassa.
 - Animaatiokuvat (`AssetSpec.frames`): `width` ja `height` ovat yhden ruudun koko, ja `draw` saa koko nauhan leveyden (ruutu × määrä). Tasohyppely on ensimmäinen peli, joka käyttää niitä.

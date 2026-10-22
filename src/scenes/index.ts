@@ -17,6 +17,7 @@ import { PodiumScene } from './PodiumScene';
 import { ResultsMenuScene } from './ResultsMenuScene';
 import { StartScene } from './StartScene';
 import { ThanksScene } from './ThanksScene';
+import { UnlockScene } from './UnlockScene';
 
 /**
  * Every scene of the game. The first one (Boot) starts automatically.
@@ -24,6 +25,7 @@ import { ThanksScene } from './ThanksScene';
  */
 export const ALL_SCENES: Array<new () => Phaser.Scene> = [
   BootScene,
+  UnlockScene,
   StartScene,
   MenuScene,
   InstructionsScene,

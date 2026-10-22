@@ -2,13 +2,13 @@ import { expect, test, type Page } from '@playwright/test';
 import {
   createPlayer,
   expectNoRuntimeErrors,
-  openCorrection,
   openGame,
   press,
   savedData,
   sceneState,
   selectGame,
   typeText,
+  unlock,
   waitForScene,
   waitForState,
 } from './helpers';
@@ -102,13 +102,9 @@ test('kesken jäänyt ristikko jatkuu samasta kohdasta sivun uudelleenlatauksen 
   const before = await sceneState(page, 'Ristikko');
   await page.waitForTimeout(500);
 
+  // Pasi's password opens the game again, and it offers to continue the unfinished turn.
   await page.reload();
-  await waitForScene(page, 'Start');
-  await openCorrection(page);
-  for (let i = 0; i < 10 && (await sceneState(page, 'Correction')).action !== 'Jatka kesken jäänyttä vuoroa'; i++) await press(page, 'ArrowDown', 120);
-  await press(page, 'Enter', 400);
-  await press(page, 'Enter'); // the only unfinished player
-  await waitForScene(page, 'Menu');
+  await unlock(page, true);
   expect((await sceneState(page, 'Menu')).tiles[4]).toMatchObject({ id: 'ristikko', status: 'inProgress' });
   await selectGame(page, 'ristikko');
   await press(page, 'Enter');

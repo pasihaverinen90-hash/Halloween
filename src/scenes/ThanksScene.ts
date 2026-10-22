@@ -9,6 +9,7 @@ import type { PlayerRecord } from '../core/types';
 import { GAMES, GAME_IDS } from '../games/registry';
 import { addBackdrop } from '../ui/backdrop';
 import { addKeyHints } from '../ui/hints';
+import { askPassword } from '../ui/dialogs';
 import { onKeys } from '../ui/input';
 import { H, W } from '../ui/screen';
 import { COLORS, CSS, TEXT } from '../ui/theme';
@@ -89,8 +90,8 @@ export class ThanksScene extends Phaser.Scene {
       );
     });
 
-    addKeyHints(this, [['Enter', 'Seuraava pelaaja']]);
-    onKeys(this, { Enter: () => this.next() });
+    addKeyHints(this, [['Enter', 'Seuraava pelaaja (Pasin salasana)']]);
+    onKeys(this, { Enter: () => void this.next() });
   }
 
   getTestState(): unknown {
@@ -101,10 +102,15 @@ export class ThanksScene extends Phaser.Scene {
     };
   }
 
-  private next(): void {
+  /** Pasi 21.10.: only Pasi lets the next player in, so no one can start a second round. */
+  private async next(): Promise<void> {
     if (this.leaving) return;
     this.leaving = true;
-    sfx.play('select');
+    const ok = await askPassword(this, 'Seuraava pelaaja');
+    if (!ok) {
+      this.leaving = false;
+      return;
+    }
     session.playerId = null;
     switchTo(this, SCENES.Start);
   }

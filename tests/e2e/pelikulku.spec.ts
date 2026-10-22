@@ -1,14 +1,16 @@
 import { expect, test } from '@playwright/test';
 import {
+  activeScenes,
   createPlayer,
   expectNoRuntimeErrors,
   failHangmanWord,
+  nextPlayer,
   openGame,
   playCrosswordQuickly,
   playFlightQuickly,
   playPlatformerQuickly,
-  playShooterQuickly,
   playRiddlesCorrectly,
+  playShooterQuickly,
   press,
   savedData,
   sceneState,
@@ -117,9 +119,14 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   expect(await sceneState(page, 'Thanks')).toMatchObject({ player: 'Äijö Testi', total: 750 + riddles + flight + shooter + crossword + platformer, backupOk: false });
   expect((await savedData(page)).players[0]).toMatchObject({ name: 'Äijö Testi', games: { hirsipuu: { attempts: [750] } } });
 
-  // Seuraava pelaaja: sama nimi pienillä kirjaimilla ei kelpaa
+  // Seuraava pelaaja vaatii Pasin salasanan (Pasi 21.10.): peruutus jää kiitosnäkymään
   await press(page, 'Enter');
-  await waitForScene(page, 'Start');
+  await waitForScene(page, 'Password');
+  await press(page, 'Escape');
+  await waitForScene(page, 'Thanks');
+  expect(await activeScenes(page)).not.toContain('Start');
+  await nextPlayer(page);
+  // Sama nimi pienillä kirjaimilla ei kelpaa
   await typeText(page, 'äijö testi');
   await press(page, 'Enter');
   expect((await sceneState(page, 'Start')).error).toMatch(/on jo käytössä/);

@@ -44,13 +44,14 @@ export class PasswordScene extends Phaser.Scene {
       .setOrigin(0.5);
     this.field.on('change', () => this.error.setText(''));
 
-    addKeyHints(this, [
+    const cancelable = this.opts.cancelable !== false;
+    addKeyHints(this, cancelable ? [
       ['Enter', 'Avaa'],
       ['Esc', 'Peruuta'],
-    ], undefined, { opaque: true });
+    ] : [['Enter', 'Avaa']], undefined, { opaque: true });
     onKeys(this, {
       Enter: () => this.check(),
-      Escape: () => this.close(false),
+      Escape: () => (cancelable ? this.close(false) : false),
     });
   }
 

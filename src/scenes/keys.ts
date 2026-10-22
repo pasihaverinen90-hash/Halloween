@@ -3,6 +3,7 @@ import type { GameKind } from '../games/types';
 /** Phaser scene keys of the core. Game scenes use GameDefinition.sceneKey. */
 export const SCENES = {
   Boot: 'Boot',
+  Unlock: 'Unlock', // Pasi's password before anyone can play (Pasi 21.10.)
   // Player flow
   Start: 'Start', // aloitusnäkymä: name entry
   Menu: 'Menu', // päävalikko: game grid
@@ -72,6 +73,8 @@ export interface PauseData {
 export interface PasswordData {
   /** Heading, e.g. 'Tulokset' or 'Korjaustila'. */
   title: string;
+  /** false: no way out but the password (the lock at the start). Default true. */
+  cancelable?: boolean;
   onSuccess: () => void;
   onCancel: () => void;
 }

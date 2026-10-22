@@ -7,7 +7,7 @@ import { SCENES } from './keys';
 
 /**
  * Loads Pasi's replacement images from public/assets/ and draws every other
- * image by code, then opens the start screen.
+ * image by code, then asks for Pasi's password (UnlockScene).
  */
 export class BootScene extends Phaser.Scene {
   private specs: AssetSpec[] = [];
@@ -30,6 +30,7 @@ export class BootScene extends Phaser.Scene {
     const loaded = this.queued.filter((key) => this.textures.exists(key));
     if (loaded.length > 0) console.info(`Omat kuvat käytössä: ${loaded.join(', ')}`);
     createMissingTextures(this, this.specs);
-    this.scene.start(SCENES.Start);
+    // Pasi 21.10.: the game opens only with his password, so reloading the page gives no one a new round.
+    this.scene.start(SCENES.Unlock);
   }
 }

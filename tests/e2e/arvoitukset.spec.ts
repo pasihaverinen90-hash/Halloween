@@ -3,12 +3,12 @@ import {
   answerRiddle,
   createPlayer,
   expectNoRuntimeErrors,
-  openCorrection,
   openGame,
   press,
   savedData,
   sceneState,
   typeText,
+  unlock,
   waitForScene,
   waitForState,
 } from './helpers';
@@ -102,13 +102,9 @@ test('kesken jäänyt arvoituskierros jatkuu samasta arvoituksesta', async ({ pa
   expect(before).toMatchObject({ index: 2, wrong: 1 });
   expect(before.scores).toHaveLength(2);
 
+  // Pasi's password opens the game again, and it offers to continue the unfinished turn.
   await page.reload();
-  await waitForScene(page, 'Start');
-  await openCorrection(page);
-  await press(page, 'ArrowDown');
-  await press(page, 'Enter', 400);
-  await press(page, 'Enter');
-  await waitForScene(page, 'Menu');
+  await unlock(page, true);
   expect((await sceneState(page, 'Menu')).tiles[1]).toMatchObject({ id: 'arvoitukset', status: 'inProgress' });
   await press(page, 'ArrowRight');
   await press(page, 'Enter');
