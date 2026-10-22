@@ -990,3 +990,127 @@ Hyvä tietää:
 **Kuvaus generaattorille:**
 
 > Pieniä koristeita, jotka seisovat maassa (ruudun alareunassa). Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 4 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (saniainen, kanto ja sieniä, pensas, sammaloitunut kivi). Yksi ruutu on 48 × 96 pikseliä, koko kuva 192 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+## Piiritys (kurpitsalinko)
+
+### `piiritys-esikatselu.png` – Valikon esikatselukuva
+
+- **Koko:** 360 × 200 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Katapultti heittää kurpitsan kohti linnan muurilla seisovaa luurankoa yöllä. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 360 × 200 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `piiritys-taivas.png` – Taivas ja luurankolinna
+
+- **Koko:** 1920 × 1140 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Yötaivas, iso kuu oikealla ylhäällä ja luurankolinnan siluetti kaukana horisontissa kuvan alaosassa. Kuva on kentän levyinen. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1920 × 1140 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `piiritys-holvi.png` – Hautaholvin tausta
+
+- **Koko:** 1920 × 720 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Hautaholvin tumma kiviseinä ja palavia soihtuja. Vasen reuna on avoin yö. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 1920 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `piiritys-maa.png` – Maa (toistuva kuvio)
+
+- **Koko:** 128 × 128 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Tummaa multaa ja kiviä, kuvio toistuu saumattomasti joka suuntaan. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 128 × 128 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `piiritys-kivi.png` – Kivi (toistuva kuvio)
+
+- **Koko:** 128 × 128 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Linnan kivitiiliä, kuvio toistuu saumattomasti joka suuntaan. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 128 × 128 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `piiritys-puu.png` – Puu (toistuva kuvio)
+
+- **Koko:** 128 × 32 px
+- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Vaakasuoria puulankkuja nauloineen, kuvio toistuu saumattomasti joka suuntaan. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 128 × 32 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
+
+### `piiritys-katapultti.png` – Katapultti
+
+- **Koko:** 140 × 90 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Puinen katapultin runko pyörineen sivulta. Heittovarsi piirretään erikseen. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 140 × 90 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `piiritys-katapultin-varsi.png` – Katapultin heittovarsi
+
+- **Koko:** 110 × 24 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Katapultin heittovarsi ja kauha sivulta. Varsi osoittaa oikealle, ja kiinnityskohta on vasemmassa reunassa. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 110 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `piiritys-soturi.png` – Kurpitsapäinen soturi
+
+- **Koko:** 60 × 100 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Soturi, jolla on kaiverrettu kurpitsa päänä, haarniska ja tumma viitta. Katsoo oikealle. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 60 × 100 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `piiritys-luuranko.png` – Luurankovartija
+
+- **Koko:** 44 × 80 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 3 kuvaa vierekkäin vasemmalta oikealle: seisoo, kävely 1, kävely 2
+
+**Kuvaus generaattorille:**
+
+> Luurankovartija, jolla on ruosteinen keihäs. Katsoo vasemmalle. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 3 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (seisoo, kävely 1, kävely 2). Yksi ruutu on 44 × 80 pikseliä, koko kuva 132 × 80 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `piiritys-tynnyri.png` – Ruutitynnyri
+
+- **Koko:** 40 × 48 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Punertava ruutitynnyri, jossa on keltainen huutomerkki. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 40 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `piiritys-ammukset.png` – Ammukset
+
+- **Koko:** 36 × 36 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 5 kuvaa vierekkäin vasemmalta oikealle: kurpitsa, rypälekurpitsa, ohjautuva kurpitsa, kurpitsapommi, pikkukurpitsa
+
+**Kuvaus generaattorille:**
+
+> Viisi kurpitsa-ammusta vierekkäin: tavallinen kurpitsa, kolmen pikkukurpitsan rypäle, vihreänä hehkuva ohjautuva kurpitsa, iso tumma kurpitsapommi sytytyslankoineen ja pieni pikkukurpitsa. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 5 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (kurpitsa, rypälekurpitsa, ohjautuva kurpitsa, kurpitsapommi, pikkukurpitsa). Yksi ruutu on 36 × 36 pikseliä, koko kuva 180 × 36 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.

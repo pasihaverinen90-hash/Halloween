@@ -13,6 +13,7 @@ export const GAME_ORDER: readonly string[] = [
   'raiskinta',
   'ristikko',
   'tasohyppely',
+  'kurpitsalinko',
 ];
 
 export const GAMES: readonly GameDefinition[] = GAME_ORDER.map((id) => {
