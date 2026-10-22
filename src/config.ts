@@ -308,4 +308,48 @@ export const CONFIG = {
     /** After a whip hit she cannot be hit again for this long (one swing = one hit). */
     bossHitCooldown: 0.35,
   },
+
+  /**
+   * 7. Kurpitsalinko. Distances in game units (the level is 1920 × 720), times in seconds.
+   * Rules: CLAUDE.md, game 7, and Pasi's choices 22.10. (EDISTYMINEN.md). The levels are in src/games/kurpitsalinko/levels.ts.
+   */
+  kurpitsalinko: {
+    levelWidth: 1920,
+    levelHeight: 720,
+    /** Falling speed gain of pumpkins, skeletons and barrels. */
+    gravity: 900,
+    /** Launch speed at no and full power. */
+    minSpeed: 260,
+    maxSpeed: 1320,
+    /** Pasi 22.10.: the power swings up and down while Space is held; one full swing up and down takes this long. */
+    powerSwingSeconds: 2.2,
+    /** Aim angle limits (degrees above the horizon), and how fast ↑↓ and ←→ (fine) turn it. */
+    angleMin: -10,
+    angleMax: 85,
+    angleSpeed: 50,
+    fineAngleSpeed: 10,
+    startAngle: 40,
+    /** Blast radius of a normal pumpkin (Pasi 22.10.: about a skeleton's height), a big bomb and a cluster pumpkin's bomblet. */
+    blastRadius: 52,
+    bombRadius: 110,
+    bombletRadius: 34,
+    bombletCount: 5,
+    /** Homing pumpkin: flies normally this long, then turns towards the nearest skeleton (radians per second). */
+    homingDelay: 0.35,
+    homingTurn: 3.2,
+    homingSpeed: 520,
+    homingSeconds: 6,
+    /** Pumpkin beam: width of the burnt corridor, and how long it glows. */
+    beamWidth: 26,
+    beamSeconds: 0.7,
+    /** A skeleton falling more than this breaks (Pasi 22.10.). */
+    fallBreak: 110,
+    /** Moving skeletons walk this far after each shot (from level 3, Pasi 22.10.). */
+    walkDistance: 56,
+    /** Wood burns away in a larger circle than earth and stone. */
+    woodBlastFactor: 1.5,
+    /** Barrels explode with this radius, a moment after they are hit. */
+    barrelRadius: 80,
+    barrelDelay: 0.18,
+  },
 } as const;
