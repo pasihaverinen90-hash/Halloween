@@ -3,13 +3,14 @@ import { getDb } from '../core/db';
 import { isPlayerDone, recordScore } from '../core/scores';
 import { session } from '../core/session';
 import { sfx } from '../core/sfx';
+import type { AttemptEnd } from '../core/types';
 import { GAME_IDS, getGame } from '../games/registry';
 import type { GameContext, GameDefinition, GameSceneData } from '../games/types';
 import { onKeys } from '../ui/input';
 import { H, W } from '../ui/screen';
 import { COLORS } from '../ui/theme';
 import { showToast } from '../ui/toast';
-import { planAttempts } from './attemptFlow';
+import { attemptCount, planAttempts } from './attemptFlow';
 import { SCENES, type AttemptIntroData, type AttemptResultData, type GameHostData, type PauseData } from './keys';
 import { switchTo } from './nav';
 
@@ -99,7 +100,8 @@ export class GameHostScene extends Phaser.Scene {
   }
 
   private nextAttempt(): void {
-    const plan = planAttempts(this.def.kind, getDb().getRecord(this.playerId, this.def.id));
+    const record = getDb().getRecord(this.playerId, this.def.id);
+    const plan = planAttempts(this.def.kind, record, attemptCount(this.def));
     this.total = plan.total;
     if (plan.finished) {
       this.leave();
@@ -113,6 +115,7 @@ export class GameHostScene extends Phaser.Scene {
         attempt: this.attempt,
         total: this.total,
         best: plan.best,
+        note: this.def.attemptNote?.(record?.carry ?? null) ?? null,
         onStart: () => this.startAttempt(),
       };
       this.scene.launch(SCENES.AttemptIntro, data);
@@ -126,7 +129,8 @@ export class GameHostScene extends Phaser.Scene {
     const record = db.getRecord(this.playerId, this.def.id);
     const token = ++this.token;
     const ctx: GameContext = {
-      finish: (score) => this.finishAttempt(token, score),
+      finish: (score, end) => this.finishAttempt(token, score, end),
+      carry: record?.carry ?? null,
       checkpoint: {
         initial: record?.checkpoint ?? null,
         save: (state) => {
@@ -146,7 +150,7 @@ export class GameHostScene extends Phaser.Scene {
     this.scene.launch(this.def.sceneKey, data);
   }
 
-  private finishAttempt(token: number, score: number): void {
+  private finishAttempt(token: number, score: number, end?: AttemptEnd): void {
     if (token !== this.token || (this.state !== 'playing' && this.state !== 'paused')) return;
     this.state = 'result';
     window.removeEventListener('beforeunload', this.guardUnload);
@@ -155,7 +159,7 @@ export class GameHostScene extends Phaser.Scene {
 
     let record;
     try {
-      record = getDb().recordAttempt(this.playerId, this.def.id, score, this.total);
+      record = getDb().recordAttempt(this.playerId, this.def.id, score, this.total, end);
     } catch (error) {
       console.error('Tuloksen tallennus epäonnistui:', error);
       showToast(this, error instanceof Error ? error.message : 'Tuloksen tallennus epäonnistui.', 'error');

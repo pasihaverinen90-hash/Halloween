@@ -258,11 +258,11 @@ export const CONFIG = {
 
     /** Enemies drop an item by chance (Pasi 21.10.: about every tenth). */
     dropChance: 0.1,
-    /** Shares of random drops: a whip upgrade (while the whip can still improve) and daggers; the rest are half hearts. */
-    whipDropShare: 0.3,
-    daggerDropShare: 0.35,
-    /** Throwing daggers (Pasi 21.10.: C throws, a limited number): at the start of an attempt, per pick-up and at most. */
-    daggersStart: 5,
+    /** Shares of random drops: a whip upgrade (while the whip can still improve) and daggers (Pasi 22.10.: half); the rest are half hearts. */
+    whipDropShare: 0.25,
+    daggerDropShare: 0.5,
+    /** Throwing daggers (Pasi 21.10.: C throws, a limited number; 22.10.: 10 at the start): at the start, per pick-up and at most. */
+    daggersStart: 10,
     daggersPerPickup: 5,
     daggersMax: 15,
     /** Dagger speed, seconds between throws, and damage (like the basic whip). */
@@ -271,6 +271,25 @@ export const CONFIG = {
     daggerDamage: 1,
     /** If the whip has not improved in a level by this share of the level, the next enemy defeated drops an upgrade (Pasi 21.10.). */
     whipGuaranteeAt: 0.5,
+
+    /** Pasi 22.10.: 5 attempts; after a fall the next attempt continues from the start of the same level. */
+    attempts: 5,
+    /** Every candle gives this many coins (Pasi 22.10.), spent in the shop before levels 2 and 3. */
+    coinsPerCandle: 1,
+    /** Shop prices (coins) and limits (Pasi 22.10.). */
+    shop: {
+      daggerPrice: 3,
+      daggerAmount: 5,
+      /** An extra heart at the start of every level. */
+      heartPrice: 6,
+      extraHeartsMax: 3,
+      /** The next whip level. */
+      whipPrice: 8,
+      /** Sharpening: whip and daggers do this much more damage per purchase. */
+      sharpenPrice: 6,
+      sharpenMax: 4,
+      sharpenBonus: 0.25,
+    },
 
     /** Crumbling floor: shakes this long after it is stepped on, then stays gone this long. */
     crumbleSeconds: 0.55,

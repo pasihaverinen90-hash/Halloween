@@ -2,7 +2,7 @@ import { CONFIG } from '../config';
 import { normalizeName, validateName } from './names';
 import { clampScore, getGameRecord } from './scores';
 import { emptySaveData, validateSaveData, type KeyValueStorage, type SaveDataResult } from './storage';
-import type { GameRecord, PlayerRecord, SaveData } from './types';
+import type { AttemptEnd, GameRecord, PlayerRecord, SaveData } from './types';
 
 /*
  * The results database: the single source of truth for every score of the
@@ -33,11 +33,12 @@ export interface ResultsDb {
   deletePlayer(id: string): void;
   getRecord(playerId: string, gameId: string): GameRecord | undefined;
   /**
-   * Appends clampScore(score); finished = attempts.length >= attemptsTotal or a perfect score; checkpoint = null; saves.
+   * Appends clampScore(score); finished = attempts.length >= attemptsTotal, a perfect score or end.complete;
+   * checkpoint = null; carry = a copy of end.carry for the next attempt (removed when there is none); saves.
    * Throws ResultsDbError 'already-finished' if the game is finished or all attempts are used
    * (never silently adds an extra attempt), 'unknown-player' if the player does not exist.
    */
-  recordAttempt(playerId: string, gameId: string, score: number, attemptsTotal: number): GameRecord;
+  recordAttempt(playerId: string, gameId: string, score: number, attemptsTotal: number, end?: AttemptEnd): GameRecord;
   /**
    * Stores a JSON copy of state as the record's checkpoint, creating the record if missing
    * (attempts [], finished false). Ignored when the game is already finished.
@@ -160,7 +161,9 @@ class StoredResultsDb implements ResultsDb {
     return player ? getGameRecord(player, gameId) : undefined;
   }
 
-  recordAttempt(playerId: string, gameId: string, score: number, attemptsTotal: number): GameRecord {
+  recordAttempt(playerId: string, gameId: string, score: number, attemptsTotal: number, end: AttemptEnd = {}): GameRecord {
+    // Copy now: the game may keep changing its own state object afterwards.
+    const carry = end.carry === undefined || end.carry === null ? undefined : jsonSnapshot(end.carry);
     let saved!: GameRecord;
     this.change((data, now) => {
       const player = findPlayer(data, playerId);
@@ -172,9 +175,11 @@ class StoredResultsDb implements ResultsDb {
       const record = existing ?? addRecord(player, gameId, now);
       const points = clampScore(score);
       record.attempts.push(points);
-      // A perfect score cannot be bettered, so the remaining attempts are skipped.
-      record.finished = record.attempts.length >= total || points >= CONFIG.maxScore;
+      // A perfect score cannot be bettered, and a completed game has nothing left: the remaining attempts are skipped.
+      record.finished = record.attempts.length >= total || points >= CONFIG.maxScore || end.complete === true;
       record.checkpoint = null;
+      if (carry !== undefined && !record.finished) record.carry = carry;
+      else delete record.carry;
       record.updatedAt = now;
       saved = record;
       return true;
@@ -204,6 +209,7 @@ class StoredResultsDb implements ResultsDb {
       record.manualScore = clampScore(score);
       record.finished = true;
       record.checkpoint = null;
+      delete record.carry;
       record.updatedAt = now;
       return true;
     });

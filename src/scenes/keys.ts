@@ -42,6 +42,8 @@ export interface AttemptIntroData {
   total: number;
   /** Best score so far, or null before the first attempt. */
   best: number | null;
+  /** A line from the game, e.g. where this attempt continues (GameDefinition.attemptNote). */
+  note?: string | null;
   onStart: () => void;
 }
 

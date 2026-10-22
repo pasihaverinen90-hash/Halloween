@@ -11,7 +11,7 @@ import { addAsset } from '../ui/place';
 import { W } from '../ui/screen';
 import { CSS, FONTS, TEXT } from '../ui/theme';
 import { drawPanel } from '../ui/widgets/panel';
-import { planAttempts, type AttemptPlan } from './attemptFlow';
+import { attemptCount, planAttempts, type AttemptPlan } from './attemptFlow';
 import { SCENES, type InstructionsData } from './keys';
 import { switchTo } from './nav';
 
@@ -49,7 +49,7 @@ export class InstructionsScene extends Phaser.Scene {
       return;
     }
     const def = this.def;
-    this.plan = def ? planAttempts(def.kind, db.getRecord(player.id, def.id)) : null;
+    this.plan = def ? planAttempts(def.kind, db.getRecord(player.id, def.id), attemptCount(def)) : null;
     if (!def || !this.plan || this.plan.finished) {
       switchTo(this, SCENES.Menu);
       return;
@@ -87,9 +87,10 @@ export class InstructionsScene extends Phaser.Scene {
   private buildLeft(def: GameDefinition, plan: AttemptPlan): void {
     drawPanel(this, LEFT_X - 20, TOP - 8, LEFT_W + 40, BOTTOM - TOP + 16, { radius: 16 });
     const attemptRule =
-      plan.kind === 'action'
-        ? `${CONFIG.attempts.action} yritystä putkeen. Paras jää voimaan. ${fi(CONFIG.maxScore)} pistettä päättää pelin heti.`
-        : 'Peli pelataan yhtenä kierroksena.';
+      def.instructions.attemptRule ??
+      (plan.kind === 'action'
+        ? `${plan.total} yritystä putkeen. Paras jää voimaan. ${fi(CONFIG.maxScore)} pistettä päättää pelin heti.`
+        : 'Peli pelataan yhtenä kierroksena.');
     const scoreLines = [...def.instructions.scoring, `Enintään ${fi(CONFIG.maxScore)} pistettä.`, attemptRule];
     const keys: Array<[string, string]> = [...def.instructions.keys, ['Esc', 'Tauko']];
 

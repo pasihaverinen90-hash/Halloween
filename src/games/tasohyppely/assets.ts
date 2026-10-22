@@ -9,6 +9,7 @@ import {
   drawBat,
   drawBlade,
   drawCandle,
+  drawCoin,
   drawDagger,
   drawDaggerItem,
   drawGate,
@@ -100,6 +101,7 @@ export const HEART_ITEM = sprite('tasohyppely-sydan-esine.png', 'Puolikas sydän
 export const WHIP_ITEM = sprite('tasohyppely-ruoska-esine.png', 'Ruoskan päivitys', 'Kerällä oleva kultainen ruoska, kerättävä esine.', 30, 30, drawWhipItem);
 export const DAGGER = sprite('tasohyppely-tikari.png', 'Heitettävä tikari', 'Lentävä heittotikari sivulta, kärki oikealle.', 30, 12, drawDagger);
 export const DAGGER_ITEM = sprite('tasohyppely-tikarit-esine.png', 'Tikarinippu', 'Viuhkaksi aseteltu nippu heittotikareita, kerättävä esine.', 30, 30, drawDaggerItem);
+export const COIN = sprite('tasohyppely-kolikko.png', 'Kolikko', 'Kiiltävä kultakolikko, jonka saa jokaisesta kynttilästä.', 24, 24, drawCoin);
 export const HUD_HEART = sprite('tasohyppely-sydan.png', 'Sydän tilarivillä', 'Pieni sydän, joka näyttää jäljellä olevat health-pisteet.', 30, 27, drawHudHeart, { count: 3, order: 'täysi, puolikas, tyhjä' });
 export const BLADE = sprite('tasohyppely-heilurin-tera.png', 'Heilurin terä', 'Kuunsirpin muotoinen terästerä, kiinnityslenkki ylhäällä keskellä. Peli piirtää tangon.', 72, 48, drawBlade);
 export const GATE = sprite('tasohyppely-portti.png', 'Kentän maaliportti', 'Goottilainen kivikaari, jonka rautaovien raoista hohtaa lämmin valo.', 96, 144, drawGate);
@@ -211,6 +213,7 @@ export const ASSETS: AssetSpec[] = [
   WHIP_ITEM,
   DAGGER,
   DAGGER_ITEM,
+  COIN,
   HUD_HEART,
   BLADE,
   GATE,

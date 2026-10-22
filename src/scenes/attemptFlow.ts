@@ -1,11 +1,11 @@
 import { attemptsFor, recordScore } from '../core/scores';
 import type { GameRecord } from '../core/types';
-import type { GameKind } from '../games/types';
+import type { GameDefinition, GameKind } from '../games/types';
 
 /** Where a player stands in one game: how many attempts are done and which comes next. */
 export interface AttemptPlan {
   kind: GameKind;
-  /** Attempts in this game: 3 for action games, 1 for puzzles (CONFIG.attempts). */
+  /** Attempts in this game: 3 for action games, 1 for puzzles (CONFIG.attempts), unless the game sets its own. */
   total: number;
   /** Attempts already recorded. */
   done: number;
@@ -19,8 +19,12 @@ export interface AttemptPlan {
   resumes: boolean;
 }
 
-export function planAttempts(kind: GameKind, record: GameRecord | undefined): AttemptPlan {
-  const total = attemptsFor(kind);
+/** How many attempts a game has: its own number, or the usual for its kind. */
+export function attemptCount(def: Pick<GameDefinition, 'kind' | 'attempts'>): number {
+  return def.attempts ?? attemptsFor(def.kind);
+}
+
+export function planAttempts(kind: GameKind, record: GameRecord | undefined, total: number = attemptsFor(kind)): AttemptPlan {
   const done = record ? Math.min(record.attempts.length, total) : 0;
   const finished = record ? record.finished || done >= total : false;
   return {

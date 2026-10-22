@@ -606,6 +606,12 @@ export function drawWhipItem(ctx: CanvasRenderingContext2D): void {
   frames(ctx, 1, 10, 10, (p) => p.grid(0, 0, ['..gggg....', '.gyyyyg...', 'gy....yg..', 'g..gg..g..', 'g.g..g.g..', 'g.g.b..g..', 'gy.gg.yg..', '.gyyyyg.hh', '..ggggbhh.', '.......h..'], pal));
 }
 
+/** Gold coin from a candle: 8 × 8 pixels. */
+export function drawCoin(ctx: CanvasRenderingContext2D): void {
+  const pal: Palette = { g: '#f5c542', d: '#b8862b', y: '#fff0a0', k: '#8a5e1a' };
+  frames(ctx, 1, 8, 8, (p) => p.grid(0, 0, ['..gggg..', '.gyyggd.', 'gyggkgdd', 'gygkkgdd', 'gggkkgdd', 'ggggkgdd', '.gggddd.', '..dddd..'], pal));
+}
+
 /** Heart for the health bar: 10 × 9 pixels: full, half, empty. */
 export function drawHudHeart(ctx: CanvasRenderingContext2D): void {
   const shape = ['.xx..xx..', 'xxxxxxxx.', 'xxxxxxxxx', 'xxxxxxxxx', '.xxxxxxx.', '..xxxxx..', '...xxx...', '....x....', '.........'];

@@ -824,6 +824,16 @@ Hyvä tietää:
 
 > Viuhkaksi aseteltu nippu heittotikareita, kerättävä esine. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 30 × 30 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
+### `tasohyppely-kolikko.png` – Kolikko
+
+- **Koko:** 24 × 24 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kiiltävä kultakolikko, jonka saa jokaisesta kynttilästä. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 24 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
 ### `tasohyppely-sydan.png` – Sydän tilarivillä
 
 - **Koko:** 30 × 27 px

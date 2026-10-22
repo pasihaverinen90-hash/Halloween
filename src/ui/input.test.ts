@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 import type Phaser from 'phaser';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CONFIG } from '../config';
-import { guardInput, isPlainKey, isPrintableChar, markHandled, onChar, onKeys, wasHandled } from './input';
+import { guardInput, heldKeys, isPlainKey, isPrintableChar, markHandled, onChar, onKeys, wasHandled } from './input';
 
 let clock = 1000;
 
@@ -314,5 +314,55 @@ describe('onChar', () => {
     fake.press(' ');
     expect(space).toHaveBeenCalledTimes(1);
     expect(typed).toEqual([]);
+  });
+});
+
+describe('held keys', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { addEventListener: () => undefined, removeEventListener: () => undefined });
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  function release(f: ReturnType<typeof fakeScene>, key: string): void {
+    (f.scene.input!.keyboard as unknown as EventEmitter).emit('keyup', keyEvent(key));
+  }
+
+  it('is down from keydown to keyup', () => {
+    const f = fakeScene();
+    const keys = heldKeys(f.scene, ['ArrowLeft']);
+    f.press('ArrowLeft');
+    expect(keys.isDown('ArrowLeft')).toBe(true);
+    release(f, 'ArrowLeft');
+    expect(keys.isDown('ArrowLeft')).toBe(false);
+  });
+
+  it('counts every tap once, even a tap that ends before the game looks, and two quick taps as two', () => {
+    const f = fakeScene();
+    const keys = heldKeys(f.scene, ['ArrowDown', ' ']);
+    f.press('ArrowDown');
+    release(f, 'ArrowDown');
+    f.press('ArrowDown');
+    release(f, 'ArrowDown');
+    expect(keys.isDown('ArrowDown')).toBe(false);
+    expect(keys.takePress('ArrowDown')).toBe(true);
+    expect(keys.takePress('ArrowDown')).toBe(true);
+    expect(keys.takePress('ArrowDown')).toBe(false);
+    // Auto-repeat is not a new press.
+    f.press(' ');
+    f.press(' ', { repeat: true });
+    expect(keys.takePress(' ')).toBe(true);
+    expect(keys.takePress(' ')).toBe(false);
+  });
+
+  it('forgets presses and held keys when the scene pauses', () => {
+    const f = fakeScene();
+    const keys = heldKeys(f.scene, ['ArrowRight']);
+    f.press('ArrowRight');
+    f.pause();
+    f.resume();
+    expect(keys.isDown('ArrowRight')).toBe(false);
+    expect(keys.takePress('ArrowRight')).toBe(false);
   });
 });

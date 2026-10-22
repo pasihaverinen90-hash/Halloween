@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createResultsDb } from '../core/db';
-import { planAttempts } from './attemptFlow';
+import { attemptCount, planAttempts } from './attemptFlow';
 
 describe('planAttempts', () => {
   const db = createResultsDb(null, 'k');
@@ -25,6 +25,16 @@ describe('planAttempts', () => {
     expect(planAttempts('puzzle', db.getRecord(p.id, 'hirsipuu'))).toMatchObject({ finished: false, resumes: true });
     db.recordAttempt(p.id, 'hirsipuu', 650, 1);
     expect(planAttempts('puzzle', db.getRecord(p.id, 'hirsipuu'))).toMatchObject({ finished: true, best: 650, resumes: false });
+  });
+
+  it('lets a game have its own number of attempts (the platformer: 5)', () => {
+    expect(attemptCount({ kind: 'action' })).toBe(3);
+    expect(attemptCount({ kind: 'puzzle' })).toBe(1);
+    expect(attemptCount({ kind: 'action', attempts: 5 })).toBe(5);
+    for (let i = 0; i < 4; i++) db.recordAttempt(p.id, 'taso', 100 * i, 5);
+    expect(planAttempts('action', db.getRecord(p.id, 'taso'), 5)).toMatchObject({ total: 5, done: 4, next: 5, finished: false });
+    db.recordAttempt(p.id, 'taso', 50, 5);
+    expect(planAttempts('action', db.getRecord(p.id, 'taso'), 5)).toMatchObject({ done: 5, finished: true, best: 300 });
   });
 
   it('treats a manual score as finished', () => {

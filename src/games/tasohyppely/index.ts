@@ -2,6 +2,7 @@ import { CONFIG } from '../../config';
 import type { GameDefinition } from '../types';
 import { ASSETS, PREVIEW } from './assets';
 import { META } from './meta';
+import { continueNote } from './shop';
 import { TasohyppelyScene } from './TasohyppelyScene';
 
 const C = CONFIG.tasohyppely;
@@ -12,6 +13,9 @@ const tasohyppely: GameDefinition = {
   ...META,
   sceneKey: 'Tasohyppely',
   sceneClass: TasohyppelyScene,
+  // Pasi 22.10.: five attempts, and each continues from the level where the previous one ended.
+  attempts: C.attempts,
+  attemptNote: continueNote,
   instructions: {
     goal: 'Vampyyrimetsästäjä kulkee hautausmaan, linnan ja noidan metsän läpi. Metsän perällä odottaa päänoita.',
     keys: [
@@ -23,11 +27,11 @@ const tasohyppely: GameDefinition = {
     ],
     rules: [
       `Jokaisen kentän alussa sinulla on ${C.maxHealth} sydäntä. Vihollinen, ammus, terä ja kuoppaan putoaminen vievät yhden.`,
-      'Kun sydämet loppuvat, yritys päättyy, ja seuraava yritys alkaa hautausmaalta.',
+      'Kun sydämet loppuvat, yritys päättyy. Seuraava yritys jatkuu saman kentän alusta, ja tavarat ovat kuten kentän alkaessa.',
       'Tason läpi pääsee alas painamalla ↓ ja välilyöntiä yhtä aikaa.',
-      'Lyö kynttilöitä ruoskalla. Kaatuneet viholliset ja muutama kynttilä pudottavat puolikkaan sydämen, tikareita tai ruoskan päivityksen.',
-      `Ruoskassa on viisi tasoa. Päivitys pidentää sitä ja tekee siitä vahvemman, ja se säilyy koko yrityksen ajan.`,
-      `Tikareita on alussa ${C.daggersStart}, ja niitä saa lisää vihollisilta (enintään ${C.daggersMax}).`,
+      'Jokaisesta kynttilästä saa kolikon. Ennen kenttiä 2 ja 3 kolikoilla voi ostaa tikareita, lisäsydämiä, paremman ruoskan ja teroitusta.',
+      'Kaatuneet viholliset pudottavat joskus tikareita, puolikkaan sydämen tai ruoskan päivityksen.',
+      `Ruoskassa on viisi tasoa, ja tikareita on alussa ${C.daggersStart} (enintään ${C.daggersMax}).`,
       'Varo kuoppia, sortuvia lattioita ja heiluvia teriä. Terän alta pääsee kyyristymällä, ja liikkuvat tasot kuljettavat kuoppien yli.',
     ],
     scoring: [
@@ -35,6 +39,7 @@ const tasohyppely: GameDefinition = {
       `Lyödyt kynttilät: enintään ${fi(C.candlePoints)}.`,
       `Päänoidan kestävyydestä: enintään ${fi(C.bossPoints)}.`,
     ],
+    attemptRule: `${C.attempts} yritystä. Paras jää voimaan. Päänoidan kaatuminen tai ${fi(CONFIG.maxScore)} pistettä päättää pelin.`,
   },
   preview: PREVIEW,
   assets: ASSETS,

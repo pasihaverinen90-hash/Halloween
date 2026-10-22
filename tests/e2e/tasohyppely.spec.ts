@@ -15,7 +15,7 @@ async function startAttempt(page: Page): Promise<void> {
   await waitForScene(page, 'Tasohyppely');
 }
 
-test('tasohyppely: liikkuminen, hyppy, ruoska, tauko, kynttilä, zombi, kuoppa, esineet, kentät, päänoita ja kolme yritystä', async ({ page }) => {
+test('tasohyppely: liikkuminen, ruoska, tauko, kynttilä ja kolikko, zombi, kuoppa, esineet, kauppa, jatkaminen kentän alusta ja päänoita', async ({ page }) => {
   test.setTimeout(480_000);
   await openGame(page);
   await createPlayer(page, 'Metsästäjä');
@@ -54,7 +54,8 @@ test('tasohyppely: liikkuminen, hyppy, ruoska, tauko, kynttilä, zombi, kuoppa, 
   await press(page, 'Enter', 400);
   await waitForState(page, 'Tasohyppely', (s) => s.time > paused);
 
-  // Kynttilä: ruoska sammuttaa sen ja tuo pisteitä
+  // Kynttilä: ruoska sammuttaa sen, ja siitä saa pisteitä ja kolikon (alun lyönti on voinut jo osua yhteen)
+  const candlesBefore = (await sceneState(page, 'Tasohyppely')).candles;
   await platformer(page, 'const c = scene.level.candles[0]; scene.debugPlace(c.x - 40, c.y + 72); scene.hunter.facing = 1;');
   await waitForState(page, 'Tasohyppely', (s) => s.onGround);
   await expect
@@ -65,7 +66,9 @@ test('tasohyppely: liikkuminen, hyppy, ruoska, tauko, kynttilä, zombi, kuoppa, 
       },
       { timeout: 30_000 },
     )
-    .toBe(1);
+    .toBe(candlesBefore + 1);
+  const candles = candlesBefore + 1;
+  expect(await sceneState(page, 'Tasohyppely')).toMatchObject({ coins: candles });
   expect((await sceneState(page, 'Tasohyppely')).points).toBeGreaterThan(0);
 
   // Zombi nousee maasta, kun sen lähelle tulee, ja kaatuu yhdestä lyönnistä
@@ -92,24 +95,75 @@ test('tasohyppely: liikkuminen, hyppy, ruoska, tauko, kynttilä, zombi, kuoppa, 
   await platformer(page, "scene.debugDrop('whip')");
   await waitForState(page, 'Tasohyppely', (s) => s.whip === 2);
 
-  // C heittää tikarin, ja tikarinippu tuo viisi lisää
-  expect((await sceneState(page, 'Tasohyppely')).daggers).toBe(5);
+  // C heittää tikarin, ja tikarinippu tuo viisi lisää (Pasi 22.10.: alussa 10)
+  expect((await sceneState(page, 'Tasohyppely')).daggers).toBe(10);
   await press(page, 'c', 50);
-  await waitForState(page, 'Tasohyppely', (s) => s.daggers === 4);
-  await platformer(page, "scene.debugDrop('dagger')");
   await waitForState(page, 'Tasohyppely', (s) => s.daggers === 9);
+  await platformer(page, "scene.debugDrop('dagger')");
+  await waitForState(page, 'Tasohyppely', (s) => s.daggers === 14);
 
-  // Maaliportista seuraavaan kenttään, jossa sydämet ovat taas täynnä
+  // Maaliportista seuraavaan kenttään: ensin kauppa, ja sydämet ovat taas täynnä
   await platformer(page, 'scene.debugHurt(2); const g = scene.level.gate; scene.debugPlace(g.x - 90, g.y);');
   expect((await sceneState(page, 'Tasohyppely')).health).toBe(2.5);
   await page.keyboard.down('ArrowRight');
   await waitForState(page, 'Tasohyppely', (s) => s.phase === 'levelDone');
   await page.keyboard.up('ArrowRight');
-  await waitForState(page, 'Tasohyppely', (s) => s.level === 1, 60_000);
-  expect(await sceneState(page, 'Tasohyppely')).toMatchObject({ levelsDone: 1, health: 5, whip: 2, candles: 1 });
+  await waitForState(page, 'Tasohyppely', (s) => s.level === 1 && s.phase === 'shop', 60_000);
+  expect(await sceneState(page, 'Tasohyppely')).toMatchObject({ levelsDone: 1, health: 5, whip: 2, candles, coins: candles, shop: { index: 0 } });
+
+  // Kahdella kolikolla ei saa mitään
+  await platformer(page, 'scene.debugCoins(2)');
+  await press(page, 'Enter', 300);
+  expect(await sceneState(page, 'Tasohyppely')).toMatchObject({ coins: 2, daggers: 14 });
+  // Kolikoilla saa tikareita (enintään 15), lisäsydämen, paremman ruoskan ja teroituksen
+  await platformer(page, 'scene.debugCoins(30)');
+  await press(page, 'Enter', 300);
+  await waitForState(page, 'Tasohyppely', (s) => s.daggers === 15 && s.coins === 27);
+  await press(page, 'ArrowDown', 300);
+  await press(page, 'Enter', 300);
+  await waitForState(page, 'Tasohyppely', (s) => s.maxHealth === 6 && s.health === 6 && s.coins === 21);
+  await press(page, 'ArrowDown', 300);
+  await press(page, 'Enter', 300);
+  await waitForState(page, 'Tasohyppely', (s) => s.whip === 3 && s.coins === 13);
+  await press(page, 'ArrowDown', 300);
+  await press(page, 'Enter', 300);
+  await waitForState(page, 'Tasohyppely', (s) => s.sharpen === 1 && s.coins === 7);
+  await press(page, 'ArrowDown', 300);
+  await press(page, 'Enter', 300);
+  await waitForState(page, 'Tasohyppely', (s) => s.phase === 'play');
   expect((await sceneState(page, 'Tasohyppely')).points).toBeGreaterThanOrEqual(200);
 
-  // Päänoita: areenalle tultaessa taistelu alkaa, ja viimeinen osuma kaataa sen
+  // Sydämet loppuvat linnassa: yritys päättyy
+  await platformer(page, 'scene.debugHurt(10)');
+  await waitForState(page, 'Tasohyppely', (s) => s.phase === 'dead');
+  await waitForScene(page, 'AttemptResult', 120_000);
+  let result = await sceneState(page, 'AttemptResult');
+  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 5, isFinal: false });
+  expect(result.score).toBeGreaterThanOrEqual(200);
+  await press(page, 'Enter');
+
+  // Yritys 2/5 jatkuu linnan alusta tavaroilla, jotka olivat kentän alkaessa (ostokset perutaan)
+  await waitForScene(page, 'AttemptIntro');
+  expect(await sceneState(page, 'AttemptIntro')).toMatchObject({ attempt: 2, total: 5, note: 'Jatkat kentän 2 alusta: Linna' });
+  await press(page, 'Enter');
+  await waitForScene(page, 'Tasohyppely');
+  expect(await sceneState(page, 'Tasohyppely')).toMatchObject({
+    phase: 'shop',
+    level: 1,
+    levelsDone: 1,
+    whip: 2,
+    daggers: 14,
+    coins: candles,
+    sharpen: 0,
+    maxHealth: 5,
+    candles,
+  });
+  // Ylös valinnasta pääsee suoraan jatkamaan
+  await press(page, 'ArrowUp', 300);
+  await press(page, 'Enter', 300);
+  await waitForState(page, 'Tasohyppely', (s) => s.phase === 'play');
+
+  // Päänoita: areenalle tultaessa taistelu alkaa, ja viimeinen osuma kaataa sen. Silloin peli päättyy.
   await platformer(page, 'scene.debugBoss(); scene.hunter.invulnerable = 999;');
   await waitForState(page, 'Tasohyppely', (s) => s.phase === 'boss' && s.boss !== null);
   await waitForState(page, 'Tasohyppely', (s) => s.boss.mode !== 'enter', 120_000);
@@ -119,27 +173,15 @@ test('tasohyppely: liikkuminen, hyppy, ruoska, tauko, kynttilä, zombi, kuoppa, 
   const won = await sceneState(page, 'Tasohyppely');
   expect(won.points).toBeGreaterThanOrEqual(900);
   await waitForScene(page, 'AttemptResult', 120_000);
-  let result = await sceneState(page, 'AttemptResult');
-  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 3, isFinal: false, score: won.points });
+  result = await sceneState(page, 'AttemptResult');
+  expect(result).toMatchObject({ attempt: 2, total: 5, isFinal: true, score: won.points });
   await press(page, 'Enter');
 
-  // Yritykset 2 ja 3 alkavat taas hautausmaalta perusruoskalla, ja sydänten loppuminen päättää ne
-  for (const attempt of [2, 3]) {
-    await startAttempt(page);
-    expect(await sceneState(page, 'Tasohyppely')).toMatchObject({ level: 0, health: 5, whip: 1, candles: 0 });
-    await waitForState(page, 'Tasohyppely', (s) => s.phase === 'play');
-    await platformer(page, 'scene.debugHurt(5)');
-    await waitForState(page, 'Tasohyppely', (s) => s.phase === 'dead');
-    await waitForScene(page, 'AttemptResult', 120_000);
-    result = await sceneState(page, 'AttemptResult');
-    expect(result).toMatchObject({ attempt, isFinal: attempt === 3 });
-    expect(result.score).toBeLessThan(20);
-    await press(page, 'Enter');
-  }
   await waitForScene(page, 'Menu');
   const record = (await savedData(page)).players[0].games.tasohyppely;
-  expect(record.attempts).toHaveLength(3);
+  expect(record.attempts).toHaveLength(2);
   expect(record.finished).toBe(true);
+  expect(record).not.toHaveProperty('carry');
   const tile = (await sceneState(page, 'Menu')).tiles.find((t: { id: string }) => t.id === 'tasohyppely');
   expect(tile).toEqual({ id: 'tasohyppely', status: 'finished', score: won.points });
   await expectNoRuntimeErrors(page);

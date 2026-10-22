@@ -1,5 +1,5 @@
 import type Phaser from 'phaser';
-import type { Sfx } from '../core/types';
+import type { AttemptEnd, Sfx } from '../core/types';
 
 /**
  * action = three attempts in a row, best counts ("Yritys 1/3").
@@ -17,6 +17,8 @@ export interface GameInstructions {
   rules: string[];
   /** How points are earned. "Enintään 1000 pistettä" and the attempt rule are added automatically. */
   scoring: string[];
+  /** Replaces the automatic line about attempts (e.g. when the attempts continue from each other). */
+  attemptRule?: string;
 }
 
 /** Lets a puzzle round survive a crash or reload. The game does not know where it is stored. */
@@ -33,8 +35,13 @@ export interface GameCheckpoint {
  * Games know nothing about attempts, saving or menus.
  */
 export interface GameContext {
-  /** Report the result. The core rounds and clamps the score to 0..1000. Call exactly once. */
-  finish(score: number): void;
+  /**
+   * Report the result. The core rounds and clamps the score to 0..1000. Call exactly once.
+   * `end.carry` is handed to the next attempt (ctx.carry); `end.complete` skips the remaining attempts.
+   */
+  finish(score: number, end?: AttemptEnd): void;
+  /** What the previous attempt handed on with finish(score, { carry }), or null (first attempt, or nothing handed on). */
+  carry: unknown | null;
   checkpoint: GameCheckpoint;
   sfx: Sfx;
 }
@@ -87,6 +94,10 @@ export interface GameDefinition {
   /** The game scene class. Receives GameSceneData in init()/create(). */
   sceneClass: new () => Phaser.Scene;
   instructions: GameInstructions;
+  /** Attempts when not the usual for its kind (CONFIG.attempts), e.g. the platformer's 5 (Pasi 21.10.). */
+  attempts?: number;
+  /** A line for the "Yritys 2/5" screen from what the previous attempt handed on (e.g. where it continues). */
+  attemptNote?(carry: unknown): string | null;
   /** Menu preview image (about 360×200). */
   preview: AssetSpec;
   /** All other replaceable images of the game. */

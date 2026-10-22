@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { CONFIG } from '../../config';
 import { addKeyHints } from '../../ui/hints';
-import { heldKeys, onChar, type HeldKeys } from '../../ui/input';
+import { heldKeys, onChar, onKeys, type HeldKeys } from '../../ui/input';
 import { addAsset } from '../../ui/place';
 import { applyCameraZoom, H, W, ZOOM } from '../../ui/screen';
 import { COLORS, CSS, TEXT } from '../../ui/theme';
@@ -13,6 +13,7 @@ import {
   BAT,
   BLADE,
   CANDLE,
+  COIN,
   DAGGER,
   DAGGER_ITEM,
   GATE,
@@ -70,16 +71,15 @@ import {
 } from './logic';
 import { seeded } from './pixel';
 import { DECOR_FRAMES } from './scenery';
+import { buy, damageFactor, freshRun, MAX_WHIP, maxHealth, offer, readRunState, SHOP_ITEMS, WHIP_NAMES, type RunState } from './shop';
 import { HUNTER_FRAME } from './sprites';
 
 const C = CONFIG.tasohyppely;
 /** Room below the level for the key hints. */
 const BOTTOM_MARGIN = 60;
 const STEP = 1 / 60;
-const WHIP_NAMES = ['Nahkaruoska', 'Piikkiketju', 'Hopearuoska', 'Liekehtivä ruoska', 'Salamaruoska'];
-const MAX_WHIP = C.whipReach.length;
 
-type Phase = 'intro' | 'play' | 'levelDone' | 'boss' | 'won' | 'dead';
+type Phase = 'shop' | 'intro' | 'play' | 'levelDone' | 'boss' | 'won' | 'dead';
 
 const ENEMY_ART: Record<EnemyKind, AssetSpec> = {
   zombie: ZOMBIE,
@@ -115,7 +115,9 @@ interface CrumbleTile {
 /**
  * Tasohyppely: the vampire hunter runs, jumps and lashes his way through the
  * graveyard, the castle and the witch's forest, and fights the head witch.
- * One attempt; the core counts the attempts.
+ * One attempt; the core counts the attempts. An attempt starts from the level
+ * where the previous one ended (ctx.carry, Pasi 22.10.), and the start of
+ * every level is saved, so an interrupted attempt resumes there.
  */
 export class TasohyppelyScene extends Phaser.Scene {
   private ctx!: GameContext;
@@ -140,6 +142,14 @@ export class TasohyppelyScene extends Phaser.Scene {
   private struck = new Set<number>();
   private health: number = C.maxHealth;
   private whipLevel = 1;
+  /** Coins from candles, and what has been bought with them (Pasi 22.10.). */
+  private coins = 0;
+  private extraHearts = 0;
+  private sharpen = 0;
+  /** Where this attempt starts, and the hunter's things at the start of the current level (handed on after a fall). */
+  private startRun: RunState = freshRun();
+  private levelStart: RunState = freshRun();
+  private shopIndex = 0;
   private levelsDone = 0;
   private bestProgress = 0;
   private candlesBroken = 0;
@@ -179,14 +189,18 @@ export class TasohyppelyScene extends Phaser.Scene {
   private whipText!: Phaser.GameObjects.Text;
   private daggerText!: Phaser.GameObjects.Text;
   private levelText!: Phaser.GameObjects.Text;
-  private pointsText!: Phaser.GameObjects.Text;
+  private coinText!: Phaser.GameObjects.Text;
+  private coinIcon!: Phaser.GameObjects.Image;
   private candleText!: Phaser.GameObjects.Text;
+  private shopLayer!: Phaser.GameObjects.Container;
+  private shopCoins!: Phaser.GameObjects.Text;
+  private shopRows: Array<{ box: Phaser.GameObjects.Graphics; name: Phaser.GameObjects.Text; info: Phaser.GameObjects.Text; price: Phaser.GameObjects.Text }> = [];
   private progressBar!: Phaser.GameObjects.Graphics;
   private bossBar!: Phaser.GameObjects.Graphics;
   private bossLabel!: Phaser.GameObjects.Text;
   private message!: Phaser.GameObjects.Text;
   private subMessage!: Phaser.GameObjects.Text;
-  private shown = { points: -1, health: -1, whip: -1, daggers: -1, candles: '', level: -1, progress: -1, boss: -1 };
+  private shown = { health: -1, maxHealth: -1, whip: -1, daggers: -1, coins: -1, candles: '', level: -1, progress: -1, boss: -1 };
 
   constructor() {
     super('Tasohyppely');
@@ -200,16 +214,19 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.levelTime = 0;
     this.lashQueued = false;
     this.throwQueued = false;
-    this.daggers = C.daggersStart;
     this.flying = [];
     this.throwCooldown = 0;
     this.throwPose = 0;
     this.struck = new Set();
-    this.health = C.maxHealth;
-    this.whipLevel = 1;
-    this.levelsDone = 0;
+    // An interrupted attempt resumes at the start of its level; otherwise continue from where the last attempt ended.
+    this.startRun = readRunState(this.ctx.checkpoint.initial) ?? readRunState(this.ctx.carry) ?? freshRun();
+    this.levelStart = this.startRun;
+    this.applyRun(this.startRun);
+    this.health = maxHealth(this.startRun);
+    this.shopIndex = 0;
+    this.shopRows = [];
+    this.levelsDone = this.startRun.level;
     this.bestProgress = 0;
-    this.candlesBroken = 0;
     this.broken = new Set();
     this.whipDroppedHere = false;
     this.guaranteeArmed = false;
@@ -228,7 +245,7 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.bossImage = null;
     this.hearts = [];
     this.lookAhead = 0;
-    this.shown = { points: -1, health: -1, whip: -1, daggers: -1, candles: '', level: -1, progress: -1, boss: -1 };
+    this.shown = { health: -1, maxHealth: -1, whip: -1, daggers: -1, coins: -1, candles: '', level: -1, progress: -1, boss: -1 };
   }
 
   create(): void {
@@ -254,13 +271,24 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.whipImage = this.inWorld(addAsset(this, WHIP, 0, 0, { origin: [0, 0.5] }).setDepth(21).setVisible(false));
 
     this.buildHud();
+    // The shop's keys come first: there the arrows choose (in the order they are pressed, together with Enter),
+    // and while playing these handlers pass the keys on to the hunter.
+    onKeys(
+      this,
+      {
+        ArrowUp: () => (this.phase === 'shop' ? this.shopMove(-1) : false),
+        ArrowDown: () => (this.phase === 'shop' ? this.shopMove(1) : false),
+        Enter: () => (this.phase === 'shop' ? this.shopEnter() : false),
+      },
+      { allowRepeat: ['ArrowUp', 'ArrowDown'] },
+    );
     this.keys = heldKeys(this, ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ']);
     onChar(this, (char) => {
       const key = char.toLowerCase();
       if (key === 'x') this.lashQueued = true;
       else if (key === 'c') this.throwQueued = true;
     });
-    this.startLevel(0);
+    this.enterLevel(this.startRun.level);
   }
 
   override update(_time: number, delta: number): void {
@@ -294,7 +322,11 @@ export class TasohyppelyScene extends Phaser.Scene {
       lashing: h.lash?.kind ?? null,
       facing: h.facing,
       health: this.health,
+      maxHealth: this.heartCap(),
       whip: this.whipLevel,
+      coins: this.coins,
+      sharpen: this.sharpen,
+      shop: this.phase === 'shop' ? { index: this.shopIndex, offers: SHOP_ITEMS.map((item) => offer(this.run(), item)) } : null,
       daggers: this.daggers,
       flyingDaggers: this.flying.length,
       invulnerable: h.invulnerable > 0,
@@ -326,11 +358,17 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.camY = this.cameraTargetY();
   }
 
-  /** Test helper: jump to the start of a level (0..2), as if the earlier ones were done. */
+  /** Test helper: jump to the start of a level (0..2), as if the earlier ones were done (no shop). */
   debugLevel(index: number): void {
-    this.levelsDone = index;
-    this.startLevel(index);
+    this.enterLevel(index);
+    this.closeShop();
     this.beginPlay();
+  }
+
+  /** Test helper: this many coins. */
+  debugCoins(n: number): void {
+    this.coins = n;
+    if (this.phase === 'shop') this.refreshShop();
   }
 
   /** Test helper: straight into the head witch's arena. */
@@ -341,7 +379,8 @@ export class TasohyppelyScene extends Phaser.Scene {
   }
 
   debugHurt(n: number): void {
-    // Hits do not count while the level's name is shown.
+    // Hits do not count in the shop or while the level's name is shown.
+    this.closeShop();
     this.beginPlay();
     for (let i = 0; i < n; i++) {
       this.hunter.invulnerable = 0;
@@ -381,6 +420,53 @@ export class TasohyppelyScene extends Phaser.Scene {
 
   // ---------------------------------------------------------------- levels
 
+  /** Hearts at the start of a level. */
+  private heartCap(): number {
+    return maxHealth({ extraHearts: this.extraHearts });
+  }
+
+  /** Damage multiplier from sharpening. */
+  private damageBoost(): number {
+    return damageFactor({ sharpen: this.sharpen });
+  }
+
+  /** The hunter's things right now, as a run state for this level. */
+  private run(): RunState {
+    return {
+      level: this.levelIndex,
+      whip: this.whipLevel,
+      daggers: this.daggers,
+      coins: this.coins,
+      extraHearts: this.extraHearts,
+      sharpen: this.sharpen,
+      candles: this.candlesBroken - this.broken.size,
+    };
+  }
+
+  private applyRun(run: RunState): void {
+    this.whipLevel = run.whip;
+    this.daggers = run.daggers;
+    this.coins = run.coins;
+    this.extraHearts = run.extraHearts;
+    this.sharpen = run.sharpen;
+    this.candlesBroken = run.candles;
+  }
+
+  /**
+   * Arrive at a level: remember the hunter's things (saved, and handed to the
+   * next attempt after a fall), build the level and open the shop before
+   * levels 2 and 3.
+   */
+  private enterLevel(index: number): void {
+    this.levelIndex = index;
+    this.levelsDone = index;
+    this.broken = new Set();
+    this.levelStart = this.run();
+    this.ctx.checkpoint.save(this.levelStart);
+    this.startLevel(index);
+    if (index > 0) this.openShop();
+  }
+
   private startLevel(index: number): void {
     this.levelIndex = index;
     this.level = getLevels()[index];
@@ -408,8 +494,8 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.broken = new Set();
     this.whipDroppedHere = false;
     this.guaranteeArmed = false;
-    // Pasi 21.10.: full health at the start of every level.
-    this.health = C.maxHealth;
+    // Pasi 21.10.: full health at the start of every level (more with bought hearts).
+    this.health = this.heartCap();
     this.world = { level, gone: new Set(), platforms: [] };
     this.hunter = newHunter(level.start.x, level.start.y);
     this.lastSafe = { ...level.start };
@@ -486,7 +572,9 @@ export class TasohyppelyScene extends Phaser.Scene {
         if (this.phaseTime > 1.6) this.beginPlay();
         return;
       case 'levelDone':
-        if (this.phaseTime > 1.8) this.startLevel(this.levelIndex + 1);
+        if (this.phaseTime > 1.8) this.enterLevel(this.levelIndex + 1);
+        return;
+      case 'shop':
         return;
       case 'won':
         this.stepBoss(dt);
@@ -652,7 +740,7 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.hunter.vy = -420;
     this.hunter.lash = null;
     this.ctx.sfx.play('fail');
-    this.showMessage('Yritys päättyi', `${this.points().toLocaleString('fi-FI')} pistettä`);
+    this.showMessage('Yritys päättyi', 'Sydämet loppuivat.');
   }
 
   /** The attempt is over (the hunter fell for good). */
@@ -673,7 +761,9 @@ export class TasohyppelyScene extends Phaser.Scene {
   private end(): void {
     if (this.finished) return;
     this.finished = true;
-    this.ctx.finish(this.points());
+    // The witch fell: nothing is left to play. Otherwise the next attempt continues from the start of this level.
+    if (this.phase === 'won') this.ctx.finish(this.points(), { complete: true });
+    else this.ctx.finish(this.points(), { carry: this.levelStart });
   }
 
   // ---------------------------------------------------------------- enemies, shots and items
@@ -802,7 +892,7 @@ export class TasohyppelyScene extends Phaser.Scene {
       return;
     }
     // A whip upgrade with the whip already full becomes half a heart (Pasi 21.10.).
-    this.health = Math.min(C.maxHealth, this.health + C.heartHeal);
+    this.health = Math.min(this.heartCap(), this.health + C.heartHeal);
     this.ctx.sfx.play('correct');
     this.floatText(item.x, item.y - 30, '+½', CSS.red);
   }
@@ -845,7 +935,7 @@ export class TasohyppelyScene extends Phaser.Scene {
         if (e.state === 'gone') continue;
         const er = enemyRect(e);
         if (!er || !overlaps(rect, er)) continue;
-        e.hp -= C.daggerDamage;
+        e.hp -= C.daggerDamage * this.damageBoost();
         e.flash = 0.12;
         this.ctx.sfx.noise({ duration: 0.06, volume: 0.12, filterFreq: 1800 });
         if (e.hp <= 0) this.killEnemy(e);
@@ -858,7 +948,7 @@ export class TasohyppelyScene extends Phaser.Scene {
         }
       }
       if (this.boss && bossHittable(this.boss) && overlaps(rect, bossRect(this.boss))) {
-        hitBoss(this.boss, C.daggerDamage);
+        hitBoss(this.boss, C.daggerDamage * this.damageBoost());
         this.ctx.sfx.noise({ duration: 0.1, volume: 0.16, filterFreq: 1400 });
         if (this.boss.mode === 'dead') this.bossDefeated();
         return gone();
@@ -874,7 +964,7 @@ export class TasohyppelyScene extends Phaser.Scene {
     if (!lashActive(h) || !h.lash) return;
     const rect = whipRect(h, this.whipLevel);
     if (!rect) return;
-    const damage = whipDamage(this.whipLevel);
+    const damage = whipDamage(this.whipLevel) * this.damageBoost();
     for (const e of this.enemies) {
       if (e.state === 'gone' || this.struck.has(e.id)) continue;
       const er = enemyRect(e);
@@ -930,7 +1020,11 @@ export class TasohyppelyScene extends Phaser.Scene {
     image?.destroy();
     this.candleImages.delete(id);
     this.burst(candle.x, candle.y - 8, 0xffb030, 10);
-    this.floatText(candle.x, candle.y - 30, `+${Math.round((C.candlePoints / totalCandles()) * 10) / 10}`, CSS.orange);
+    // Pasi 22.10.: every candle gives a coin for the shop.
+    this.coins += C.coinsPerCandle;
+    this.floatText(candle.x, candle.y - 30, `+${C.coinsPerCandle}`, CSS.gold);
+    const coin = this.inWorld(addAsset(this, COIN, candle.x, candle.y - 10).setDepth(32));
+    this.tweens.add({ targets: coin, y: candle.y - 70, alpha: 0, duration: 650, ease: 'Sine.Out', onComplete: () => coin.destroy() });
     this.ctx.sfx.tone({ freq: 880, slideTo: 1320, duration: 0.12, type: 'triangle', volume: 0.07 });
     if (candle.drop) this.dropItem(candle.drop === 'whip' && this.whipLevel >= MAX_WHIP ? 'heart' : candle.drop, candle.x, candle.y);
   }
@@ -1001,7 +1095,7 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.shots = [];
     this.cameras.main.flash(500, 255, 240, 200);
     this.ctx.sfx.play('fanfare');
-    this.showMessage('Päänoita kaatui!', `${this.points().toLocaleString('fi-FI')} pistettä`);
+    this.showMessage('Päänoita kaatui!', 'Metsä on vapaa.');
   }
 
   // ---------------------------------------------------------------- drawing
@@ -1284,12 +1378,15 @@ export class TasohyppelyScene extends Phaser.Scene {
     panel.fillRoundedRect(16, 12, 300, 108, 14);
     panel.fillRoundedRect(W - 316, 12, 300, 82, 14);
     panel.fillRoundedRect(W / 2 - 200, 12, 400, 56, 14);
-    for (let i = 0; i < C.maxHealth; i++) this.hearts.push(addAsset(this, HUD_HEART, 44 + i * 40, 38, { width: 34, height: 31, frame: 0 }));
+    // Room for the bought extra hearts too.
+    for (let i = 0; i < C.maxHealth + C.shop.extraHeartsMax; i++) this.hearts.push(addAsset(this, HUD_HEART, 42 + i * 34, 38, { width: 30, height: 27, frame: 0 }));
     this.whipText = this.add.text(30, 72, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.gold }).setOrigin(0, 0.5);
     this.daggerText = this.add.text(30, 100, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.silver }).setOrigin(0, 0.5);
     this.levelText = this.add.text(W / 2, 30, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.bone }).setOrigin(0.5, 0.5);
     this.progressBar = this.add.graphics();
-    this.pointsText = this.add.text(W - 30, 36, '', { ...TEXT.bodyBold, fontSize: '26px', color: CSS.orange }).setOrigin(1, 0.5);
+    // Pasi 22.10.: no points during play; coins instead.
+    this.coinIcon = addAsset(this, COIN, W - 140, 38, { width: 26, height: 26 });
+    this.coinText = this.add.text(W - 30, 38, '', { ...TEXT.bodyBold, fontSize: '26px', color: CSS.gold }).setOrigin(1, 0.5);
     this.candleText = this.add.text(W - 30, 72, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.bone }).setOrigin(1, 0.5);
     this.bossBar = this.add.graphics();
     this.bossLabel = this.add.text(W / 2, 96, 'Päänoita', { ...TEXT.bodyBold, fontSize: '20px', color: CSS.red }).setOrigin(0.5, 0.5).setVisible(false);
@@ -1297,6 +1394,7 @@ export class TasohyppelyScene extends Phaser.Scene {
     this.message = this.add.text(W / 2, H / 2 - 70, '', { ...TEXT.title, fontSize: '72px', align: 'center' }).setOrigin(0.5).setVisible(false);
     this.subMessage = this.add.text(W / 2, H / 2 + 6, '', { ...TEXT.heading, fontSize: '40px', align: 'center' }).setOrigin(0.5).setVisible(false);
     this.subMessage.setShadow(0, 3, '#000000', 8, true, true);
+    this.buildShop();
     addKeyHints(this, [
       ['←→', 'Liiku'],
       ['Välilyönti', 'Hyppää'],
@@ -1314,9 +1412,11 @@ export class TasohyppelyScene extends Phaser.Scene {
   }
 
   private refreshHud(): void {
-    if (this.health !== this.shown.health) {
+    const cap = this.heartCap();
+    if (this.health !== this.shown.health || cap !== this.shown.maxHealth) {
       this.shown.health = this.health;
-      this.hearts.forEach((heart, i) => heart.setFrame(this.health >= i + 1 ? 0 : this.health >= i + 0.5 ? 1 : 2));
+      this.shown.maxHealth = cap;
+      this.hearts.forEach((heart, i) => heart.setVisible(i < cap).setFrame(this.health >= i + 1 ? 0 : this.health >= i + 0.5 ? 1 : 2));
     }
     if (this.whipLevel !== this.shown.whip) {
       this.shown.whip = this.whipLevel;
@@ -1326,10 +1426,10 @@ export class TasohyppelyScene extends Phaser.Scene {
       this.shown.daggers = this.daggers;
       this.daggerText.setText(`Tikarit: ${this.daggers}`).setAlpha(this.daggers > 0 ? 1 : 0.5);
     }
-    const points = this.points();
-    if (points !== this.shown.points) {
-      this.shown.points = points;
-      this.pointsText.setText(`Pisteet: ${points.toLocaleString('fi-FI')}`);
+    if (this.coins !== this.shown.coins) {
+      this.shown.coins = this.coins;
+      this.coinText.setText(`Kolikot: ${this.coins}`);
+      this.coinIcon.setX(this.coinText.x - this.coinText.width - 22);
     }
     const candles = `Kynttilät: ${this.broken.size}/${this.level.candles.length}`;
     if (candles !== this.shown.candles) {
@@ -1360,6 +1460,105 @@ export class TasohyppelyScene extends Phaser.Scene {
         for (const mark of [1 / 3, 2 / 3]) g.fillRect(W / 2 - 250 + 500 * mark - 1.5, 112, 3, 20);
       }
     }
+  }
+
+  // ---------------------------------------------------------------- the shop (Pasi 22.10.)
+
+  private buildShop(): void {
+    const box = this.add.container(0, 0).setVisible(false);
+    const panel = this.add.graphics();
+    panel.fillStyle(COLORS.panel, 0.97).fillRoundedRect(W / 2 - 430, 88, 860, 556, 20);
+    panel.lineStyle(3, COLORS.border, 1).strokeRoundedRect(W / 2 - 430, 88, 860, 556, 20);
+    box.add([this.add.rectangle(W / 2, H / 2, W, H, COLORS.night, 0.7), panel]);
+    box.add(this.add.text(W / 2, 132, 'Kauppa', { ...TEXT.title, fontSize: '58px' }).setOrigin(0.5));
+    this.shopCoins = this.add.text(W / 2, 188, '', { ...TEXT.bodyBold, fontSize: '26px', color: CSS.gold }).setOrigin(0.5);
+    box.add(this.shopCoins);
+    for (let i = 0; i <= SHOP_ITEMS.length; i++) {
+      const y = 222 + i * 76;
+      const row = {
+        box: this.add.graphics(),
+        name: this.add.text(W / 2 - 392, y + 22, '', { ...TEXT.bodyBold, fontSize: '25px', color: CSS.bone }).setOrigin(0, 0.5),
+        info: this.add.text(W / 2 - 392, y + 50, '', { ...TEXT.body, fontSize: '19px', color: CSS.muted }).setOrigin(0, 0.5),
+        price: this.add.text(W / 2 + 392, y + 36, '', { ...TEXT.bodyBold, fontSize: '25px', color: CSS.gold }).setOrigin(1, 0.5),
+      };
+      box.add([row.box, row.name, row.info, row.price]);
+      this.shopRows.push(row);
+    }
+    box.add(this.add.text(W / 2, 616, '↑ ↓ valitse     Enter osta tai jatka', { ...TEXT.body, fontSize: '20px', color: CSS.muted }).setOrigin(0.5));
+    this.shopLayer = box;
+  }
+
+  private openShop(): void {
+    this.phase = 'shop';
+    this.phaseTime = 0;
+    this.shopIndex = 0;
+    this.tweens.killTweensOf([this.message, this.subMessage]);
+    this.message.setVisible(false);
+    this.subMessage.setVisible(false);
+    this.shopLayer.setVisible(true);
+    this.refreshShop();
+  }
+
+  private closeShop(): void {
+    if (this.phase !== 'shop') return;
+    this.shopLayer.setVisible(false);
+    this.phase = 'intro';
+    this.phaseTime = 0;
+    this.showMessage(`Kenttä ${this.levelIndex + 1}/3`, this.level.name);
+  }
+
+  private shopMove(step: number): boolean {
+    const rows = SHOP_ITEMS.length + 1;
+    this.shopIndex = (this.shopIndex + rows + step) % rows;
+    this.ctx.sfx.play('move');
+    this.refreshShop();
+    return true;
+  }
+
+  /** Enter in the shop: buy the chosen item, or go on to the level. */
+  private shopEnter(): boolean {
+    if (this.shopIndex >= SHOP_ITEMS.length) {
+      this.ctx.sfx.play('select');
+      this.closeShop();
+      return true;
+    }
+    const item = SHOP_ITEMS[this.shopIndex];
+    const next = buy(this.run(), item);
+    if (!next) {
+      this.ctx.sfx.play('error');
+      return true;
+    }
+    this.whipLevel = next.whip;
+    this.daggers = next.daggers;
+    this.coins = next.coins;
+    this.extraHearts = next.extraHearts;
+    this.sharpen = next.sharpen;
+    if (item === 'heart') this.health = this.heartCap();
+    this.ctx.sfx.play('correct');
+    this.refreshShop();
+    return true;
+  }
+
+  private refreshShop(): void {
+    const run = this.run();
+    this.shopCoins.setText(`Kolikot: ${this.coins}`);
+    this.shopRows.forEach((row, i) => {
+      const selected = i === this.shopIndex;
+      const y = 222 + i * 76;
+      row.box.clear();
+      row.box.fillStyle(selected ? COLORS.panelLight : COLORS.bg, selected ? 1 : 0.6).fillRoundedRect(W / 2 - 410, y, 820, 68, 12);
+      if (selected) row.box.lineStyle(3, COLORS.orange, 1).strokeRoundedRect(W / 2 - 410, y, 820, 68, 12);
+      if (i === SHOP_ITEMS.length) {
+        row.name.setText(`Jatka kenttään ${this.levelIndex + 1}: ${this.level.name}`).setColor(CSS.orange);
+        row.info.setText('Jäljelle jääneet kolikot säilyvät seuraavaan kauppaan.');
+        row.price.setText('');
+        return;
+      }
+      const o = offer(run, SHOP_ITEMS[i]);
+      row.name.setText(o.count ? `${o.name}  (${o.count})` : o.name).setColor(o.soldOut ? CSS.grey : CSS.bone);
+      row.info.setText(o.description);
+      row.price.setText(o.soldOut ? 'Täynnä' : `${o.price} kolikkoa`).setColor(o.affordable ? CSS.gold : CSS.grey);
+    });
   }
 
   private showMessage(title: string, sub: string, hideAfter = 0): void {

@@ -16,8 +16,21 @@ export interface GameRecord {
   checkpoint: unknown | null;
   /** Score set by hand in correction mode. Overrides the attempts when not null. */
   manualScore: number | null;
+  /**
+   * What the last attempt handed to the next one (e.g. the platformer continues from the level
+   * where the hunter fell). Set by GameContext.finish; absent when the game hands nothing on.
+   */
+  carry?: unknown;
   /** ISO timestamp of the last change. */
   updatedAt: string;
+}
+
+/** How an attempt ended, besides its score (GameContext.finish). */
+export interface AttemptEnd {
+  /** JSON-serialisable state the next attempt starts from (GameContext.carry). */
+  carry?: unknown;
+  /** The game is done (e.g. the final boss fell): the remaining attempts are skipped. */
+  complete?: boolean;
 }
 
 export interface PlayerRecord {

@@ -72,6 +72,31 @@ describe('attempts', () => {
     expect(() => db.recordAttempt(p.id, 'lento', 500, 3)).toThrow(/jo pelattu loppuun/);
   });
 
+  it('hands a copy of the carry on to the next attempt, and drops it when the game ends', () => {
+    const { db, storage } = setup();
+    const p = db.createPlayer('Eero');
+    const carry = { level: 2, whip: 3 };
+    expect(db.recordAttempt(p.id, 'taso', 300, 5, { carry })).toMatchObject({ attempts: [300], finished: false, carry: { level: 2, whip: 3 } });
+    carry.level = 99;
+    expect(db.getRecord(p.id, 'taso')?.carry).toEqual({ level: 2, whip: 3 });
+    // It survives a reload.
+    const again = createResultsDb(storage, KEY);
+    expect(again.getRecord(p.id, 'taso')?.carry).toEqual({ level: 2, whip: 3 });
+    // An attempt that hands nothing on removes the old carry.
+    expect(db.recordAttempt(p.id, 'taso', 350, 5)).not.toHaveProperty('carry');
+    db.recordAttempt(p.id, 'taso', 400, 5, { carry: { level: 3 } });
+    db.setManualScore(p.id, 'taso', 500);
+    expect(db.getRecord(p.id, 'taso')).not.toHaveProperty('carry');
+  });
+
+  it('skips the remaining attempts when the game says it is complete', () => {
+    const { db } = setup();
+    const p = db.createPlayer('Eero');
+    expect(db.recordAttempt(p.id, 'taso', 800, 5, { complete: true, carry: { level: 2 } })).toMatchObject({ attempts: [800], finished: true });
+    expect(db.getRecord(p.id, 'taso')).not.toHaveProperty('carry');
+    expect(() => db.recordAttempt(p.id, 'taso', 500, 5)).toThrow(/jo pelattu loppuun/);
+  });
+
   it('never adds an attempt to a finished game', () => {
     const { db } = setup();
     const p = db.createPlayer('Eero');

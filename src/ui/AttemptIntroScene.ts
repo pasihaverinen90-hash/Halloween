@@ -36,7 +36,9 @@ export class AttemptIntroScene extends Phaser.Scene {
     const bestText =
       d.best === null ? 'Paras yritys jää voimaan.' : `Paras tulos tähän mennessä: ${d.best.toLocaleString('fi-FI')} p`;
     const best = this.add.text(W / 2, H / 2 + 80, bestText, { ...TEXT.bodyBold, fontSize: '30px' }).setOrigin(0.5);
-    const ready = this.add.text(W / 2, H / 2 + 136, 'Valmis?', { ...TEXT.body, color: CSS.muted }).setOrigin(0.5);
+    const ready = d.note
+      ? this.add.text(W / 2, H / 2 + 136, d.note, { ...TEXT.bodyBold, fontSize: '28px', color: CSS.orange, align: 'center', wordWrap: { width: 640 } }).setOrigin(0.5)
+      : this.add.text(W / 2, H / 2 + 136, 'Valmis?', { ...TEXT.body, color: CSS.muted }).setOrigin(0.5);
     riseIn(this, name, 0);
     riseIn(this, big, 60);
     riseIn(this, best, 120);
@@ -47,7 +49,8 @@ export class AttemptIntroScene extends Phaser.Scene {
   }
 
   getTestState(): unknown {
-    return { attempt: this.opts.attempt, total: this.opts.total, best: this.opts.best };
+    const { attempt, total, best, note } = this.opts;
+    return note ? { attempt, total, best, note } : { attempt, total, best };
   }
 
   private start(): void {

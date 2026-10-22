@@ -251,7 +251,7 @@ export function onChar(scene: Phaser.Scene, handler: (char: string, event: Keybo
 /** Which of the watched keys are held down right now. */
 export interface HeldKeys {
   isDown(key: NamedKey): boolean;
-  /** True once for every new press of the key since the last call (a tap shorter than one frame still counts). */
+  /** True once for every new press of the key since the last call (a tap shorter than one frame still counts, and so does each of two quick taps). */
   takePress(key: NamedKey): boolean;
 }
 
@@ -269,13 +269,14 @@ export function heldKeys(scene: Phaser.Scene, keys: NamedKey[]): HeldKeys {
     console.warn(`Näppäimistö ei ole käytössä näkymässä ${scene.sys.settings.key}.`);
     return { isDown: () => false, takePress: () => false };
   }
-  const pressed = new Set<string>();
+  /** Presses not taken yet, per key: two taps within one frame are two presses. */
+  const pressed = new Map<string, number>();
   const onDown = (event: KeyboardEvent): void => {
     const key = keyOf(event);
     if (!watched.has(key) || wasHandled(event) || !isPlainKey(event) || !scene.sys.canInput()) return;
     markHandled(event);
     down.add(key);
-    if (!event.repeat) pressed.add(key);
+    if (!event.repeat) pressed.set(key, (pressed.get(key) ?? 0) + 1);
   };
   const onUp = (event: KeyboardEvent): void => {
     down.delete(keyOf(event));
@@ -297,6 +298,12 @@ export function heldKeys(scene: Phaser.Scene, keys: NamedKey[]): HeldKeys {
   });
   return {
     isDown: (key) => down.has(key),
-    takePress: (key) => pressed.delete(key),
+    takePress: (key) => {
+      const count = pressed.get(key) ?? 0;
+      if (count <= 0) return false;
+      if (count === 1) pressed.delete(key);
+      else pressed.set(key, count - 1);
+      return true;
+    },
   };
 }
