@@ -201,7 +201,7 @@ test('tauko pysäyttää hirsipuun, eikä mitään kulu tai katoa', async ({ pag
 
   await press(page, 'Escape', 400);
   expect(await sceneState(page, 'GameHost')).toMatchObject({ state: 'paused' });
-  expect((await page.evaluate(() => window.__peli!.activeScenes())).includes('Pause')).toBe(true);
+  await waitForScene(page, 'Pause');
   await typeText(page, 'abc', 80);
   expect(await sceneState(page, 'Hirsipuu')).toEqual(before);
 

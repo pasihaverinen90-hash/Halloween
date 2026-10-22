@@ -15,7 +15,7 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | 4. Räiskintä | Valmis, Pasi hyväksyi 20.10. ("Paljon parempi"; Paholaiselle +10 % kestävyyttä) |
 | 5. Ristikko | Valmis, Pasi hyväksyi 21.10. ("toimii hyvin") |
 | 6. Tasohyppely | Valmis, Pasi testasi kaiken 22.10. ja pyysi siirtymään kurpitsalinkoon |
-| 7. Kurpitsalinko | Aloitettu 22.10.: kysymykset Pasille |
+| 7. Kurpitsalinko | Ensimmäinen versio valmis 22.10., Pasi testaa |
 | 8. Viimeistely | Ei aloitettu (CSV-vienti ja kuvien vaihtaminen tehtiin jo vaiheessa 1) |
 
 ## Pasin kanssa sovitut asiat
@@ -228,6 +228,25 @@ Kesken:
 Seuraavaksi:
 - Pasin palautteen mukaiset korjaukset tasohyppelyyn, sitten vaihe 7, kurpitsalinko. Kysy ensin reilusti kysymyksiä.
 
+### 22.10.2026 – rupeama 9 (vaihe 7)
+
+Pasi vastasi noin 20 kysymykseen kurpitsalingosta (päätökset kohdassa "Pasin kanssa sovitut asiat") ja toivoi klassikon tapaan viisi valittavaa asetta.
+
+Tehty:
+- Kurpitsalinko "Piiritys": kurpitsapäinen soturi ampuu katapultilla. ↑↓ muuttaa kulmaa, ←→ muuttaa sitä tarkasti, ja välilyönnin voima heiluu ylös ja alas. Lyhyt apuviiva näyttää suunnan, ja edellisen laukauksen rata jää pisteviivaksi. Tähdätessä koko kenttä näkyy kerralla, ja lennon aikana kamera seuraa kurpitsaa.
+- Viisi kenttää ja 15 luurankoa: linnan edusta, vallihauta ja silta, linnanpiha torneineen, muurit ja vartiotorni sekä hautaholvi matalan katon alla. Kentistä 3–5 alkaen osa luurangoista kävelee laukausten välissä.
+- Maasto tuhoutuu: räjähdys tekee kuopan, ja puu palaa helpommin kuin maa ja kivi. Luuranko hajoaa myös pudotessaan korkealta, vallihautaan tai kentän ulkopuolelle. Ruutitynnyrit räjähtävät osumasta, ja niistä voi syntyä ketjureaktio.
+- Aseet 1–5: kurpitsa (loputtomasti), rypäle (viisi pikkukurpitsaa), ohjautuva, säde (läpäisee kaiken) ja pommi. Jokaista erikoisasetta saa käyttää kerran kentässä.
+- Pisteet: 1000 × 15 ÷ laukaukset. Pelin aikana näkyvät laukaukset ja jäljellä olevat luurangot.
+- Testit: yksikkötesti varmistaa, että jokaiseen luurankoon osuu yhdellä tavallisella kurpitsalla. Lisäksi testataan maasto, aseet, tynnyrit, putoaminen ja kävely. Selaintesti pelaa kolme yritystä.
+- Nopea välilyönnin napautus ampuu pienimmällä voimalla (aiemmin se jäi joskus huomaamatta).
+
+Kesken:
+- Pasi testaa kurpitsalingon: kenttien vaikeus, voiman heilunnan nopeus, aseiden teho ja pisteet.
+
+Seuraavaksi:
+- Pasin palautteen mukaiset korjaukset, sitten vaihe 8, viimeistely (koko ilta kolmella testipelaajalla).
+
 ## Aikataulu
 
 Iltaan on 10 päivää (21.10.). Jäljellä on tasohyppelyn hiominen, salasanatoive, kurpitsalinko ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
@@ -243,12 +262,13 @@ Iltaan on 10 päivää (21.10.). Jäljellä on tasohyppelyn hiominen, salasanato
 - Näppäimet aina `onKeys`/`onChar`-apureilla (`src/ui/input.ts`). Käsittelijä palauttaa `false`, jos se ei käyttänyt näppäintä; muuten painallus merkitään käytetyksi kaikissa näkymissä.
 - Phaser-sudenkuopat: näkymäolio käytetään uudelleen, joten tila nollataan `init`/`create`-metodeissa. Näkymäluokassa ei saa olla kenttiä nimeltä `data`, `input`, `game` tai `scene`. Tween-animaatiot pysäytetään ennen kohteiden tuhoamista. Pelisilmukka on suojattu poikkeuksilta (`main.ts`).
 - Koordinaatit ovat aina 1280 × 720 (`W`, `H`). Isolla näytöllä kangas piirretään kaksinkertaisena, ja kamerat zoomataan automaattisesti.
-- Selaintestejä on 20, ja niiden ajo kestää noin 35 minuuttia. Aja ne erissä edustalla, ja käytä tarvittaessa `--output /tmp/pw-out`, jos `test-results` katoaa kesken ajon. Playwright tyhjentää kansion `test-results` ajon alussa, joten älä kirjoita lokia sinne. Aja ne taustalla (`run_in_background`), ja odota tulosta silmukalla, joka lukee lokitiedostoa. Yksittäisen pelin testin voi ajaa erikseen: `npx playwright test tests/e2e/<peli>.spec.ts`.
+- Selaintestejä on 21, ja niiden ajo kestää noin 45 minuuttia. Koko illan testi (`pelikulku.spec.ts`) kestää yksinään noin 9 minuuttia, joten aja se taustalla. Aja ne erissä edustalla, ja käytä tarvittaessa `--output /tmp/pw-out`, jos `test-results` katoaa kesken ajon. Playwright tyhjentää kansion `test-results` ajon alussa, joten älä kirjoita lokia sinne. Aja ne taustalla (`run_in_background`), ja odota tulosta silmukalla, joka lukee lokitiedostoa. Yksittäisen pelin testin voi ajaa erikseen: `npx playwright test tests/e2e/<peli>.spec.ts`.
 - Jokaisessa pelinäkymässä on `getTestState()` ja testiapurit (esim. `debugSkip`, `debugHurt`, `debugPlace`). Testit kutsuvat niitä `page.evaluate`-funktiossa. Menun peli valitaan `selectGame(page, id)`-apurilla, eikä sen paikkaa ruudukossa tarvitse tietää.
 - Hiiri on käytössä Phaser-asetuksissa (`main.ts`), mutta vain ristikko reagoi siihen. Muut pelit ovat pelkän näppäimistön varassa.
 - Animaatiokuvat (`AssetSpec.frames`): `width` ja `height` ovat yhden ruudun koko, ja `draw` saa koko nauhan leveyden (ruutu × määrä). Tasohyppely on ensimmäinen peli, joka käyttää niitä.
 - `heldKeys(...).takePress(key)` kertoo yksittäisen painalluksen, vaikka näppäin olisi pohjassa alle yhden ruudunpäivityksen ajan (tasohyppelyn hyppy).
 - Vierivä peli (tasohyppely): maailma on omassa `Layer`issa pääkameran alla, ja tilarivi on toisessa `Layer`issa omalla `hud`-kamerallaan, koska `scrollFactor(0)` siirtyy kameran zoomauksessa. Taustakuvat ovat maailmassa `scrollFactor(0)`:lla ja siirroksella `W*(ZOOM-1)/2` (`fixedOffset`).
+- Kurpitsalingon rakenne: `levels.ts` (kentät muotoina), `terrain.ts` (tuhoutuva maasto 4 yksikön soluina), `logic.ts` (`Battle`: lento, räjähdykset, aseet, putoaminen, kävely ja pisteet), `assets.ts` ja `PiiritysScene.ts`. Maaston kuva on yksi `CanvasTexture`, johon kuopat poistetaan samoilla ympyröillä kuin soluista.
 - Tasohyppelyn rakenne: `levels.ts` (kentät tekstinä), `logic.ts` (kartat, fysiikka, matka, pisteet), `enemies.ts` ja `boss.ts` (käytös ilman Phaseria), `pixel.ts`, `sprites.ts` ja `scenery.ts` (pikselitaide), `TasohyppelyScene.ts` (piirto, kamera, tilarivi). Läpipääsytesti (`logic.test.ts`, `reachableSurfaces`) varmistaa kenttämuutosten jälkeen, että maaliin ja jokaiseen kynttilään pääsee.
 - Pohjassa pidettävät näppäimet (esim. liikkuminen) luetaan `heldKeys`-apurilla (`src/ui/input.ts`). Se vapauttaa näppäimet tauon ja ikkunan vaihdon yhteydessä.
 - Selaintestit: `npm run e2e` (Playwright, tuotantoversio, 1280 × 720). Ä, Ö ja Å lähetetään synteettisinä näppäintapahtumina. Testiselain piirtää ohjelmallisesti ja hitaasti, joten ajastimiin perustuvat vaiheet (esim. rumpujen pärinä) kestävät testissä pidempään kuin oikeasti. Pausella tai ikkunalla peitetty näkymä jatkuu vasta seuraavassa ruudunpäivityksessä: odota testissä `waitForScene`, ennen kuin painat näppäimiä sille, ja tarkista tulos `waitForState`-odotuksella.
