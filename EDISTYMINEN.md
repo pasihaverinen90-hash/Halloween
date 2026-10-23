@@ -274,7 +274,8 @@ Pasi: "älä vielä koodaa, kerätään kommentteja eri peleistä". Tehdään va
 - **Kurpitsalinko:** symbolit muuttuvat: −1 → −2 (helppo paikka) ja −3 → −5 (hankala paikka). Niistä pitää olla kunnolla apua.
 - **Kaikki pelit:** ohjeruutujen tekstiä vähennetään merkittävästi. Pisteistä kerrotaan vain lyhyesti, mistä niitä saa (esim. "ole nopea", "pääse pitkälle", "tuhotuista vihollisista ja kynttilöistä saa lisäpisteitä"). Laskentakaavoja ei kerrota. Tämä poikkeaa CLAUDE.md:n kohdasta "ohjeessa kerrotaan näppäimet, säännöt ja pisteytys", ja Pasi päätti niin.
 - **Kuva-arvoitukset:** täydet pisteet saa 3 sekunnin ajan (ennen 5), ja sitten pisteet alkavat laskea.
-- **Nopeutta vaativat pelit:** Esc-tauko poistetaan, jotta kukaan ei voi pysäyttää peliä ja miettiä rauhassa.
+- **Esc-tauko poistetaan kaikista peleistä** (Pasi valitsi, ettei taukoa ole missään pelissä), jotta kukaan ei voi pysäyttää peliä ja miettiä rauhassa. Tämä poikkeaa CLAUDE.md:n kohdasta "Esc pysäyttää pelin taukotilaan". Myös automaattinen tauko, kun ikkuna menettää fokuksen, poistetaan, ettei taukoa saa sitä kautta (Claude Coden päätös). Jos peli jumittuu, Pasi antaa sen korjaustilassa uudelleen.
+- **Ohjeiden lyhennys:** Pasi antoi luvan tehdä suoraan esimerkin tyyliin (tavoite yhdellä lauseella, näppäimet, 2–3 lyhyttä sääntöä ja yksi pisteiden rivi). Pasi katsoo tuloksen pelissä.
 
 ## Aikataulu
 
