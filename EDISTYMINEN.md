@@ -278,6 +278,17 @@ Pasi keräsi ensin kommentit ja antoi sitten luvan korjata kaikki. Kaikki alla o
 - **Esc-tauko poistetaan kaikista peleistä** (Pasi valitsi, ettei taukoa ole missään pelissä), jotta kukaan ei voi pysäyttää peliä ja miettiä rauhassa. Tämä poikkeaa CLAUDE.md:n kohdasta "Esc pysäyttää pelin taukotilaan". Myös automaattinen tauko, kun ikkuna menettää fokuksen, poistettiin, ettei taukoa saa sitä kautta (Claude Coden päätös). Taukonäkymä on poistettu kokonaan. Jos välilehti vaihdetaan tai selain pienennetään, selain itse pysäyttää pelin, eikä sitä voi estää; koko näytön tilassa se näkyy kaikille. Jos peli jumittuu, Pasi antaa sen korjaustilassa uudelleen.
 - **Ohjeiden lyhennys:** Pasi antoi luvan tehdä suoraan esimerkin tyyliin (tavoite yhdellä lauseella, näppäimet, 2–3 lyhyttä sääntöä ja yksi pisteiden rivi). Pasi katsoo tuloksen pelissä.
 
+#### Illan lyhennys (Pasi 23.10., päätetty, ei vielä tehty)
+
+Pasi: läpipeluun optimi on noin 30 minuuttia (keskivertopelaajalla nyt noin 60). "Älä vielä koodaa mitään."
+- **Hirsipuu ja ristikko** jäävät ekstroiksi "kisan" ulkopuolelle. Ne eivät kuulu kokonaispisteisiin. Tarkennukset kysytään (missä näkyvät, voiko pelata uudelleen).
+- **Lentopeli:** maali 60 sekunnin lennon päähän (ennen 90) ja 2 yritystä (ennen 3).
+- **Räiskintä:** Paholainen saapuu 2 minuutin kohdalla (ennen 3) ja 2 yritystä (ennen 3). Paholaisen kestävyys pysyy ennallaan.
+- **Tasohyppely:** 3 yritystä (ennen 5). Kuoleman jälkeen jatketaan edelleen saman kentän alusta.
+- **Kurpitsalinko:** 1 yritys (ennen 2).
+- **Kuva-arvoitukset:** 10 arvoitusta, joista 7 on elokuvia ja 3 sanoja (nyt 5 + 5). Pasi tekee ChatGPT:llä vihjekuvat. Kuvissa ei saa olla elokuvien hahmoja, näyttelijöitä tai julisteita. Mitkä elokuvat, kysytään.
+- Arvio keskivertopelaajalle muutosten jälkeen: arvoitukset 2,5 + lentopeli 2 + räiskintä 5,5 + tasohyppely 8 + kurpitsalinko 10 + aloitus ja kiitos 1,5 = noin 30 minuuttia. Taitavalla noin 26 ja aloittelijalla noin 30.
+
 ## Aikataulu
 
 Iltaan on 10 päivää (21.10.). Jäljellä on tasohyppelyn hiominen, salasanatoive, kurpitsalinko ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
