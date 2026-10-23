@@ -267,6 +267,15 @@ Pasi 23.10.: kun kurpitsalinko on testattu, aloitetaan konseptin, pelien nimien 
 4. Pienet säädöt peli kerrallaan: vaikeus, tekstit, kysymykset ja sanat, äänet ja kuvat.
 5. Viimeistely: koko ilta kolmella testipelaajalla ja illan keston tarkistus.
 
+#### Hiomislista (Pasi 23.10., kerätään ensin, ei vielä tehty)
+
+Pasi: "älä vielä koodaa, kerätään kommentteja eri peleistä". Tehdään vasta, kun Pasi antaa luvan.
+- **Kurpitsalinko:** kentän lopun ruudussa ei näytetä laukausten määrää. Tilalle tulee yleinen "pääsit läpi" -teksti, ja seuraavaan kenttään siirrytään Enterillä.
+- **Kurpitsalinko:** symbolit muuttuvat: −1 → −2 (helppo paikka) ja −3 → −5 (hankala paikka). Niistä pitää olla kunnolla apua.
+- **Kaikki pelit:** ohjeruutujen tekstiä vähennetään merkittävästi. Pisteistä kerrotaan vain lyhyesti, mistä niitä saa (esim. "ole nopea", "pääse pitkälle", "tuhotuista vihollisista ja kynttilöistä saa lisäpisteitä"). Laskentakaavoja ei kerrota. Tämä poikkeaa CLAUDE.md:n kohdasta "ohjeessa kerrotaan näppäimet, säännöt ja pisteytys", ja Pasi päätti niin.
+- **Kuva-arvoitukset:** täydet pisteet saa 3 sekunnin ajan (ennen 5), ja sitten pisteet alkavat laskea.
+- **Nopeutta vaativat pelit:** Esc-tauko poistetaan, jotta kukaan ei voi pysäyttää peliä ja miettiä rauhassa.
+
 ## Aikataulu
 
 Iltaan on 10 päivää (21.10.). Jäljellä on tasohyppelyn hiominen, salasanatoive, kurpitsalinko ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
