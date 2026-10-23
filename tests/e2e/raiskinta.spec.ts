@@ -15,7 +15,7 @@ async function startAttempt(page: Page): Promise<void> {
   await waitForScene(page, 'Raiskinta');
 }
 
-test('räiskintä: liikkuminen, ei taukoa, boosti, liitonarkku, malja, pyhä vesi, Paholainen ja kolme yritystä', async ({ page }) => {
+test('räiskintä: liikkuminen, ei taukoa, boosti, liitonarkku, malja, pyhä vesi, Paholainen ja kaksi yritystä', async ({ page }) => {
   test.setTimeout(420_000);
   await openGame(page);
   await createPlayer(page, 'Ampuja');
@@ -49,12 +49,12 @@ test('räiskintä: liikkuminen, ei taukoa, boosti, liitonarkku, malja, pyhä ves
   await shooter(page, "scene.debugDrop('rapid')");
   await waitForState(page, 'Raiskinta', (s) => s.boosts.rapid > 0);
 
-  // Liitonarkku parantaa asetta, pyhä malja tuo suojapallon
-  await shooter(page, 'scene.debugSkip(19)');
+  // Liitonarkku parantaa asetta, pyhä malja tuo suojapallon (ensimmäiset 14 ja 27 sekunnin kohdalla)
+  await shooter(page, 'scene.debugSkip(13)');
   await expect.poll(() => shooter<boolean>(page, "return scene.enemies.some((e) => e.spawn.kind === 'ark')"), { timeout: 60_000 }).toBe(true);
   await shooter(page, "scene.kill(scene.enemies.find((e) => e.spawn.kind === 'ark'))");
   expect(await sceneState(page, 'Raiskinta')).toMatchObject({ weapon: 2, orbs: 0 });
-  await shooter(page, 'scene.debugSkip(39)');
+  await shooter(page, 'scene.debugSkip(26)');
   await expect.poll(() => shooter<boolean>(page, "return scene.enemies.some((e) => e.spawn.kind === 'grail')"), { timeout: 60_000 }).toBe(true);
   await shooter(page, "scene.kill(scene.enemies.find((e) => e.spawn.kind === 'grail'))");
   expect(await sceneState(page, 'Raiskinta')).toMatchObject({ weapon: 2, orbs: 1 });
@@ -78,7 +78,7 @@ test('räiskintä: liikkuminen, ei taukoa, boosti, liitonarkku, malja, pyhä ves
   await shooter(page, 'scene.boosts.shield = 999');
 
   // Välitekstin jälkeen Paholainen; viimeinen osuma kaataa sen
-  await shooter(page, 'scene.debugSkip(179)');
+  await shooter(page, 'scene.debugSkip(119)');
   await waitForState(page, 'Raiskinta', (s) => s.phase === 'interlude');
   await waitForState(page, 'Raiskinta', (s) => s.phase === 'boss', 120_000);
   await shooter(page, 'scene.fireCooldown = 0; scene.popeX = 640; scene.popeY = 420; scene.debugBossHealth(1)');

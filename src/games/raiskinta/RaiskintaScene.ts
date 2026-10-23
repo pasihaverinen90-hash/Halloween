@@ -354,7 +354,9 @@ export class RaiskintaScene extends Phaser.Scene {
   debugSkip(seconds: number): void {
     for (const enemy of [...this.enemies]) this.removeEnemy(enemy);
     this.playTime = Phaser.Math.Clamp(seconds, 0, C.bossAfterSeconds);
-    while (this.nextSpawn < SCHEDULE.length && SCHEDULE[this.nextSpawn].t < this.playTime) this.nextSpawn++;
+    // Also backwards, so a test can skip to a moment it has already passed.
+    const next = SCHEDULE.findIndex((s) => s.t >= this.playTime);
+    this.nextSpawn = next === -1 ? SCHEDULE.length : next;
   }
 
   /** Test helper: the pope takes n hits. */
