@@ -11,11 +11,11 @@ export type GameKind = 'action' | 'puzzle';
 export interface GameInstructions {
   /** One or two sentences: what the player tries to do. */
   goal: string;
-  /** Keys and what they do, e.g. ['A–Ö', 'Arvaa kirjain']. "Esc – Tauko" is added automatically. */
+  /** Keys and what they do, e.g. ['A–Ö', 'Arvaa kirjain']. */
   keys: Array<[key: string, action: string]>;
   /** Rules as short sentences. */
   rules: string[];
-  /** How points are earned. "Enintään 1000 pistettä" and the attempt rule are added automatically. */
+  /** What gives points, in a line or two, without formulas (Pasi 23.10.). The attempt rule is added automatically. */
   scoring: string[];
   /** Replaces the automatic line about attempts (e.g. when the attempts continue from each other). */
   attemptRule?: string;

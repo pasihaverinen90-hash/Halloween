@@ -12,25 +12,19 @@ const raiskinta: GameDefinition = {
   ...META,
   sceneKey: 'Raiskinta',
   sceneClass: RaiskintaScene,
+  // Pasi 23.10.: short instructions; scoring only says what gives points.
   instructions: {
-    goal: `Paavi puolustaa hautausmaata Halloween-olentoja vastaan. Selviä ${minutes} minuuttia ja kaada lopuksi Paholainen.`,
+    goal: `Suojele hautausmaata ${minutes} minuuttia ja kaada lopuksi Paholainen.`,
     keys: [
       ['←→↑↓', 'Liiku'],
-      ['Välilyönti', `Heitä pyhää vettä (alussa ${C.holyWaterStart} pulloa)`],
+      ['Välilyönti', 'Pyhä vesi osuu kaikkiin vihollisiin'],
     ],
     rules: [
-      'Paavi ampuu itse. Sinä liikutat häntä ja väistelet vihollisia ja niiden ammuksia.',
-      `Paavi kestää ${C.maxHealth} osumaa. Matkan varrella putoaa ${C.lifeDropTimes.length} kultaista ristiä, joista kukin palauttaa yhden.`,
-      'Pyhä vesi vahingoittaa kaikkia näkyviä vihollisia ja hävittää niiden ammukset.',
-      'Liitonarkku parantaa asetta, ja pyhä malja tuo paavin ympärille kiertävän suojapallon.',
-      'Tuhottu vihollinen voi pudottaa boostin: nopea tuli, hajaammus, suojakehä tai pyhää vettä.',
-      `Vihollisia tulee koko ajan enemmän. ${minutes} minuutin kohdalla saapuu Paholainen.`,
+      'Paavi ampuu itse. Sinä väistelet.',
+      `Paavi kestää ${C.maxHealth} osumaa. Kultainen risti palauttaa yhden.`,
+      'Kerää esineitä: ne parantavat asetta ja suojaavat.',
     ],
-    scoring: [
-      `Tuhotut viholliset: enintään ${C.enemyPoints} (osuus kaikista).`,
-      `Selviytyminen ${minutes} minuuttia: enintään ${C.survivalPoints}.`,
-      `Paholaisen kaataminen: ${C.bossPoints}.`,
-    ],
+    scoring: ['Tuhoa vihollisia, selviydy pitkään ja kaada Paholainen.'],
   },
   preview: PREVIEW,
   assets: ASSETS,

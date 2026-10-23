@@ -211,8 +211,8 @@ export class ArvoitusScene extends Phaser.Scene {
     } else {
       this.hints.setHints(
         riddle.kind === 'monivalinta'
-          ? [['←→↑↓', 'Valitse'], ['Enter', 'Vastaa'], ['Esc', 'Tauko']]
-          : [['A–Ö', 'Kirjoita vastaus'], ['Enter', 'Vastaa'], ['Esc', 'Tauko']],
+          ? [['←→↑↓', 'Valitse'], ['Enter', 'Vastaa']]
+          : [['A–Ö', 'Kirjoita vastaus'], ['Enter', 'Vastaa']],
       );
       this.save();
     }
@@ -431,7 +431,6 @@ export class ArvoitusScene extends Phaser.Scene {
     }
     this.hints.setHints([
       ['Enter', last ? 'Katso tulos' : 'Seuraava arvoitus'],
-      ['Esc', 'Tauko'],
     ]);
     this.refreshTimer();
   }

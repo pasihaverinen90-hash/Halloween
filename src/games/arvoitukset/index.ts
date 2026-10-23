@@ -5,7 +5,7 @@ import { ASSETS, PICTURE_EMOJIS, PREVIEW } from './assets';
 import { ARVOITUKSET_CONTENT } from './content';
 import { META } from './meta';
 
-const { riddlesPerRound, secondsPerRiddle, maxPoints, minPoints, wrongAnswerPenalty, fullPointsSeconds } = CONFIG.arvoitukset;
+const { riddlesPerRound, secondsPerRiddle } = CONFIG.arvoitukset;
 const contentEmojis = ARVOITUKSET_CONTENT.ok ? ARVOITUKSET_CONTENT.riddles.map((r) => r.emojis ?? '').join('') : '';
 
 /** 2. Kuva-arvoitukset – drawn style. Rules: CLAUDE.md, game 2. */
@@ -13,24 +13,16 @@ const arvoitukset: GameDefinition = {
   ...META,
   sceneKey: 'Arvoitukset',
   sceneClass: ArvoitusScene,
+  // Pasi 23.10.: short instructions; scoring only says what gives points.
   instructions: {
-    goal: `Ratkaise ${riddlesPerRound} arvoitusta Halloweenista ja kauhuelokuvista. Arvoituksessa on kuva tai emojeja, ja niistä pitää keksiä sana tai elokuva.`,
+    goal: `Ratkaise ${riddlesPerRound} kuva- ja emojiarvoitusta Halloweenista ja kauhuelokuvista.`,
     keys: [
       ['A–Ö', 'Kirjoita vastaus'],
       ['←→↑↓', 'Valitse vaihtoehto'],
       ['Enter', 'Vastaa'],
     ],
-    rules: [
-      `Jokaiseen arvoitukseen on aikaa ${secondsPerRiddle} sekuntia. Ohitusta ei ole.`,
-      'Monivalinnassa on neljä vaihtoehtoa, ja vastata saa vain kerran.',
-      'Avoimeen arvoitukseen kirjoitetaan vastaus, ja yrittää saa monta kertaa. Isot ja pienet kirjaimet ja välilyönnit eivät haittaa.',
-      'Kun aika loppuu, peli siirtyy seuraavaan arvoitukseen.',
-    ],
-    scoring: [
-      `Oikea vastaus: ${maxPoints} p, jos vastaat ${fullPointsSeconds} sekunnin sisällä. Sen jälkeen pisteet laskevat nopeasti, ja viime hetkellä niitä on ${minPoints}.`,
-      `Väärä vastaus avoimeen: −${wrongAnswerPenalty} p.`,
-      'Väärä monivalinta tai aika loppuu: 0 p.',
-    ],
+    rules: [`Kuhunkin arvoitukseen on aikaa ${secondsPerRiddle} sekuntia.`, 'Monivalintaan saa vastata kerran, avoimeen monta kertaa.'],
+    scoring: ['Ole nopea. Väärät vastaukset vievät pisteitä.'],
   },
   preview: PREVIEW,
   assets: ASSETS,

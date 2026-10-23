@@ -1114,16 +1114,16 @@ Hyvä tietää:
 
 > Puinen laatikko, jonka kyljessä on kurpitsamerkki. Räjähdys avaa sen. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 40 × 36 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
-### `piiritys-merkit.png` – Laukausmerkit −1 ja −3
+### `piiritys-merkit.png` – Laukausmerkit −2 ja −5
 
 - **Koko:** 64 × 64 px
 - **Tausta:** läpinäkyvä
 - **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
-- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: −1, −3
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: −2, −5
 
 **Kuvaus generaattorille:**
 
-> Ilmassa leijuvat hehkuvat merkit: vihreä ympyrä, jossa on teksti −1, ja kultainen ympyrä, jossa on teksti −3. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (−1, −3). Yksi ruutu on 64 × 64 pikseliä, koko kuva 128 × 64 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+> Ilmassa leijuvat hehkuvat merkit: vihreä ympyrä, jossa on teksti −2, ja kultainen ympyrä, jossa on teksti −5. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (−2, −5). Yksi ruutu on 64 × 64 pikseliä, koko kuva 128 × 64 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
 ### `piiritys-ammukset.png` – Ammukset
 

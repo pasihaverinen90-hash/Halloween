@@ -21,9 +21,9 @@ export interface LevelDef {
   crates: Array<{ x: number; fromY?: number; weapon: 'cluster' | 'homing' | 'beam' | 'bomb'; amount: number }>;
   /**
    * Pasi 23.10.: floating symbols that take shots off the level's count when a projectile flies through.
-   * The −1 is on a natural path to a skeleton, the −3 somewhere tricky.
+   * The −2 is on a natural path to a skeleton, the −5 somewhere tricky (Pasi 23.10.: −1 and −3 helped too little).
    */
-  tokens: Array<{ x: number; y: number; value: 1 | 3 }>;
+  tokens: Array<{ x: number; y: number; value: 2 | 5 }>;
 }
 
 const BEDROCK: Shape = { kind: 'rect', material: 'stone', x: 0, y: 690, w: 2560, h: 30 };
@@ -66,8 +66,8 @@ const EDUSTA: LevelDef = {
   barrels: [],
   crates: [{ x: 2250, weapon: 'cluster', amount: 1 }],
   tokens: [
-    { x: 480, y: 330, value: 1 },
-    { x: 1300, y: 110, value: 3 },
+    { x: 480, y: 330, value: 2 },
+    { x: 1300, y: 110, value: 5 },
   ],
 };
 
@@ -128,8 +128,8 @@ const VALLIHAUTA: LevelDef = {
   barrels: [{ x: 2240 }],
   crates: [{ x: 1545, weapon: 'bomb', amount: 1 }],
   tokens: [
-    { x: 850, y: 380, value: 1 },
-    { x: 1640, y: 385, value: 3 },
+    { x: 850, y: 380, value: 2 },
+    { x: 1640, y: 385, value: 5 },
   ],
 };
 
@@ -164,8 +164,8 @@ const PIHA: LevelDef = {
   barrels: [{ x: 1330 }, { x: 2080 }, { x: 2380 }],
   crates: [{ x: 2470, weapon: 'homing', amount: 1 }],
   tokens: [
-    { x: 700, y: 260, value: 1 },
-    { x: 1690, y: 355, value: 3 },
+    { x: 700, y: 260, value: 2 },
+    { x: 1690, y: 355, value: 5 },
   ],
 };
 
@@ -213,8 +213,8 @@ const MUURIT: LevelDef = {
   barrels: [{ x: 1380 }, { x: 2120 }],
   crates: [{ x: 2520, weapon: 'cluster', amount: 1 }],
   tokens: [
-    { x: 800, y: 250, value: 1 },
-    { x: 1450, y: 150, value: 3 },
+    { x: 800, y: 250, value: 2 },
+    { x: 1450, y: 150, value: 5 },
   ],
 };
 
@@ -262,8 +262,8 @@ const HOLVI: LevelDef = {
   barrels: [{ x: 1220, fromY: 320 }, { x: 1900, fromY: 320 }, { x: 2150, fromY: 330 }],
   crates: [{ x: 2440, weapon: 'beam', amount: 1 }],
   tokens: [
-    { x: 700, y: 450, value: 1 },
-    { x: 1200, y: 40, value: 3 },
+    { x: 700, y: 450, value: 2 },
+    { x: 1200, y: 40, value: 5 },
   ],
 };
 

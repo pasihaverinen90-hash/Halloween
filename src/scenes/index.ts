@@ -4,7 +4,6 @@ import { AttemptIntroScene } from '../ui/AttemptIntroScene';
 import { AttemptResultScene } from '../ui/AttemptResultScene';
 import { DialogScene } from '../ui/DialogScene';
 import { PasswordScene } from '../ui/PasswordScene';
-import { PauseScene } from '../ui/PauseScene';
 import { PromptScene } from '../ui/PromptScene';
 import { BootScene } from './BootScene';
 import { CorrectionScene } from './CorrectionScene';
@@ -39,7 +38,6 @@ export const ALL_SCENES: Array<new () => Phaser.Scene> = [
   ...GAMES.map((game) => game.sceneClass),
   AttemptIntroScene,
   AttemptResultScene,
-  PauseScene,
   PasswordScene,
   DialogScene,
   PromptScene,

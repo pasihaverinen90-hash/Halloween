@@ -69,8 +69,6 @@ export type SfxName =
   | 'fail' // word failed, life lost
   | 'start' // attempt starts
   | 'result' // result shown
-  | 'pause'
-  | 'unpause'
   | 'tick' // countdown tick
   | 'drumroll' // award ceremony suspense (about 2 s)
   | 'reveal' // podium place revealed

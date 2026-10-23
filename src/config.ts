@@ -72,7 +72,7 @@ export const CONFIG = {
     secondsPerRiddle: 12,
     /** Points for a correct answer within the first fullPointsSeconds … */
     maxPoints: 100,
-    fullPointsSeconds: 5,
+    fullPointsSeconds: 3,
     /** … then falling quickly and evenly to this at the end of the time (Pasi 20.10.). */
     minPoints: 0,
     /** Each wrong answer to an open riddle reduces the points by this much (not below 0). */

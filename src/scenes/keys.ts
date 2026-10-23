@@ -17,7 +17,6 @@ export const SCENES = {
   PlayerResults: 'PlayerResults', // tulokset pelaajan mukaan
   Correction: 'Correction', // korjaustila (Ctrl + Shift + K)
   // Overlays (src/ui)
-  Pause: 'Pause',
   AttemptIntro: 'AttemptIntro',
   AttemptResult: 'AttemptResult',
   Password: 'Password',
@@ -62,11 +61,6 @@ export interface AttemptResultData {
   /** True after the last attempt: the game is over and its result is final. */
   isFinal: boolean;
   onContinue: () => void;
-}
-
-/** Display-only pause overlay. GameHost owns the Esc/Enter keys that pause and resume. */
-export interface PauseData {
-  gameName: string;
 }
 
 /** Password prompt overlay. Esc cancels. */

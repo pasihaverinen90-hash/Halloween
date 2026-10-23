@@ -112,7 +112,6 @@ export class LentoScene extends Phaser.Scene {
     this.tweens.add({ targets: this.readyText, alpha: { from: 1, to: 0.5 }, duration: 900, yoyo: true, repeat: -1 });
     addKeyHints(this, [
       ['Välilyönti', 'Lennä ylöspäin'],
-      ['Esc', 'Tauko'],
     ]);
     onKeys(this, { ' ': () => this.flap(), ArrowUp: () => this.flap() });
     this.layout();

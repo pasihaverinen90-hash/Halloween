@@ -4,24 +4,19 @@ import { ASSETS, PREVIEW } from './assets';
 import { LentoScene } from './LentoScene';
 import { META } from './meta';
 
-const { easySeconds, maxCats } = CONFIG.lentopeli;
+const { maxCats } = CONFIG.lentopeli;
 
 /** 3. Lentopeli – drawn style, Flappy Bird -like. Rules: CLAUDE.md, game 3. */
 const lentopeli: GameDefinition = {
   ...META,
   sceneKey: 'Lentopeli',
   sceneClass: LentoScene,
+  // Pasi 23.10.: short instructions; scoring only says what gives points.
   instructions: {
-    goal: 'Lennätä noita luudalla esteiden välistä matkan päässä odottavaan maaliin.',
+    goal: 'Lennätä noita esteiden ohi matkan päässä odottavaan maaliin.',
     keys: [['Välilyönti', 'Lennä ylöspäin']],
-    rules: [
-      'Noita laskee koko ajan. Jokainen välilyönnin painallus nostaa sitä.',
-      'Varo riippuvia häkkejä, pylväillä seisovia inkvisiittoreita ja vastaan lentäviä lepakoita. Usein esteen ohi pääsee sekä yli että ali. Maata pitkin voi liukua.',
-      `Matkan varrella on muutama musta kissa hankalissa paikoissa. Kissa on lisäelämä, ja kissoja voi olla enintään ${maxCats}.`,
-      'Kun törmäät, menetät kissan ja vauhti pysähtyy. Ilman kissaa törmäys päättää yrityksen.',
-      `Ensimmäiset ${easySeconds} sekuntia ovat helppoja, ja sen jälkeen peli vaikeutuu vähitellen.`,
-    ],
-    scoring: ['Maaliin pääsy: 1 000 pistettä.', 'Muuten pisteet tulevat lennetystä matkasta.'],
+    rules: [`Musta kissa on lisäelämä. Kissoja voi olla enintään ${maxCats}.`, 'Törmäys vie kissan. Ilman kissaa yritys päättyy.'],
+    scoring: ['Pääse mahdollisimman pitkälle. Maali antaa täydet pisteet.'],
   },
   preview: PREVIEW,
   assets: ASSETS,

@@ -69,7 +69,7 @@ export interface Crate extends Barrel {
   amount: number;
 }
 
-/** A floating −1 or −3 that takes shots off the level's count (Pasi 23.10.). */
+/** A floating −2 or −5 that takes shots off the level's count (Pasi 23.10.). */
 export interface Token {
   id: number;
   x: number;

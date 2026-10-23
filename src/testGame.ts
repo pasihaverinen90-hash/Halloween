@@ -106,6 +106,6 @@ export function addTestActionGame(game: Phaser.Game): void {
 
   const scene = game.scene.add(TEST_SCENE_KEY, TestActionScene, false);
   if (scene) attachCameraZoom(scene);
-  // Keep the game below the overlay scenes so "Tauko" and results draw on top of it.
+  // Keep the game below the overlay scenes so the result screens draw on top of it.
   game.scene.moveBelow(SCENES.AttemptIntro, TEST_SCENE_KEY);
 }

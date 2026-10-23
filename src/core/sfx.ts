@@ -307,12 +307,6 @@ const RECIPES: Record<SfxName, () => void> = {
     voice({ freq: NOTE.C6 * 2.76, duration: 0.5, type: 'sine', volume: 0.05, attack: 0.004 });
     voice({ freq: NOTE.G5, duration: 1.1, type: 'triangle', volume: 0.1, attack: 0.004, delay: 0.09 });
   },
-  pause: () => {
-    voice({ freq: 700, slideTo: 420, duration: 0.14, type: 'sine', volume: 0.24, attack: 0.005 });
-  },
-  unpause: () => {
-    voice({ freq: 420, slideTo: 700, duration: 0.14, type: 'sine', volume: 0.24, attack: 0.005 });
-  },
   tick: () => {
     voice({ freq: 1100, duration: 0.05, type: 'sine', volume: 0.2, attack: 0.002 });
     burst({ duration: 0.012, volume: 0.08, filterType: 'bandpass', filterFreq: 3200, q: 3 });

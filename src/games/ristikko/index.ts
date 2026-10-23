@@ -11,24 +11,17 @@ const ristikko: GameDefinition = {
   ...META,
   sceneKey: 'Ristikko',
   sceneClass: RistikkoScene,
+  // Pasi 23.10.: short instructions; scoring only says what gives points.
   instructions: {
-    goal: 'Ratkaise kauhuaiheinen ristikko. Kaikki pelaavat saman ristikon.',
+    goal: 'Ratkaise kauhuaiheinen ristikko.',
     keys: [
-      ['←→↑↓', 'Liiku (tai valitse ruutu hiirellä)'],
-      ['Välilyönti', 'Vaihda suuntaa (vaaka / pysty)'],
+      ['←→↑↓', 'Liiku'],
+      ['Välilyönti', 'Vaihda suuntaa'],
       ['Backspace', 'Pyyhi kirjain'],
-      ['Enter ×2', `Vihje: ${C.revealCount} kirjainta (−${C.revealPenaltySeconds} s)`],
+      ['Enter ×2', `Vihje (−${C.revealPenaltySeconds} s)`],
     ],
-    rules: [
-      `Aikaa on ${C.seconds / 60} minuuttia. Kirjoita kirjaimet näppäimistöltä.`,
-      'Kun sanan kaikki ruudut on täytetty, peli tarkistaa sen. Oikea sana lukittuu, ja kohdistin siirtyy seuraavaan sanaan.',
-      `Väärä sana välähtää punaisena, sen väärät kirjaimet poistuvat ja ajasta lähtee ${C.wrongWordPenaltySeconds} sekuntia.`,
-      `Vihje paljastaa ${C.revealCount} satunnaista puuttuvaa kirjainta koko ristikosta ja vie ${C.revealPenaltySeconds} sekuntia. Kokonaan paljastettu sana ei tuo pisteitä.`,
-    ],
-    scoring: [
-      `Oikeat sanat: enintään ${C.wordPoints}.`,
-      `Aika: ${C.timePoints}, kun ratkaiset kaiken ${C.fullTimePointsWithinSeconds / 60} minuutissa, sitten vähemmän.`,
-    ],
+    rules: [`Aikaa on ${C.seconds / 60} minuuttia.`, `Valmis sana tarkistetaan heti. Väärä sana vie ${C.wrongWordPenaltySeconds} sekuntia.`],
+    scoring: ['Ratkaise mahdollisimman monta sanaa mahdollisimman nopeasti.'],
   },
   preview: PREVIEW,
   assets: ASSETS,

@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { CONFIG } from '../config';
 import { getDb } from '../core/db';
 import { session } from '../core/session';
 import { getGame } from '../games/registry';
@@ -89,10 +88,10 @@ export class InstructionsScene extends Phaser.Scene {
     const attemptRule =
       def.instructions.attemptRule ??
       (plan.kind === 'action'
-        ? `${plan.total} yritystä putkeen. Paras jää voimaan. ${fi(CONFIG.maxScore)} pistettä päättää pelin heti.`
-        : 'Peli pelataan yhtenä kierroksena.');
-    const scoreLines = [...def.instructions.scoring, `Enintään ${fi(CONFIG.maxScore)} pistettä.`, attemptRule];
-    const keys: Array<[string, string]> = [...def.instructions.keys, ['Esc', 'Tauko']];
+        ? `${plan.total} yritystä. Paras jää voimaan.`
+        : 'Yksi kierros.');
+    const scoreLines = [...def.instructions.scoring, attemptRule];
+    const keys: Array<[string, string]> = [...def.instructions.keys];
 
     for (const size of [24, 22, 20, 18]) {
       const objects: Phaser.GameObjects.GameObject[] = [];

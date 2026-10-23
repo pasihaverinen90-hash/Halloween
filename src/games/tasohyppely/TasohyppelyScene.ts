@@ -1402,7 +1402,6 @@ export class TasohyppelyScene extends Phaser.Scene {
       ['↑ + X', 'Ylös'],
       ['C', 'Tikari'],
       ['↓', 'Kyyristy'],
-      ['Esc', 'Tauko'],
     ]);
     // Everything made so far (except the world) belongs to the HUD camera.
     const layers: unknown[] = [this.worldLayer, this.hudLayer];

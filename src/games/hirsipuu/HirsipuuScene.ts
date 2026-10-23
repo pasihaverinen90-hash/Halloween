@@ -312,7 +312,6 @@ export class HirsipuuScene extends Phaser.Scene {
     this.banner.setVisible(false);
     this.hints.setHints([
       ['A–Ö', 'Arvaa kirjain'],
-      ['Esc', 'Tauko'],
     ]);
   }
 
@@ -416,7 +415,6 @@ export class HirsipuuScene extends Phaser.Scene {
     }
     this.hints.setHints([
       ['Enter', last ? 'Katso tulos' : 'Seuraava sana'],
-      ['Esc', 'Tauko'],
     ]);
   }
 

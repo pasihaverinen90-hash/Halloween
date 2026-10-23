@@ -295,7 +295,6 @@ export class RaiskintaScene extends Phaser.Scene {
     addKeyHints(this, [
       ['←→↑↓', 'Liiku'],
       ['Välilyönti', 'Pyhä vesi'],
-      ['Esc', 'Tauko'],
     ]);
     this.keys = heldKeys(this, ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']);
     onKeys(this, { ' ': () => this.throwHolyWater() });

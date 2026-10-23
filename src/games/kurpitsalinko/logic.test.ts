@@ -179,14 +179,14 @@ describe('battle', () => {
     expect(events).toContainEqual(expect.objectContaining({ type: 'crate', weapon: 'cluster', amount: 1 }));
   });
 
-  it('a projectile flying through a −1 or −3 collects it once', () => {
+  it('a projectile flying through a −2 or −5 collects it once', () => {
     const b = new Battle(0);
     const token = b.tokens[1];
-    expect(token.value).toBe(3);
+    expect(token.value).toBe(5);
     // A pumpkin dropped right onto the symbol.
     b.projectiles.push({ id: 99, kind: 'pumpkin', x: token.x, y: token.y - 40, vx: 0, vy: 50, age: 0 });
     const events = settle(b);
-    expect(events.filter((e) => e.type === 'token')).toEqual([{ type: 'token', x: token.x, y: token.y, value: 3 }]);
+    expect(events.filter((e) => e.type === 'token')).toEqual([{ type: 'token', x: token.x, y: token.y, value: 5 }]);
     expect(token.taken).toBe(true);
   });
 
@@ -242,7 +242,7 @@ describe('every level can be cleared', () => {
     }
   });
 
-  it('each −1 can be collected with a shot that also fells a skeleton, and each −3 can be reached (Pasi 23.10.)', { timeout: 240_000 }, () => {
+  it('each −2 can be collected with a shot that also fells a skeleton, and each −5 can be reached (Pasi 23.10.)', { timeout: 240_000 }, () => {
     for (let i = 0; i < LEVELS.length; i++) {
       const found = new Map<number, boolean>();
       for (let angle = C.angleMin; angle <= C.angleMax; angle += 1) {
@@ -253,13 +253,13 @@ describe('every level can be cleared', () => {
           const killed = b.skeletons.some((s) => !s.alive);
           for (const token of b.tokens) {
             if (!token.taken) continue;
-            if (token.value === 3 || killed) found.set(token.value, true);
+            if (token.value === 5 || killed) found.set(token.value, true);
           }
         }
         if (found.size === 2) break;
       }
-      expect(found.get(1), `${LEVELS[i].name}: −1 ei osu kaatolaukauksen reitille`).toBe(true);
-      expect(found.get(3), `${LEVELS[i].name}: −3:een ei ylety`).toBe(true);
+      expect(found.get(2), `${LEVELS[i].name}: −2 ei osu kaatolaukauksen reitille`).toBe(true);
+      expect(found.get(5), `${LEVELS[i].name}: −5:een ei ylety`).toBe(true);
     }
   });
 

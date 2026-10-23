@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { CONFIG } from '../../config';
 import { addKeyHints } from '../../ui/hints';
-import { heldKeys, onChar, type HeldKeys } from '../../ui/input';
+import { heldKeys, onChar, onKeys, type HeldKeys } from '../../ui/input';
 import { addAsset } from '../../ui/place';
 import { applyCameraZoom, H, W, ZOOM } from '../../ui/screen';
 import { COLORS, CSS, TEXT } from '../../ui/theme';
@@ -164,6 +164,14 @@ export class PiiritysScene extends Phaser.Scene {
       const n = Number(char);
       if (Number.isInteger(n) && n >= 1 && n <= WEAPONS.length) this.choose(WEAPONS[n - 1]);
     });
+    // Pasi 23.10.: the next level starts when the player presses Enter (a moment after the level ends).
+    onKeys(this, {
+      Enter: () => {
+        if (this.phase !== 'levelDone' || this.phaseTime < 0.5) return false;
+        this.startLevel(this.levelIndex + 1);
+        return true;
+      },
+    });
     this.startLevel(0);
   }
 
@@ -261,7 +269,7 @@ export class PiiritysScene extends Phaser.Scene {
       this.crateImages.set(c.id, this.inWorld(addAsset(this, CRATE, c.x, c.y, { origin: [0.5, 1] }).setDepth(8)));
     }
     for (const t of this.battle.tokens) {
-      const img = this.inWorld(addAsset(this, TOKENS, t.x, t.y, { frame: t.value === 3 ? 1 : 0 }).setDepth(9));
+      const img = this.inWorld(addAsset(this, TOKENS, t.x, t.y, { frame: t.value === 5 ? 1 : 0 }).setDepth(9));
       this.tweens.add({ targets: img, y: t.y - 8, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
       this.tokenImages.set(t.id, img);
     }
@@ -407,12 +415,6 @@ export class PiiritysScene extends Phaser.Scene {
           }
         }
         break;
-      case 'levelDone':
-        if (this.phaseTime > 1.8) {
-          if (this.levelIndex + 1 < LEVELS.length) this.startLevel(this.levelIndex + 1);
-          else this.allCleared();
-        }
-        break;
       case 'won':
         if (this.phaseTime > 2.6) this.end();
         break;
@@ -544,7 +546,7 @@ export class PiiritysScene extends Phaser.Scene {
       }
       case 'token': {
         this.levelShots = Math.max(0, this.levelShots - e.value);
-        this.floatText(e.x, e.y - 30, `Laukauksia −${e.value}`, e.value === 3 ? CSS.gold : CSS.green);
+        this.floatText(e.x, e.y - 30, `Laukauksia −${e.value}`, e.value === 5 ? CSS.gold : CSS.green);
         sfx.tone({ freq: 880, slideTo: 1760, duration: 0.25, type: 'sine', volume: 0.08 });
         sfx.tone({ freq: 1320, slideTo: 2200, duration: 0.25, type: 'sine', volume: 0.06, delay: 0.1 });
         const token = this.battle.tokens.find((t) => t.x === e.x && t.y === e.y);
@@ -574,15 +576,20 @@ export class PiiritysScene extends Phaser.Scene {
     this.charging = false;
     const points = levelScore(this.battle.level.skeletons.length, this.levelShots);
     this.levelPoints.push(points);
+    if (this.levelIndex + 1 >= LEVELS.length) {
+      this.allCleared();
+      return;
+    }
     this.ctx.sfx.play('success');
-    this.showMessage('Kenttä tyhjä!', `${this.levelShots} laukausta`);
+    // Pasi 23.10.: no shot counts here, just the way on.
+    this.showMessage('Kenttä läpäisty!', 'Enter: seuraava kenttä');
   }
 
   private allCleared(): void {
     this.phase = 'won';
     this.phaseTime = 0;
     this.ctx.sfx.play('fanfare');
-    this.showMessage('Kaikki luurangot kaatuivat!', `${this.shots} laukausta`);
+    this.showMessage('Kaikki luurangot kaatuivat!', '');
   }
 
   private points(): number {
@@ -813,7 +820,7 @@ export class PiiritysScene extends Phaser.Scene {
       if (c.alive) g.fillStyle(0xc08040, 1).fillRect(MAP_X + c.x * sx - 3, MAP_Y + (c.y - 18) * sy - 3, 6, 6);
     }
     for (const t of b.tokens) {
-      if (!t.taken) g.fillStyle(t.value === 3 ? 0xf5c542 : 0x8fdc5a, 1).fillCircle(MAP_X + t.x * sx, MAP_Y + Math.max(0, t.y) * sy, 3);
+      if (!t.taken) g.fillStyle(t.value === 5 ? 0xf5c542 : 0x8fdc5a, 1).fillCircle(MAP_X + t.x * sx, MAP_Y + Math.max(0, t.y) * sy, 3);
     }
     for (const p of b.projectiles) g.fillStyle(0xffd04a, 1).fillCircle(MAP_X + p.x * sx, MAP_Y + Math.max(0, p.y) * sy, 3);
     // What the camera shows now.
@@ -857,7 +864,6 @@ export class PiiritysScene extends Phaser.Scene {
       ['Välilyönti', 'Lataa ja päästä irti'],
       ['1–5', 'Ase'],
       ['A / D', 'Katso'],
-      ['Esc', 'Tauko'],
     ]);
     // Everything made so far (except the world) belongs to the HUD camera.
     const layers: unknown[] = [this.worldLayer, this.hudLayer];

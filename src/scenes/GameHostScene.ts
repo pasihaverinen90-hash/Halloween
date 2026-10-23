@@ -6,20 +6,20 @@ import { sfx } from '../core/sfx';
 import type { AttemptEnd } from '../core/types';
 import { GAME_IDS, getGame } from '../games/registry';
 import type { GameContext, GameDefinition, GameSceneData } from '../games/types';
-import { onKeys } from '../ui/input';
 import { H, W } from '../ui/screen';
 import { COLORS } from '../ui/theme';
 import { showToast } from '../ui/toast';
 import { attemptCount, planAttempts } from './attemptFlow';
-import { SCENES, type AttemptIntroData, type AttemptResultData, type GameHostData, type PauseData } from './keys';
+import { SCENES, type AttemptIntroData, type AttemptResultData, type GameHostData } from './keys';
 import { switchTo } from './nav';
 
-type HostState = 'idle' | 'intro' | 'playing' | 'paused' | 'result';
+type HostState = 'idle' | 'intro' | 'playing' | 'result';
 
 /**
  * Runs one game for the current player: "Yritys n/3" screens, the game scene,
- * saving every attempt, result screens and pause (Esc). The game itself only
- * plays one attempt and calls ctx.finish(score).
+ * saving every attempt and result screens. The game itself only plays one
+ * attempt and calls ctx.finish(score). There is no pause (Pasi 23.10.): nobody
+ * can stop a game to think, not with Esc and not by leaving the window.
  */
 export class GameHostScene extends Phaser.Scene {
   private def!: GameDefinition;
@@ -34,11 +34,6 @@ export class GameHostScene extends Phaser.Scene {
   private readonly guardUnload = (event: BeforeUnloadEvent): void => {
     event.preventDefault();
     event.returnValue = '';
-  };
-
-  private readonly autoPause = (): void => {
-    // Only when this scene runs (not when correction mode's password prompt has paused everything).
-    if (this.state === 'playing' && this.sys.isActive()) this.pause();
   };
 
   constructor() {
@@ -68,28 +63,10 @@ export class GameHostScene extends Phaser.Scene {
     this.playerId = player.id;
     this.add.rectangle(W / 2, H / 2, W, H, COLORS.night);
 
-    // Pause keys only. Returning false leaves the key to the game and the overlays.
-    onKeys(this, {
-      Escape: () => {
-        if (this.state === 'playing') this.pause();
-        else if (this.state === 'paused') this.resume();
-        else return false;
-        return true;
-      },
-      Enter: () => {
-        if (this.state !== 'paused') return false;
-        this.resume();
-        return true;
-      },
-    });
-    this.game.events.on(Phaser.Core.Events.BLUR, this.autoPause);
-    this.game.events.on(Phaser.Core.Events.HIDDEN, this.autoPause);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.token += 1;
       this.state = 'idle';
       window.removeEventListener('beforeunload', this.guardUnload);
-      this.game.events.off(Phaser.Core.Events.BLUR, this.autoPause);
-      this.game.events.off(Phaser.Core.Events.HIDDEN, this.autoPause);
     });
 
     this.nextAttempt();
@@ -134,7 +111,7 @@ export class GameHostScene extends Phaser.Scene {
       checkpoint: {
         initial: record?.checkpoint ?? null,
         save: (state) => {
-          if (token !== this.token || (this.state !== 'playing' && this.state !== 'paused')) return;
+          if (token !== this.token || this.state !== 'playing') return;
           try {
             db.saveCheckpoint(this.playerId, this.def.id, state);
           } catch (error) {
@@ -151,10 +128,9 @@ export class GameHostScene extends Phaser.Scene {
   }
 
   private finishAttempt(token: number, score: number, end?: AttemptEnd): void {
-    if (token !== this.token || (this.state !== 'playing' && this.state !== 'paused')) return;
+    if (token !== this.token || this.state !== 'playing') return;
     this.state = 'result';
     window.removeEventListener('beforeunload', this.guardUnload);
-    this.scene.stop(SCENES.Pause);
     this.scene.stop(this.def.sceneKey);
 
     let record;
@@ -178,21 +154,6 @@ export class GameHostScene extends Phaser.Scene {
       onContinue: () => (finished ? this.leave() : this.nextAttempt()),
     };
     this.scene.launch(SCENES.AttemptResult, data);
-  }
-
-  private pause(): void {
-    this.state = 'paused';
-    this.scene.pause(this.def.sceneKey);
-    const data: PauseData = { gameName: this.def.name };
-    this.scene.launch(SCENES.Pause, data);
-    sfx.play('pause');
-  }
-
-  private resume(): void {
-    this.state = 'playing';
-    this.scene.stop(SCENES.Pause);
-    this.scene.resume(this.def.sceneKey);
-    sfx.play('unpause');
   }
 
   private leave(): void {

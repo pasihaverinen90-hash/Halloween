@@ -379,12 +379,12 @@ function drawCrate(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   shape(ctx, '#3f5f34', () => ctx.rect(w / 2 - 2, h / 2 - h * 0.18 - 4, 4, 5), 1.5);
 }
 
-/** Floating symbols that take shots off the count (Pasi 23.10.): −1 and −3. */
+/** Floating symbols that take shots off the count (Pasi 23.10.): −2 and −5. */
 function drawTokens(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   const fw = w / 2;
   for (const [i, label, color, glowColor] of [
-    [0, '−1', '#8fdc5a', 'rgba(143, 220, 90, 0.35)'],
-    [1, '−3', '#f5c542', 'rgba(245, 197, 66, 0.4)'],
+    [0, '−2', '#8fdc5a', 'rgba(143, 220, 90, 0.35)'],
+    [1, '−5', '#f5c542', 'rgba(245, 197, 66, 0.4)'],
   ] as const) {
     const cx = i * fw + fw / 2;
     const cy = h / 2;
@@ -550,9 +550,9 @@ export const PROJECTILES = spec(
   { count: 5, order: 'kurpitsa, rypälekurpitsa, ohjautuva kurpitsa, kurpitsapommi, pikkukurpitsa' },
 );
 export const CRATE = spec('piiritys-laatikko.png', 'Aselaatikko', 'Puinen laatikko, jonka kyljessä on kurpitsamerkki. Räjähdys avaa sen.', 40, 36, drawCrate);
-export const TOKENS = spec('piiritys-merkit.png', 'Laukausmerkit −1 ja −3', 'Ilmassa leijuvat hehkuvat merkit: vihreä ympyrä, jossa on teksti −1, ja kultainen ympyrä, jossa on teksti −3.', 64, 64, drawTokens, true, {
+export const TOKENS = spec('piiritys-merkit.png', 'Laukausmerkit −2 ja −5', 'Ilmassa leijuvat hehkuvat merkit: vihreä ympyrä, jossa on teksti −2, ja kultainen ympyrä, jossa on teksti −5.', 64, 64, drawTokens, true, {
   count: 2,
-  order: '−1, −3',
+  order: '−2, −5',
 });
 export const PREVIEW = spec('piiritys-esikatselu.png', 'Valikon esikatselukuva', 'Katapultti heittää kurpitsan kohti linnan muurilla seisovaa luurankoa yöllä.', 360, 200, drawPreview, false);
 

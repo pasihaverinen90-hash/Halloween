@@ -6,7 +6,6 @@ import { continueNote } from './shop';
 import { TasohyppelyScene } from './TasohyppelyScene';
 
 const C = CONFIG.tasohyppely;
-const fi = (n: number): string => n.toLocaleString('fi-FI');
 
 /** 6. Tasohyppely – pixel art, Castlevania-like. Rules: CLAUDE.md, game 6, and Pasi's choices 21.10. */
 const tasohyppely: GameDefinition = {
@@ -16,30 +15,22 @@ const tasohyppely: GameDefinition = {
   // Pasi 22.10.: five attempts, and each continues from the level where the previous one ended.
   attempts: C.attempts,
   attemptNote: continueNote,
+  // Pasi 23.10.: short instructions; scoring only says what gives points.
   instructions: {
-    goal: 'Vampyyrimetsästäjä kulkee hautausmaan, linnan ja noidan metsän läpi. Metsän perällä odottaa päänoita.',
+    goal: 'Kulje hautausmaan, linnan ja noidan metsän läpi ja kaada päänoita.',
     keys: [
       ['←→', 'Liiku'],
       ['Välilyönti', 'Hyppää (ilmassa vielä kerran)'],
-      ['X', 'Lyö ruoskalla (↑ + X lyö ylöspäin)'],
+      ['X', 'Lyö ruoskalla (↑ + X ylöspäin)'],
       ['C', 'Heitä tikari'],
-      ['↓', 'Kyyristy (X lyö matalalta)'],
+      ['↓', 'Kyyristy (↓ + välilyönti: alas tasolta)'],
     ],
     rules: [
-      `Jokaisen kentän alussa sinulla on ${C.maxHealth} sydäntä. Vihollinen, ammus, terä ja kuoppaan putoaminen vievät yhden.`,
-      'Kun sydämet loppuvat, yritys päättyy. Seuraava yritys jatkuu saman kentän alusta, ja tavarat ovat kuten kentän alkaessa.',
-      'Tason läpi pääsee alas painamalla ↓ ja välilyöntiä yhtä aikaa.',
-      'Jokaisesta kynttilästä saa kolikon. Ennen kenttiä 2 ja 3 kolikoilla voi ostaa tikareita, lisäsydämiä, paremman ruoskan ja teroitusta.',
-      'Kaatuneet viholliset pudottavat joskus tikareita, puolikkaan sydämen tai ruoskan päivityksen.',
-      `Ruoskassa on viisi tasoa, ja tikareita on alussa ${C.daggersStart} (enintään ${C.daggersMax}).`,
-      'Varo kuoppia, sortuvia lattioita ja heiluvia teriä. Terän alta pääsee kyyristymällä, ja liikkuvat tasot kuljettavat kuoppien yli.',
+      `Kentän alussa sinulla on ${C.maxHealth} sydäntä. Kun ne loppuvat, seuraava yritys jatkuu saman kentän alusta.`,
+      'Kynttilöistä saa kolikoita. Kenttien välissä niillä voi ostaa varusteita.',
     ],
-    scoring: [
-      `Edetty matka: enintään ${fi(C.distancePoints)} (${fi(C.distancePoints / 3)} kentältä).`,
-      `Lyödyt kynttilät: enintään ${fi(C.candlePoints)}.`,
-      `Päänoidan kestävyydestä: enintään ${fi(C.bossPoints)}.`,
-    ],
-    attemptRule: `${C.attempts} yritystä. Paras jää voimaan. Päänoidan kaatuminen tai ${fi(CONFIG.maxScore)} pistettä päättää pelin.`,
+    scoring: ['Pääse pitkälle, lyö kynttilöitä ja kaada päänoita.'],
+    attemptRule: `${C.attempts} yritystä. Paras jää voimaan.`,
   },
   preview: PREVIEW,
   assets: ASSETS,

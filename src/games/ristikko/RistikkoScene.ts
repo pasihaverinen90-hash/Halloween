@@ -100,7 +100,6 @@ export class RistikkoScene extends Phaser.Scene {
       ['←→↑↓', 'Liiku'],
       ['Välilyönti', 'Suunta'],
       ['Enter ×2', `Vihje: ${C.revealCount} kirjainta (−${C.revealPenaltySeconds} s)`],
-      ['Esc', 'Tauko'],
     ]);
 
     onKeys(
