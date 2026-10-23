@@ -281,12 +281,15 @@ Pasi keräsi ensin kommentit ja antoi sitten luvan korjata kaikki. Kaikki alla o
 #### Illan lyhennys (Pasi 23.10., päätetty, ei vielä tehty)
 
 Pasi: läpipeluun optimi on noin 30 minuuttia (keskivertopelaajalla nyt noin 60). "Älä vielä koodaa mitään."
-- **Hirsipuu ja ristikko** jäävät ekstroiksi "kisan" ulkopuolelle. Ne eivät kuulu kokonaispisteisiin eivätkä palkintojenjakoon. Valikossa on kisapelien alla oma Ekstrat-rivi, ja ekstroja voi pelata milloin vain. Ekstran saa pelata vapaasti uudelleen, ja paras tulos jää voimaan ja näkyy sen omalla top-listalla. Kiitosnäkymä tulee, kun kisapelit on pelattu.
+- **Hirsipuu ja ristikko** jäävät pois turnauksesta ja ovat vain freeplayssä. Ne eivät kuulu kokonaispisteisiin eivätkä palkintojenjakoon.
+- **Päävalikossa kaksi tilaa (Pasi 23.10.): Turnaus ja Freeplay.** (Korvaa aiemman ajatuksen Ekstrat-rivistä.)
+  - **Turnaus:** pelaaja luo nimen, ja 5 kisapeliä alkavat automaattisesti peräkkäin kiinteässä järjestyksessä: kuva-arvoitukset, lentopeli, räiskintä, tasohyppely, kurpitsalinko. Pelaaja ei valitse järjestystä. Lopuksi kiitosnäkymä, ja seuraava pelaaja vaatii salasanan kuten ennenkin. Turnauksen tulokset aukeavat vain salasanalla.
+  - **Freeplay:** alussa vain turnaus on auki. Valikossa on nappi, jolla freeplay avataan Pasin salasanalla. Freeplayssä voi pelata kaikkia 7 peliä niin paljon kuin haluaa. Pelaaja kirjoittaa nimensä aina freeplayn alussa, ja sama nimi tarkoittaa samaa pelaajaa. Jokaisella pelillä on oma freeplay-top-lista (paras tulos per nimi), ja kun freeplay on avattu, sen tulokset näkyvät kaikille ilman salasanaa.
 - **Lentopeli:** maali 60 sekunnin lennon päähän (ennen 90) ja 2 yritystä (ennen 3).
 - **Räiskintä:** Paholainen saapuu 2 minuutin kohdalla (ennen 3) ja 2 yritystä (ennen 3). Paholaisen kestävyys pysyy ennallaan.
 - **Tasohyppely:** 3 yritystä (ennen 5). Kuoleman jälkeen jatketaan edelleen saman kentän alusta.
 - **Kurpitsalinko:** 1 yritys (ennen 2).
-- **Kuva-arvoitukset:** 10 arvoitusta, joista 7 on elokuvia ja 3 sanoja (nyt 5 + 5). Kaikki 7 elokuvaa ovat uusia kuva-arvoituksia, joihin Pasi tekee ChatGPT:llä vihjekuvat. Ne korvaavat 5 emojiarvoitusta ja 2 sana-arvoitusta. Kuvissa ei saa olla elokuvien hahmoja, näyttelijöitä tai julisteita. Elokuvat ja jäävät 3 sanaa kysytään.
+- **Kuva-arvoitukset:** 10 arvoitusta, joista 7 on elokuvia ja 3 sanoja: Ihmissusi, Kummitusjuna ja Hirviö. **Kaikki 10 ovat avoimia**, eikä monivalintoja ole (Pasi 23.10.; poikkeaa CLAUDE.md:n jaosta puolet ja puolet). Pasi antaa elokuvat, kuvat ja oikeat vastaukset. Elokuvien kysymys on yksinkertainen, esim. "Mikä elokuva?". Kaikki 7 elokuvaa ovat uusia kuva-arvoituksia, joihin Pasi tekee ChatGPT:llä vihjekuvat. Ne korvaavat 5 emojiarvoitusta ja 2 sana-arvoitusta (Verikuu ja Silmämuna jäävät pois). Kuvissa ei saa olla elokuvien hahmoja, näyttelijöitä tai julisteita.
 - Arvio keskivertopelaajalle muutosten jälkeen: arvoitukset 2,5 + lentopeli 2 + räiskintä 5,5 + tasohyppely 8 + kurpitsalinko 10 + aloitus ja kiitos 1,5 = noin 30 minuuttia. Taitavalla noin 26 ja aloittelijalla noin 30.
 
 ## Aikataulu
