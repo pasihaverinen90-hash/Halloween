@@ -308,8 +308,8 @@ export class Battle {
 
   private moveProjectile(p: Projectile, dt: number): void {
     p.age += dt;
-    // Pasi 23.10.: the homing pumpkin flies freely until it starts to come down, then turns gently
-    // towards the nearest skeleton within reach.
+    // Pasi 23.10.: the homing pumpkin flies freely until it starts to come down, then turns hard
+    // towards the nearest living skeleton.
     const target = p.kind === 'homing' && p.vy > 0 ? this.nearestSkeleton(p.x, p.y, C.homingRange) : null;
     if (target) {
       const want = Math.atan2(target.y - SKELETON_H / 2 - p.y, target.x - p.x);

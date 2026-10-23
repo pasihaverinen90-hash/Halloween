@@ -157,6 +157,19 @@ describe('battle', () => {
     expect(turnedAt === null || turnedAt > 0.5).toBe(true);
   });
 
+  it('a homing pumpkin finds a skeleton even from a poor shot (Pasi 23.10.: aggressive)', () => {
+    for (const [angle, power] of [
+      [80, 0.5],
+      [30, 0.3],
+      [60, 0.95],
+    ]) {
+      const b = new Battle(0);
+      b.fire('homing', angle, power);
+      settle(b);
+      expect(b.skeletonsLeft(), `kulma ${angle}, voima ${power}`).toBeLessThan(LEVELS[0].skeletons.length);
+    }
+  });
+
   it('a crate opens when a blast reaches it, and gives its weapon (Pasi 23.10.)', () => {
     const b = new Battle(0);
     const crate = b.crates[0];

@@ -338,11 +338,11 @@ export const CONFIG = {
     bombletRadius: 34,
     bombletCount: 5,
     /**
-     * Homing pumpkin (Pasi 23.10.: it was too good): flies freely until it starts to come down, then turns
-     * gently (radians per second) towards the nearest skeleton within this distance.
+     * Homing pumpkin: flies freely until it starts to come down (Pasi 23.10.), then turns hard (radians per
+     * second) towards the nearest living skeleton within this distance (Pasi 23.10.: more aggressive, anywhere in the level).
      */
-    homingRange: 640,
-    homingTurn: 1.6,
+    homingRange: 4000,
+    homingTurn: 7,
     homingSpeed: 560,
     homingSeconds: 7,
     /** Pumpkin beam: width of the burnt corridor, and how long it glows. */
