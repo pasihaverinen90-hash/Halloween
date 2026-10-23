@@ -281,12 +281,12 @@ Pasi keräsi ensin kommentit ja antoi sitten luvan korjata kaikki. Kaikki alla o
 #### Illan lyhennys (Pasi 23.10., päätetty, ei vielä tehty)
 
 Pasi: läpipeluun optimi on noin 30 minuuttia (keskivertopelaajalla nyt noin 60). "Älä vielä koodaa mitään."
-- **Hirsipuu ja ristikko** jäävät ekstroiksi "kisan" ulkopuolelle. Ne eivät kuulu kokonaispisteisiin. Tarkennukset kysytään (missä näkyvät, voiko pelata uudelleen).
+- **Hirsipuu ja ristikko** jäävät ekstroiksi "kisan" ulkopuolelle. Ne eivät kuulu kokonaispisteisiin eivätkä palkintojenjakoon. Valikossa on kisapelien alla oma Ekstrat-rivi, ja ekstroja voi pelata milloin vain. Ekstran saa pelata vapaasti uudelleen, ja paras tulos jää voimaan ja näkyy sen omalla top-listalla. Kiitosnäkymä tulee, kun kisapelit on pelattu.
 - **Lentopeli:** maali 60 sekunnin lennon päähän (ennen 90) ja 2 yritystä (ennen 3).
 - **Räiskintä:** Paholainen saapuu 2 minuutin kohdalla (ennen 3) ja 2 yritystä (ennen 3). Paholaisen kestävyys pysyy ennallaan.
 - **Tasohyppely:** 3 yritystä (ennen 5). Kuoleman jälkeen jatketaan edelleen saman kentän alusta.
 - **Kurpitsalinko:** 1 yritys (ennen 2).
-- **Kuva-arvoitukset:** 10 arvoitusta, joista 7 on elokuvia ja 3 sanoja (nyt 5 + 5). Pasi tekee ChatGPT:llä vihjekuvat. Kuvissa ei saa olla elokuvien hahmoja, näyttelijöitä tai julisteita. Mitkä elokuvat, kysytään.
+- **Kuva-arvoitukset:** 10 arvoitusta, joista 7 on elokuvia ja 3 sanoja (nyt 5 + 5). Kaikki 7 elokuvaa ovat uusia kuva-arvoituksia, joihin Pasi tekee ChatGPT:llä vihjekuvat. Ne korvaavat 5 emojiarvoitusta ja 2 sana-arvoitusta. Kuvissa ei saa olla elokuvien hahmoja, näyttelijöitä tai julisteita. Elokuvat ja jäävät 3 sanaa kysytään.
 - Arvio keskivertopelaajalle muutosten jälkeen: arvoitukset 2,5 + lentopeli 2 + räiskintä 5,5 + tasohyppely 8 + kurpitsalinko 10 + aloitus ja kiitos 1,5 = noin 30 minuuttia. Taitavalla noin 26 ja aloittelijalla noin 30.
 
 ## Aikataulu
