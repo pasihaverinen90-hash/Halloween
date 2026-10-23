@@ -20,10 +20,11 @@ const tasohyppely: GameDefinition = {
     goal: 'Kulje hautausmaan, linnan ja noidan metsän läpi ja kaada päänoita.',
     keys: [
       ['←→', 'Liiku'],
-      ['Välilyönti', 'Hyppää (ilmassa vielä kerran)'],
-      ['X', 'Lyö ruoskalla (↑ + X ylöspäin)'],
+      ['Välilyönti', 'Hyppy ja tuplahyppy'],
+      ['X', 'Lyö ruoskalla (↑ + X ylös)'],
       ['C', 'Heitä tikari'],
-      ['↓', 'Kyyristy (↓ + välilyönti: alas tasolta)'],
+      ['↓', 'Kyyristy'],
+      ['↓ + Välilyönti', 'Alas tasolta'],
     ],
     rules: [
       `Kentän alussa sinulla on ${C.maxHealth} sydäntä. Kun ne loppuvat, seuraava yritys jatkuu saman kentän alusta.`,

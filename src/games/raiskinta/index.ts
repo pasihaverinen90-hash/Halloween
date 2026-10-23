@@ -17,7 +17,7 @@ const raiskinta: GameDefinition = {
     goal: `Suojele hautausmaata ${minutes} minuuttia ja kaada lopuksi Paholainen.`,
     keys: [
       ['←→↑↓', 'Liiku'],
-      ['Välilyönti', 'Pyhä vesi osuu kaikkiin vihollisiin'],
+      ['Välilyönti', 'Pyhä vesi (osuu kaikkiin)'],
     ],
     rules: [
       'Paavi ampuu itse. Sinä väistelet.',

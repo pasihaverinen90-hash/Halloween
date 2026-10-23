@@ -104,8 +104,10 @@ export class InstructionsScene extends Phaser.Scene {
       heading('Näppäimet');
       for (const [key, action] of keys) {
         const cap = addKeyCap(this, LEFT_X, y + 18, key);
+        // A wide key cap leaves less room, so the label wraps inside the panel.
+        const labelX = LEFT_X + Math.max(cap.width, 64) + 14;
         const label = this.add
-          .text(LEFT_X + Math.max(cap.width, 64) + 14, y + 18, action, { ...TEXT.body, fontSize: `${size}px`, wordWrap: { width: LEFT_W - 90 } })
+          .text(labelX, y + 18, action, { ...TEXT.body, fontSize: `${size}px`, wordWrap: { width: LEFT_X + LEFT_W - labelX } })
           .setOrigin(0, 0.5);
         objects.push(cap, label);
         // Rows tighten with the font, so a game with many keys still fits.
