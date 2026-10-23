@@ -11,7 +11,7 @@ function pointStepsText(): string {
   const C = CONFIG.kurpitsalinko;
   let from = 0;
   const parts = C.pointSteps.map((step, i) => {
-    const text = i === 0 ? `Laukauksia enintään luurangot + ${step.extra}: ${step.points}.` : `+ ${from}–${step.extra}: ${step.points}.`;
+    const text = i === 0 ? `Laukauksia luurangot + ${step.extra}: ${step.points}.` : `+ ${from}–${step.extra}: ${step.points}.`;
     from = step.extra + 1;
     return text;
   });
@@ -30,22 +30,19 @@ const kurpitsalinko: GameDefinition = {
     keys: [
       ['↑↓', 'Muuta kulmaa'],
       ['←→', 'Muuta kulmaa tarkasti'],
-      ['Välilyönti', 'Pidä pohjassa: voima heiluu. Päästä irti: laukaus'],
+      ['Välilyönti', 'Pidä pohjassa ja päästä irti'],
       ['1–5', 'Valitse ase'],
       ['A / D', 'Katso kenttää vasemmalle ja oikealle'],
     ],
     rules: [
       'Kurpitsa räjähtää osuessaan ja kaataa lähellä olevat luurangot. Räjähdys tekee maahan kuopan.',
       'Luuranko hajoaa myös, jos se putoaa korkealta, vallihautaan tai kentän ulkopuolelle.',
-      'Ruutitynnyri räjähtää osumasta, ja puurakenteet hajoavat helposti.',
+      'Ruutitynnyri räjähtää osumasta, ja puurakenteet hajoavat helposti. Pidä välilyöntiä pohjassa: voima heiluu ylös ja alas, ja kurpitsa lähtee, kun päästät irti.',
       'Tavallisia kurpitsoja on loputtomasti. Erikoisaseet (rypäle, ohjautuva, maaston läpäisevä säde ja iso pommi) säilyvät kentästä toiseen, ja niitä saa lisää laatikoista ja uusista kentistä.',
       'Ammu ilmassa leijuvan −1:n tai −3:n läpi, niin kentän laukauksista vähennetään sen verran.',
       'Kentästä 3 alkaen osa luurangoista liikkuu laukausten välissä. Edellisen laukauksen rata jää näkyviin, ja ylhäällä näkyy koko kentän kartta.',
     ],
-    scoring: [
-      'Jokaisesta kentästä enintään 200.',
-      `${pointStepsText()} Ylhäällä näkyy, montako laukausta riittää täysiin pisteisiin.`,
-    ],
+    scoring: [`Kentästä enintään 200. ${pointStepsText()}`],
   },
   preview: PREVIEW,
   assets: ASSETS,
