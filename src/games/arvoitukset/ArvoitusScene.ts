@@ -36,9 +36,28 @@ const OPTION_POS: ReadonlyArray<[number, number]> = [
 ];
 const LETTERS = ['A', 'B', 'C', 'D'];
 const RIDDLE_Y = 328;
-const TIMER_X = 360;
-const TIMER_W = 560;
-const TIMER_Y = 158;
+
+/** Where the question, timer, answer and result go. */
+interface Layout {
+  /** Centre x of the question, the answer and the result. */
+  cx: number;
+  questionY: number;
+  questionW: number;
+  timerX: number;
+  timerY: number;
+  timerW: number;
+  answerY: number;
+  answerW: number;
+  feedbackY: number;
+  bannerY: number;
+  bannerW: number;
+}
+
+/** A wide picture or emojis in the middle, the answer below. */
+const WIDE: Layout = { cx: W / 2, questionY: 108, questionW: 1000, timerX: 360, timerY: 158, timerW: 560, answerY: 534, answerW: 620, feedbackY: 604, bannerY: 132, bannerW: 940 };
+/** Pasi 23.10.: a tall picture (the film pictures) on the left, everything else on the right. */
+const SIDE: Layout = { cx: 870, questionY: 190, questionW: 640, timerX: 650, timerY: 262, timerW: 440, answerY: 400, answerW: 600, feedbackY: 470, bannerY: 160, bannerW: 700 };
+const SIDE_IMAGE = { x: 290, y: 378, width: 330, height: 484 };
 
 // Freeplay keeps unrounded points (Pasi 23.10.); the screen always shows whole points.
 const fi = (n: number): string => Math.round(n).toLocaleString('fi-FI');
@@ -53,6 +72,7 @@ export class ArvoitusScene extends Phaser.Scene {
   private selected = 0;
   private savedAtMs = 0;
   private lastTick = -1;
+  private layout: Layout = WIDE;
 
   private riddleLayer!: Phaser.GameObjects.Container;
   private answerLayer!: Phaser.GameObjects.Container;
@@ -75,7 +95,9 @@ export class ArvoitusScene extends Phaser.Scene {
 
   init(data: GameSceneData): void {
     this.ctx = data.ctx;
-    this.riddles = ARVOITUKSET_CONTENT.ok ? ARVOITUKSET_CONTENT.riddles : [];
+    // Pasi 23.10.: freeplay also plays the riddles marked "vain: freeplay".
+    this.riddles = ARVOITUKSET_CONTENT.ok ? ARVOITUKSET_CONTENT.riddles.filter((r) => this.ctx.freeplay || !r.freeplayOnly) : [];
+    this.layout = WIDE;
     this.phase = 'answering';
     this.options = [];
     this.selected = 0;
@@ -101,15 +123,17 @@ export class ArvoitusScene extends Phaser.Scene {
     this.progressText = this.add.text(70, 50, '', { ...TEXT.heading, fontSize: '34px', color: CSS.muted }).setOrigin(0, 0.5);
     this.scoreText = this.add.text(W - 70, 50, '', { ...TEXT.bodyBold, fontSize: '30px', color: CSS.orange }).setOrigin(1, 0.5);
     this.questionText = this.add
-      .text(W / 2, 108, '', { ...TEXT.heading, fontSize: '40px', align: 'center', wordWrap: { width: 1000 } })
+      .text(W / 2, WIDE.questionY, '', { ...TEXT.heading, fontSize: '40px', align: 'center', wordWrap: { width: WIDE.questionW } })
       .setOrigin(0.5);
     this.timerBar = this.add.graphics();
-    this.valueText = this.add.text(TIMER_X - 16, TIMER_Y, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.muted }).setOrigin(1, 0.5);
-    this.secondsText = this.add.text(TIMER_X + TIMER_W + 16, TIMER_Y, '', { ...TEXT.bodyBold, fontSize: '22px' }).setOrigin(0, 0.5);
+    this.valueText = this.add.text(0, 0, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.muted }).setOrigin(1, 0.5);
+    this.secondsText = this.add.text(0, 0, '', { ...TEXT.bodyBold, fontSize: '22px' }).setOrigin(0, 0.5);
     this.riddleLayer = this.add.container(0, 0);
     this.answerLayer = this.add.container(0, 0);
-    this.feedback = this.add.text(W / 2, 604, '', { ...TEXT.bodyBold, fontSize: '24px', color: CSS.red }).setOrigin(0.5);
-    this.banner = this.add.container(W / 2, 132).setDepth(10).setVisible(false);
+    this.feedback = this.add
+      .text(W / 2, WIDE.feedbackY, '', { ...TEXT.bodyBold, fontSize: '24px', color: CSS.red, align: 'center', wordWrap: { width: 900 } })
+      .setOrigin(0.5);
+    this.banner = this.add.container(W / 2, WIDE.bannerY).setDepth(10).setVisible(false);
     this.hints = addKeyHints(this, []);
 
     const move = (dir: GridDirection) => () => this.moveOption(dir);
@@ -149,6 +173,8 @@ export class ArvoitusScene extends Phaser.Scene {
     const current = this.round.current;
     return {
       index: this.round.index,
+      count: this.riddles.length,
+      layout: this.layout === SIDE ? 'side' : 'wide',
       kind: riddle?.kind ?? null,
       question: riddle?.question ?? null,
       answers: riddle?.answers ?? [],
@@ -200,6 +226,7 @@ export class ArvoitusScene extends Phaser.Scene {
     // Set the phase first: the options are painted according to it (a new riddle must not show its answer).
     this.phase = current.result ? 'done' : 'answering';
     this.progressText.setText(`Arvoitus ${this.round.index + 1}/${this.riddles.length}`);
+    this.applyLayout(this.isTall(riddle) ? SIDE : WIDE);
     this.questionText.setText(riddle.question);
     this.buildRiddleVisual(riddle);
     if (riddle.kind === 'monivalinta') this.buildOptions(riddle);
@@ -220,7 +247,33 @@ export class ArvoitusScene extends Phaser.Scene {
     this.refreshTimer();
   }
 
+  /** A picture taller than it is wide (Pasi's film pictures) is shown on the left. */
+  private isTall(riddle: Riddle): boolean {
+    if (!riddle.image) return false;
+    const key = assetKey(riddle.image.file);
+    if (!this.textures.exists(key)) return false;
+    const source = this.textures.get(key).getSourceImage();
+    return source.height > source.width * 1.1;
+  }
+
+  private applyLayout(layout: Layout): void {
+    this.layout = layout;
+    this.questionText.setPosition(layout.cx, layout.questionY).setWordWrapWidth(layout.questionW);
+    this.valueText.setPosition(layout.timerX - 16, layout.timerY);
+    this.secondsText.setPosition(layout.timerX + layout.timerW + 16, layout.timerY);
+    this.feedback.setPosition(layout.cx, layout.feedbackY).setWordWrapWidth(layout.answerW);
+    this.banner.setPosition(layout.cx, layout.bannerY);
+  }
+
   private buildRiddleVisual(riddle: Riddle): void {
+    if (this.layout === SIDE && riddle.image) {
+      const box = SIDE_IMAGE;
+      this.riddleLayer.add(drawPanel(this, box.x - box.width / 2 - 18, box.y - box.height / 2 - 18, box.width + 36, box.height + 36, { radius: 20, alpha: 0.9 }));
+      const image = this.add.image(box.x, box.y, assetKey(riddle.image.file));
+      fitImage(image, box.width, box.height);
+      this.riddleLayer.add(image);
+      return;
+    }
     const frame = drawPanel(this, W / 2 - 330, RIDDLE_Y - 146, 660, 292, { radius: 20, alpha: 0.9 });
     this.riddleLayer.add(frame);
     if (riddle.emojis) {
@@ -281,8 +334,8 @@ export class ArvoitusScene extends Phaser.Scene {
   }
 
   private buildAnswerField(): void {
-    this.answerField = new TextInput(this, W / 2, 534, {
-      width: 620,
+    this.answerField = new TextInput(this, this.layout.cx, this.layout.answerY, {
+      width: this.layout.answerW,
       maxLength: 40,
       placeholder: 'Kirjoita vastaus ja paina Enter',
     });
@@ -320,10 +373,11 @@ export class ArvoitusScene extends Phaser.Scene {
     const urgent = left <= CONFIG.arvoitukset.tickFromSecondsLeft * 1000;
     this.timerBar.clear();
     this.timerBar.fillStyle(COLORS.panel, 0.95);
-    this.timerBar.fillRoundedRect(TIMER_X, TIMER_Y - 8, TIMER_W, 16, 8);
+    const { timerX, timerY, timerW } = this.layout;
+    this.timerBar.fillRoundedRect(timerX, timerY - 8, timerW, 16, 8);
     if (ratio > 0) {
       this.timerBar.fillStyle(urgent ? COLORS.red : COLORS.orange, 1);
-      this.timerBar.fillRoundedRect(TIMER_X, TIMER_Y - 8, Math.max(16, TIMER_W * ratio), 16, 8);
+      this.timerBar.fillRoundedRect(timerX, timerY - 8, Math.max(16, timerW * ratio), 16, 8);
     }
     // Text objects redraw on every setColor, so only touch them when something changed.
     this.secondsText.setText(`${Math.ceil(left / 1000)} s`);
@@ -410,8 +464,9 @@ export class ArvoitusScene extends Phaser.Scene {
           : `Väärin – oikea vastaus: ${riddle.answers[0]}`;
     const last = this.round.index + 1 >= this.riddles.length;
     this.banner.removeAll(true);
-    const panel = this.add.graphics({ x: -470, y: -52 });
-    paintPanel(panel, 940, 104, {
+    const bannerW = this.layout.bannerW;
+    const panel = this.add.graphics({ x: -bannerW / 2, y: -52 });
+    paintPanel(panel, bannerW, 104, {
       fill: solved ? 0x1d3320 : 0x3a1420,
       border: solved ? COLORS.green : COLORS.red,
       borderWidth: 3,
@@ -422,6 +477,8 @@ export class ArvoitusScene extends Phaser.Scene {
     const title = this.add
       .text(0, -16, headline, { ...TEXT.heading, fontSize: '36px', color: solved ? CSS.green : CSS.red })
       .setOrigin(0.5);
+    // A long film name must fit the banner.
+    if (title.width > bannerW - 40) title.setScale((bannerW - 40) / title.width);
     const sub = this.add
       .text(0, 26, last ? 'Paina Enter, niin näet tuloksen.' : 'Paina Enter, niin siirryt seuraavaan arvoitukseen.', { ...TEXT.body, fontSize: '22px' })
       .setOrigin(0.5);

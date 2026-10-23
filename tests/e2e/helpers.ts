@@ -220,7 +220,8 @@ export async function answerRiddle(page: Page, how: 'correct' | 'wrong'): Promis
 export async function playRiddlesCorrectly(page: Page): Promise<number> {
   await press(page, 'Enter');
   await waitForScene(page, 'Arvoitukset');
-  for (let index = 0; index < 10; index++) {
+  const count = (await sceneState(page, 'Arvoitukset')).count as number;
+  for (let index = 0; index < count; index++) {
     await waitForState(page, 'Arvoitukset', (s) => s.index === index && s.phase === 'answering');
     await answerRiddle(page, 'correct');
     await press(page, 'Enter');

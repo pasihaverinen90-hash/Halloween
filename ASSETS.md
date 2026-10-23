@@ -171,26 +171,6 @@ Hyvä tietää:
 
 > Kuva-arvoitus, jonka vastaus on IHMISSUSI: vasemmalla tavallinen ihminen seisomassa, keskellä iso plusmerkki ja oikealla harmaa susi. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
 
-### `arvoitus-verikuu.png` – Kuva-arvoitus: veripisara + kuu
-
-- **Koko:** 600 × 280 px
-- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
-- **Tyyli:** Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta.
-
-**Kuvaus generaattorille:**
-
-> Kuva-arvoitus, jonka vastaus on VERIKUU: vasemmalla iso punainen veripisara, keskellä plusmerkki ja oikealla täysikuu. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
-
-### `arvoitus-silmamuna.png` – Kuva-arvoitus: silmä + kananmuna
-
-- **Koko:** 600 × 280 px
-- **Tausta:** ei läpinäkyvyyttä, kuva täyttää koko alueen
-- **Tyyli:** Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta.
-
-**Kuvaus generaattorille:**
-
-> Kuva-arvoitus, jonka vastaus on SILMÄMUNA: vasemmalla ihmisen silmä, keskellä plusmerkki ja oikealla valkoinen kananmuna. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
-
 ### `arvoitus-hirvi.png` – Kuva-arvoitus: hirvi (peli lisää perään + Ö)
 
 - **Koko:** 420 × 280 px

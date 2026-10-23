@@ -5,7 +5,7 @@ Tässä kansiossa ovat pelien sanat ja vihjeet. Voit muokata niitä itse suoraan
 | Tiedosto | Mitä siinä on |
 | --- | --- |
 | [`hirsipuu.txt`](hirsipuu.txt) | Hirsipuun 5 sanaa tai lausetta ja niiden vihjeet |
-| [`kuva-arvoitukset.txt`](kuva-arvoitukset.txt) | Kuva-arvoitusten ja emojiarvoitusten 10 arvoitusta |
+| [`kuva-arvoitukset.txt`](kuva-arvoitukset.txt) | Kuva-arvoitukset: turnauksen 11 arvoitusta ja freeplayn lisäarvoitukset |
 | [`ristikko.txt`](ristikko.txt) | Ristikon 16–22 sanaa ja niiden vihjeet (nyt 20) sekä varasanoja |
 
 ## Näin muokkaat tiedostoa
@@ -47,22 +47,22 @@ vihje: Näin lapset kysyvät ovella Halloween-iltana.
 Esimerkki kahdesta arvoituksesta:
 
 ```
-tyyppi: monivalinta
-kuva: arvoitus-ihmissusi.png
-kysymys: Mikä kauhuolento?
-vastaus: Ihmissusi
-väärät: Vampyyri; Susikoira; Metsänpeikko
+tyyppi: avoin
+kuva: arvoitus-halloween.jpg
+kysymys: Mikä elokuva?
+vastaus: Halloween
 
 tyyppi: avoin
-emojit: 🔪🚿
-kysymys: Mikä kauhuelokuva?
-vastaus: Psyko; Psycho
+kuva: arvoitus-hohto.jpg
+kysymys: Mikä elokuva?
+vastaus: Hohto; The Shining; Shining
+vain: freeplay
 ```
 
-- Arvoituksia pitää olla **tasan 10**: viisi monivalintaa ja viisi avointa.
-- **tyyppi** on `monivalinta` tai `avoin`. Monivalinnassa vastataan kerran neljästä vaihtoehdosta. Avoimeen pelaaja kirjoittaa vastauksen ja saa yrittää monta kertaa.
+- Turnauksen arvoituksia pitää olla **tasan 11**. Lisäksi tiedostossa voi olla kuinka monta tahansa arvoitusta, joissa on rivi `vain: freeplay`. Ne pelataan vain freeplayssä.
+- **tyyppi** on `avoin` tai `monivalinta`. Avoimeen pelaaja kirjoittaa vastauksen ja saa yrittää monta kertaa. Monivalinnassa vastataan kerran neljästä vaihtoehdosta. Nyt kaikki arvoitukset ovat avoimia.
 - Arvoituksessa on joko **kuva** tai **emojit**.
-  - **kuva** on kuvatiedoston nimi kansiossa `public/assets/`, esimerkiksi `arvoitus-verikuu.png`. Kuvan perään voi lisätä lyhyen tekstin plusmerkillä, esimerkiksi `arvoitus-hirvi.png + Ö`. Jos kuvaa ei vielä ole, peli näyttää tilalla väliaikaisen kuvan tai tekstin "Kuva puuttuu".
+  - **kuva** on kuvatiedoston nimi kansiossa `public/assets/`, esimerkiksi `arvoitus-halloween.jpg`. Nimen pitää alkaa sanalla `arvoitus-`, ja siinä saa olla vain pieniä kirjaimia, numeroita ja väliviivoja. Pystykuva näytetään ruudun vasemmalla puolella, vaakakuva keskellä. Kuvan perään voi lisätä lyhyen tekstin plusmerkillä, esimerkiksi `arvoitus-hirvi.png + Ö`. Jos kuvaa ei vielä ole, peli näyttää tilalla väliaikaisen kuvan tai tekstin "Kuva puuttuu".
   - **emojit**-riville voi kopioida emojeja esimerkiksi verkosta tai puhelimesta.
 - **kysymys** näkyy arvoituksen yläpuolella, ja siihen voi lisätä vihjeen: `kysymys: Mikä sana? Sen löytää huvipuistosta.`
 - **vastaus**: avoimeen arvoitukseen voi antaa useita hyväksyttyjä vastauksia puolipisteillä erotettuina. Isoilla ja pienillä kirjaimilla, välilyönneillä, väliviivoilla ja välimerkeillä ei ole väliä. Ä ja A ovat kuitenkin eri kirjaimia.

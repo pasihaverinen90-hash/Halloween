@@ -3,14 +3,15 @@ import { normalizeAnswer, type Riddle, type RiddleKind } from '../games/arvoituk
 import { listKeys, parseCards, type ContentError } from './format';
 
 /*
- * content/kuva-arvoitukset.txt: CONFIG.arvoitukset.riddlesPerRound cards, half
- * of them multiple choice. Each card is a picture riddle (kuva) or an emoji
- * riddle (emojit).
+ * content/kuva-arvoitukset.txt: CONFIG.arvoitukset.riddlesPerRound cards for
+ * the tournament, plus any number marked "vain: freeplay" (Pasi 23.10.). Each
+ * card is a picture riddle (kuva) or an emoji riddle (emojit), open or
+ * multiple choice (Pasi 23.10.: all open now).
  */
 
 export type ArvoituksetContent = { ok: true; riddles: Riddle[] } | { ok: false; errors: ContentError[] };
 
-const KEYS = ['tyyppi', 'kuva', 'emojit', 'kysymys', 'vastaus', 'väärät'] as const;
+const KEYS = ['tyyppi', 'kuva', 'emojit', 'kysymys', 'vastaus', 'väärät', 'vain'] as const;
 const IMAGE_FILE = /^[a-z0-9][a-z0-9-]*\.(png|jpe?g|webp)$/;
 const MAX_QUESTION = 70;
 const MAX_OPTION = 30;
@@ -26,7 +27,7 @@ function splitList(value: string): string[] {
 export function parseArvoitukset(text: string): ArvoituksetContent {
   const { cards, errors } = parseCards(text);
   const riddles: Riddle[] = [];
-  const { riddlesPerRound, multipleChoiceCount } = CONFIG.arvoitukset;
+  const { riddlesPerRound } = CONFIG.arvoitukset;
 
   for (const card of cards) {
     const err = (line: number, message: string): void => {
@@ -44,8 +45,14 @@ export function parseArvoitukset(text: string): ArvoituksetContent {
     const kysymys = get('kysymys');
     const vastaus = get('vastaus');
     const vaarat = get('väärät');
+    const vain = get('vain');
     const at = card.line;
     let ok = true;
+
+    if (vain && vain.value.toLocaleLowerCase('fi-FI') !== 'freeplay') {
+      err(vain.line, `"vain: ${vain.value}" ei kelpaa. Kirjoita "vain: freeplay", jos arvoitus on vain freeplayssä, tai poista rivi.`);
+      ok = false;
+    }
 
     let kind: RiddleKind | null = null;
     if (!tyyppi) {
@@ -140,25 +147,26 @@ export function parseArvoitukset(text: string): ArvoituksetContent {
     }
 
     if (ok && kind && kysymys) {
-      riddles.push({ kind, image, emojis: emojit ? emojit.value.replace(/\s+/g, ' ') : null, question: kysymys.value, answers, wrongOptions });
+      riddles.push({
+        kind,
+        image,
+        emojis: emojit ? emojit.value.replace(/\s+/g, ' ') : null,
+        question: kysymys.value,
+        answers,
+        wrongOptions,
+        freeplayOnly: vain !== undefined,
+      });
     }
   }
 
+  const tournament = cards.filter((card) => !card.fields.has('vain')).length;
   if (cards.length === 0 && errors.length === 0) {
-    errors.push({ line: null, message: `Tiedostossa ei ole yhtään arvoitusta. Arvoituksia pitää olla tasan ${riddlesPerRound}.` });
-  } else if (cards.length !== riddlesPerRound) {
+    errors.push({ line: null, message: `Tiedostossa ei ole yhtään arvoitusta. Turnauksen arvoituksia pitää olla tasan ${riddlesPerRound}.` });
+  } else if (tournament !== riddlesPerRound) {
     errors.push({
       line: null,
-      message: `Arvoituksia pitää olla tasan ${riddlesPerRound}, nyt niitä on ${cards.length}. Jokainen arvoitus on oma korttinsa, ja korttien välissä on tyhjä rivi.`,
+      message: `Turnauksen arvoituksia (ilman riviä "vain: freeplay") pitää olla tasan ${riddlesPerRound}, nyt niitä on ${tournament}. Jokainen arvoitus on oma korttinsa, ja korttien välissä on tyhjä rivi.`,
     });
-  } else if (errors.length === 0) {
-    const multiple = riddles.filter((r) => r.kind === 'monivalinta').length;
-    if (multiple !== multipleChoiceCount) {
-      errors.push({
-        line: null,
-        message: `Monivalintoja pitää olla ${multipleChoiceCount} ja avoimia ${riddlesPerRound - multipleChoiceCount}, nyt monivalintoja on ${multiple}.`,
-      });
-    }
   }
 
   errors.sort((a, b) => (a.line ?? Infinity) - (b.line ?? Infinity));

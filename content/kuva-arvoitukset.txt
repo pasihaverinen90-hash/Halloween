@@ -1,10 +1,11 @@
 # KUVA-ARVOITUKSET
 #
-# Pelissä on tasan 10 arvoitusta tässä järjestyksessä. Jokainen arvoitus on oma
-# korttinsa, ja korttien välissä on yksi tyhjä rivi.
+# Turnauksessa pelataan tasan 11 arvoitusta tässä järjestyksessä. Freeplayssä
+# pelataan lisäksi ne, joissa on rivi "vain: freeplay". Jokainen arvoitus on
+# oma korttinsa, ja korttien välissä on yksi tyhjä rivi.
 #
-# tyyppi:   monivalinta (neljä vaihtoehtoa, vastata saa kerran) tai avoin
-#           (pelaaja kirjoittaa vastauksen). Kumpaakin pitää olla 5.
+# tyyppi:   avoin (pelaaja kirjoittaa vastauksen) tai monivalinta (neljä
+#           vaihtoehtoa, vastata saa kerran)
 # kuva:     kuvatiedoston nimi kansiossa public/assets, esimerkiksi arvoitus-kuu.png.
 #           Kuvan perään voi lisätä lyhyen tekstin plusmerkillä: arvoitus-hirvi.png + Ö
 # emojit:   emojit kuvan sijaan (arvoituksessa on joko kuva tai emojit)
@@ -12,61 +13,74 @@
 # vastaus:  oikea vastaus. Avoimeen arvoitukseen voi antaa useita hyväksyttyjä
 #           vastauksia puolipisteillä erotettuina: Psyko; Psycho
 # väärät:   vain monivalinnassa: kolme väärää vaihtoehtoa puolipisteillä erotettuina
+# vain:     "vain: freeplay", jos arvoitus on vain freeplayssä eikä turnauksessa
 #
-# Isoilla ja pienillä kirjaimilla, välilyönneillä ja väliviivoilla ei ole väliä
-# avoimen arvoituksen vastauksessa.
+# Isoilla ja pienillä kirjaimilla, välilyönneillä, väliviivoilla ja välimerkeillä
+# ei ole väliä avoimen arvoituksen vastauksessa.
 
-tyyppi: monivalinta
+tyyppi: avoin
+kuva: arvoitus-halloween.jpg
+kysymys: Mikä elokuva?
+vastaus: Halloween
+
+tyyppi: avoin
 kuva: arvoitus-ihmissusi.png
 kysymys: Mikä kauhuolento?
 vastaus: Ihmissusi
-väärät: Vampyyri; Susikoira; Metsänpeikko
-
-tyyppi: monivalinta
-emojit: 🦈🌊🏊
-kysymys: Mikä kauhuelokuva?
-vastaus: Tappajahai
-väärät: Uhrilampaat; Linnut; Alien
 
 tyyppi: avoin
-kuva: arvoitus-verikuu.png
-kysymys: Mikä sana? Sen voi nähdä taivaalla.
-vastaus: Verikuu
-
-tyyppi: avoin
-emojit: 👻🚫
+kuva: arvoitus-freddy.jpg
 kysymys: Mikä elokuva?
-vastaus: Haamujengi; Ghostbusters
-
-tyyppi: monivalinta
-kuva: arvoitus-silmamuna.png
-kysymys: Mikä sana?
-vastaus: Silmämuna
-väärät: Munakello; Silmälappu; Pääsiäismuna
+vastaus: Painajainen Elm Streetillä; Painajainen Elm Streetilla; A Nightmare on Elm Street; Nightmare on Elm Street; Painajainen
 
 tyyppi: avoin
-emojit: 🔪🚿
-kysymys: Mikä kauhuelokuva?
-vastaus: Psyko; Psycho
-
-tyyppi: avoin
-kuva: arvoitus-hirvi.png + Ö
-kysymys: Mikä kauhuolento?
-vastaus: Hirviö
-
-tyyppi: monivalinta
-emojit: 🏨🪓❄️
-kysymys: Mikä kauhuelokuva?
-vastaus: Hohto
-väärät: Manaaja; Painajainen Elm Streetillä; Halloween
+kuva: arvoitus-scream.jpg
+kysymys: Mikä elokuva?
+vastaus: Scream
 
 tyyppi: avoin
 kuva: arvoitus-kummitusjuna.png
 kysymys: Mikä sana? Sen löytää huvipuistosta.
 vastaus: Kummitusjuna
 
-tyyppi: monivalinta
-emojit: 🎈🤡
-kysymys: Mikä kauhuelokuva?
-vastaus: Se
-väärät: Saw; Scream; Manaaja
+tyyppi: avoin
+kuva: arvoitus-alien.jpg
+kysymys: Mikä elokuva?
+vastaus: Alien – kahdeksas matkustaja; Alien kahdeksas matkustaja; Alien; Kahdeksas matkustaja
+
+tyyppi: avoin
+kuva: arvoitus-ring.jpg
+kysymys: Mikä elokuva?
+vastaus: The Ring; Ring
+
+tyyppi: avoin
+kuva: arvoitus-hirvi.png + Ö
+kysymys: Mikä kauhuolento?
+vastaus: Hirviö
+
+tyyppi: avoin
+kuva: arvoitus-manaaja.jpg
+kysymys: Mikä elokuva?
+vastaus: Manaaja; The Exorcist; Exorcist
+
+tyyppi: avoin
+kuva: arvoitus-texas.jpg
+kysymys: Mikä elokuva?
+vastaus: Texasin moottorisahamurhat; Teksasin moottorisahamurhat; Texasin moottorisahamurhaaja; Teksasin moottorisahamurhaaja; The Texas Chain Saw Massacre; Texas Chain Saw Massacre; The Texas Chainsaw Massacre; Texas Chainsaw Massacre; Moottorisahamurhat; Moottorisahamurhaaja
+
+tyyppi: avoin
+kuva: arvoitus-nunna.jpg
+kysymys: Mikä elokuva?
+vastaus: Nunna; The Nun; Nun
+
+tyyppi: avoin
+kuva: arvoitus-hohto.jpg
+kysymys: Mikä elokuva?
+vastaus: Hohto; The Shining; Shining
+vain: freeplay
+
+tyyppi: avoin
+kuva: arvoitus-uhrilampaat.jpg
+kysymys: Mikä elokuva?
+vastaus: Uhrilampaat; The Silence of the Lambs; Silence of the Lambs
+vain: freeplay

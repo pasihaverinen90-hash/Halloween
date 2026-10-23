@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { isCorrectAnswer, LIMIT_MS, normalizeAnswer, optionOrder, restoreRound, riddlePoints, roundTotal, serializeRound, type Riddle } from './logic';
 
-const open: Riddle = { kind: 'avoin', image: null, emojis: '🔪🚿', question: 'Mikä kauhuelokuva?', answers: ['Psyko', 'Psycho'], wrongOptions: [] };
+const open: Riddle = { kind: 'avoin', image: null, emojis: '🔪🚿', question: 'Mikä kauhuelokuva?', answers: ['Psyko', 'Psycho'], wrongOptions: [], freeplayOnly: false };
 const choice: Riddle = {
   kind: 'monivalinta',
   image: { file: 'arvoitus-kuu.png', extras: [] },
@@ -9,6 +9,7 @@ const choice: Riddle = {
   question: 'Mikä sana?',
   answers: ['Verikuu'],
   wrongOptions: ['Kuunsirppi', 'Täysikuu', 'Uusikuu'],
+  freeplayOnly: false,
 };
 
 describe('points', () => {

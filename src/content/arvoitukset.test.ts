@@ -9,33 +9,45 @@ function errorsOf(text: string): string {
   return result.ok ? '' : result.errors.map((e) => e.message).join('\n');
 }
 
+const choice = `tyyppi: monivalinta
+emojit: 🦈🌊
+kysymys: Mikä kauhuelokuva?
+vastaus: Tappajahai
+väärät: Uhrilampaat; Linnut; Alien`;
+
 describe('parseArvoitukset', () => {
-  it('accepts the real content file: 10 riddles, half multiple choice', () => {
+  it('accepts the real content file: 11 open riddles in the tournament and 2 more in freeplay (Pasi 23.10.)', () => {
     const result = parseArvoitukset(real);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.riddles).toHaveLength(10);
-    expect(result.riddles.filter((r) => r.kind === 'monivalinta')).toHaveLength(5);
-    const hirvi = result.riddles.find((r) => r.image?.file === 'arvoitus-hirvi.png');
-    expect(hirvi?.image?.extras).toEqual(['Ö']);
-    expect(result.riddles.find((r) => r.emojis === '🔪🚿')?.answers).toEqual(['Psyko', 'Psycho']);
+    expect(result.riddles.filter((r) => !r.freeplayOnly)).toHaveLength(11);
+    expect(result.riddles.filter((r) => r.freeplayOnly).map((r) => r.answers[0])).toEqual(['Hohto', 'Uhrilampaat']);
+    expect(result.riddles.every((r) => r.kind === 'avoin')).toBe(true);
+    expect(result.riddles.find((r) => r.image?.file === 'arvoitus-hirvi.png')?.image?.extras).toEqual(['Ö']);
+    const texas = result.riddles.find((r) => r.image?.file === 'arvoitus-texas.jpg');
+    expect(texas?.answers).toEqual(expect.arrayContaining(['Texasin moottorisahamurhat', 'Teksasin moottorisahamurhaaja', 'Texasin moottorisahamurhaaja']));
   });
 
-  it('requires 10 riddles and a 5 + 5 split', () => {
+  it('requires 11 tournament riddles; freeplay ones come on top', () => {
     const cards = real.split(/\n\s*\n/).filter((c) => c.trim().startsWith('tyyppi:'));
-    expect(errorsOf(cards.slice(0, 9).join('\n\n'))).toMatch(/tasan 10, nyt niitä on 9/);
-    expect(errorsOf(real.replace('tyyppi: monivalinta\nkuva: arvoitus-ihmissusi.png', 'tyyppi: avoin\nkuva: arvoitus-ihmissusi.png').replace('väärät: Vampyyri; Susikoira; Metsänpeikko', ''))).toMatch(
-      /Monivalintoja pitää olla 5/,
-    );
+    expect(errorsOf(cards.slice(0, 10).join('\n\n'))).toMatch(/tasan 11, nyt niitä on 10/);
+    expect(errorsOf(cards.slice(0, 11).join('\n\n'))).toBe('');
+    expect(errorsOf(`${real}\n\n${choice}\nvain: freeplay`)).toBe('');
+  });
+
+  it('still understands multiple choice', () => {
+    const result = parseArvoitukset(`${real}\n\n${choice}\nvain: freeplay`);
+    expect(result.ok && result.riddles[result.riddles.length - 1]).toMatchObject({ kind: 'monivalinta', wrongOptions: ['Uhrilampaat', 'Linnut', 'Alien'], freeplayOnly: true });
   });
 
   it('explains mistakes in Finnish', () => {
     expect(errorsOf(real.replace('tyyppi: avoin', 'tyyppi: vapaa'))).toMatch(/tyyppi "vapaa" ei kelpaa/);
-    expect(errorsOf(real.replace('väärät: Uhrilampaat; Linnut; Alien', 'väärät: Uhrilampaat; Linnut'))).toMatch(/tasan 3 väärää/);
-    expect(errorsOf(real.replace('väärät: Uhrilampaat; Linnut; Alien', 'väärät: Uhrilampaat; Linnut; Tappajahai'))).toMatch(/sama/);
-    expect(errorsOf(real.replace('kuva: arvoitus-verikuu.png', 'kuva: Veri Kuu.png'))).toMatch(/kuvan nimi/);
-    expect(errorsOf(real.replace('emojit: 🔪🚿', 'emojit: 🔪🚿\nkuva: arvoitus-x.png'))).toMatch(/sekä "kuva" että "emojit"/);
-    expect(errorsOf(real.replace('kysymys: Mikä elokuva?\n', ''))).toMatch(/puuttuu kohta "kysymys"/);
-    expect(errorsOf(real.replace('vastaus: Psyko; Psycho', 'vastaus: Psyko; Psycho\nväärät: A; B; C'))).toMatch(/kuuluu vain monivalintaan/);
+    expect(errorsOf(`${real}\n\n${choice.replace('Linnut; Alien', 'Linnut')}\nvain: freeplay`)).toMatch(/tasan 3 väärää/);
+    expect(errorsOf(`${real}\n\n${choice.replace('Alien', 'Tappajahai')}\nvain: freeplay`)).toMatch(/sama/);
+    expect(errorsOf(real.replace('kuva: arvoitus-halloween.jpg', 'kuva: Halloween Kuva.png'))).toMatch(/kuvan nimi/);
+    expect(errorsOf(real.replace('kuva: arvoitus-halloween.jpg', 'kuva: arvoitus-halloween.jpg\nemojit: 🔪'))).toMatch(/sekä "kuva" että "emojit"/);
+    expect(errorsOf(real.replace('kysymys: Mikä kauhuolento?\n', ''))).toMatch(/puuttuu kohta "kysymys"/);
+    expect(errorsOf(real.replace('vastaus: Halloween', 'vastaus: Halloween\nväärät: A; B; C'))).toMatch(/kuuluu vain monivalintaan/);
+    expect(errorsOf(real.replace('Shining\nvain: freeplay', 'Shining\nvain: turnaus'))).toMatch(/"vain: turnaus" ei kelpaa/);
   });
 });

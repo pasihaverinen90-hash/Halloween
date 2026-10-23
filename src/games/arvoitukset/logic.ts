@@ -19,6 +19,8 @@ export interface Riddle {
   answers: string[];
   /** Multiple choice: the three wrong options. */
   wrongOptions: string[];
+  /** "vain: freeplay": played in freeplay only (Pasi 23.10.). */
+  freeplayOnly: boolean;
 }
 
 export type Outcome = 'correct' | 'wrong' | 'timeout';

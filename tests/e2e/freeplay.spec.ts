@@ -152,3 +152,33 @@ test('freeplay: täydelle top-listalle ei pääse heikommalla tuloksella, eikä 
   await waitForScene(page, 'Menu');
   await expectNoRuntimeErrors(page);
 });
+
+test('freeplay: loputon lentopeli jatkuu maalin ohi, ja pisteillä ei ole ylärajaa', async ({ page }) => {
+  await openGame(page);
+  await openFreeplay(page);
+  await startFreeplayGame(page, 'lentopeli', 'Lentopeli');
+  const start = await sceneState(page, 'Lentopeli');
+  expect(start.endless).toBe(true);
+  await press(page, 'Space');
+  // Far past the tournament's finish (about 18 500), straight into an inquisitor
+  const placed = await page.evaluate(() => {
+    const scene = (window.__peli!.game as any).scene.getScene('Lentopeli');
+    const gate = scene.course.find((c: any) => c.x > 30000 && c.pattern === 'gate');
+    scene.debugPlace(gate.x - 10, gate.blocks[1].top + 40);
+    return gate.x;
+  });
+  expect(placed).toBeLessThan(start.goal);
+  await waitForScene(page, 'FreeplayResult', 120_000);
+  const result = await sceneState(page, 'FreeplayResult');
+  expect(result).toMatchObject({ gameId: 'lentopeli', place: 1 });
+  expect(result.score).toBeGreaterThan(15000);
+  await expectNoRuntimeErrors(page);
+});
+
+test('freeplay: kuva-arvoituksissa on myös freeplayn omat arvoitukset (Pasi 23.10.)', async ({ page }) => {
+  await openGame(page);
+  await openFreeplay(page);
+  await startFreeplayGame(page, 'arvoitukset', 'Arvoitukset');
+  expect(await sceneState(page, 'Arvoitukset')).toMatchObject({ index: 0, count: 13 });
+  await expectNoRuntimeErrors(page);
+});

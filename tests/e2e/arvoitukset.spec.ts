@@ -31,8 +31,9 @@ test('arvoitukset: pisteet, väärät vastaukset, ei taukoa ja aikaraja', async 
   await startRiddles(page, 'Arvaaja');
   let total = 0;
 
+  // Pasi 23.10.: 11 avointa arvoitusta; elokuvien pystykuvat ovat vasemmalla
   // 1: oikea vastaus nopeasti → täydet tai lähes täydet pisteet (täydet 3 sekunnin sisällä)
-  expect((await waitRiddle(page, 0)).kind).toBe('monivalinta');
+  expect(await waitRiddle(page, 0)).toMatchObject({ count: 11, kind: 'avoin', layout: 'side', answers: expect.arrayContaining(['Halloween']) });
   await answerRiddle(page, 'correct');
   let state = await sceneState(page, 'Arvoitukset');
   expect(state.outcome).toBe('correct');
@@ -41,15 +42,8 @@ test('arvoitukset: pisteet, väärät vastaukset, ei taukoa ja aikaraja', async 
   total = state.total;
   await press(page, 'Enter');
 
-  // 2: väärä monivalinta → 0
-  expect((await waitRiddle(page, 1)).kind).toBe('monivalinta');
-  await answerRiddle(page, 'wrong');
-  state = await sceneState(page, 'Arvoitukset');
-  expect(state).toMatchObject({ outcome: 'wrong', total });
-  await press(page, 'Enter');
-
-  // 3: avoin, ensin väärin (−20) ja sitten oikein
-  expect((await waitRiddle(page, 2)).kind).toBe('avoin');
+  // 2: sana-arvoitus keskellä, ensin väärin (−20) ja sitten oikein
+  expect(await waitRiddle(page, 1)).toMatchObject({ kind: 'avoin', layout: 'wide' });
   await answerRiddle(page, 'wrong');
   state = await sceneState(page, 'Arvoitukset');
   expect(state).toMatchObject({ outcome: 'correct', wrong: 1 });
@@ -58,8 +52,8 @@ test('arvoitukset: pisteet, väärät vastaukset, ei taukoa ja aikaraja', async 
   total = state.total;
   await press(page, 'Enter');
 
-  // 4: Esc ei pysäytä aikaa (Pasi 23.10.), ja aika loppuu → 0
-  await waitRiddle(page, 3);
+  // 3: Esc ei pysäytä aikaa (Pasi 23.10.), ja aika loppuu → 0
+  await waitRiddle(page, 2);
   await press(page, 'Escape', 300);
   expect(await sceneState(page, 'GameHost')).toMatchObject({ state: 'playing' });
   const afterEsc = (await sceneState(page, 'Arvoitukset')).elapsedMs;
@@ -70,8 +64,8 @@ test('arvoitukset: pisteet, väärät vastaukset, ei taukoa ja aikaraja', async 
   expect(state).toMatchObject({ outcome: 'timeout', total });
   await press(page, 'Enter');
 
-  // 5–10 oikein
-  for (let index = 4; index < 10; index++) {
+  // 4–11 oikein
+  for (let index = 3; index < 11; index++) {
     await waitRiddle(page, index);
     await answerRiddle(page, 'correct');
     await press(page, 'Enter');
@@ -79,7 +73,7 @@ test('arvoitukset: pisteet, väärät vastaukset, ei taukoa ja aikaraja', async 
   await waitForScene(page, 'AttemptResult');
   const result = await sceneState(page, 'AttemptResult');
   expect(result).toMatchObject({ kind: 'puzzle', isFinal: true });
-  expect(result.score).toBeGreaterThan(total + 6 * 30 - 1);
+  expect(result.score).toBeGreaterThan(total + 8 * 30 - 1);
   expect((await savedData(page)).players[0].games.arvoitukset).toMatchObject({ attempts: [result.score], finished: true });
   await expectNoRuntimeErrors(page);
 });

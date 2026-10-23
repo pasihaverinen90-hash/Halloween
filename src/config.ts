@@ -77,10 +77,11 @@ export const CONFIG = {
 
   /** 2. Kuva-arvoitukset */
   arvoitukset: {
-    /** Riddles per round; content/kuva-arvoitukset.txt must contain exactly this many. */
-    riddlesPerRound: 10,
-    /** How many of them are multiple choice (the rest are open answers). CLAUDE.md: half. */
-    multipleChoiceCount: 5,
+    /**
+     * Riddles of the tournament; content/kuva-arvoitukset.txt must contain exactly this many
+     * (plus any "vain: freeplay" ones). Pasi 23.10.: 11 (8 films + 3 words), all open.
+     */
+    riddlesPerRound: 11,
     /** Seconds per riddle (Pasi 20.10.: 12, shorter than before). */
     secondsPerRiddle: 12,
     /** Points for a correct answer within the first fullPointsSeconds … */

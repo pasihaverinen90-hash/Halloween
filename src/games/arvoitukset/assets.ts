@@ -68,18 +68,6 @@ export const PICTURES: AssetSpec[] = [
     ['🧍', '🐺'],
   ),
   picture(
-    'arvoitus-verikuu.png',
-    'Kuva-arvoitus: veripisara + kuu',
-    'Kuva-arvoitus, jonka vastaus on VERIKUU: vasemmalla iso punainen veripisara, keskellä plusmerkki ja oikealla täysikuu. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia.',
-    ['🩸', '🌕'],
-  ),
-  picture(
-    'arvoitus-silmamuna.png',
-    'Kuva-arvoitus: silmä + kananmuna',
-    'Kuva-arvoitus, jonka vastaus on SILMÄMUNA: vasemmalla ihmisen silmä, keskellä plusmerkki ja oikealla valkoinen kananmuna. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia.',
-    ['👁️', '🥚'],
-  ),
-  picture(
     'arvoitus-hirvi.png',
     'Kuva-arvoitus: hirvi (peli lisää perään + Ö)',
     'Kuva-arvoitus, jonka vastaus on HIRVIÖ: komea hirvi isoine sarvineen sivulta katsottuna. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia, sillä peli lisää kuvan perään itse "+ Ö".',
@@ -95,7 +83,7 @@ export const PICTURES: AssetSpec[] = [
 ];
 
 /** Emojis drawn by the placeholders (their font is loaded before the game starts). */
-export const PICTURE_EMOJIS = '🧍🐺🩸🌕👁️🥚🫎👻🚂🔮';
+export const PICTURE_EMOJIS = '🧍🐺🫎👻🚂🔮';
 
 function background(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   const wall = ctx.createLinearGradient(0, 0, 0, h);
