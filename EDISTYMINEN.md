@@ -253,7 +253,8 @@ Pasin palaute 22.10.: katapultin varsi oli väärällä puolella, kentät olivat
 Pasin palaute 23.10. (ks. "Pasin kanssa sovitut asiat"): tehty samassa rupeamassa. Testit varmistavat, että jokaisen −1:n saa samalla laukauksella, joka kaataa luurangon, ja että jokaiseen −3:een ja laatikkoon ylettyy yhdellä laukauksella.
 
 Kesken:
-- Pasi testaa kurpitsalingon uudelleen: aseiden määrät, laatikot, −1- ja −3-symbolit, ohjautuva kurpitsa ja pisteet.
+- Pasi testaa hiomislistan muutokset: lyhyet ohjeet, ei taukoa, arvoitusten 3 s, kurpitsalingon −2/−5 ja Enter kenttien välissä.
+- Pasi päättää, lyhennetäänkö iltaa (ks. Aikataulu → Illan kesto 23.10.).
 
 Seuraavaksi:
 - Pasin palautteen mukaiset korjaukset, sitten vaihe 8, viimeistely (koko ilta kolmella testipelaajalla).
@@ -267,14 +268,14 @@ Pasi 23.10.: kun kurpitsalinko on testattu, aloitetaan konseptin, pelien nimien 
 4. Pienet säädöt peli kerrallaan: vaikeus, tekstit, kysymykset ja sanat, äänet ja kuvat.
 5. Viimeistely: koko ilta kolmella testipelaajalla ja illan keston tarkistus.
 
-#### Hiomislista (Pasi 23.10., kerätään ensin, ei vielä tehty)
+#### Hiomislista (Pasi 23.10.), tehty 23.10.
 
-Pasi: "älä vielä koodaa, kerätään kommentteja eri peleistä". Tehdään vasta, kun Pasi antaa luvan.
+Pasi keräsi ensin kommentit ja antoi sitten luvan korjata kaikki. Kaikki alla oleva on tehty ja testattu.
 - **Kurpitsalinko:** kentän lopun ruudussa ei näytetä laukausten määrää. Tilalle tulee yleinen "pääsit läpi" -teksti, ja seuraavaan kenttään siirrytään Enterillä.
 - **Kurpitsalinko:** symbolit muuttuvat: −1 → −2 (helppo paikka) ja −3 → −5 (hankala paikka). Niistä pitää olla kunnolla apua.
 - **Kaikki pelit:** ohjeruutujen tekstiä vähennetään merkittävästi. Pisteistä kerrotaan vain lyhyesti, mistä niitä saa (esim. "ole nopea", "pääse pitkälle", "tuhotuista vihollisista ja kynttilöistä saa lisäpisteitä"). Laskentakaavoja ei kerrota. Tämä poikkeaa CLAUDE.md:n kohdasta "ohjeessa kerrotaan näppäimet, säännöt ja pisteytys", ja Pasi päätti niin.
 - **Kuva-arvoitukset:** täydet pisteet saa 3 sekunnin ajan (ennen 5), ja sitten pisteet alkavat laskea.
-- **Esc-tauko poistetaan kaikista peleistä** (Pasi valitsi, ettei taukoa ole missään pelissä), jotta kukaan ei voi pysäyttää peliä ja miettiä rauhassa. Tämä poikkeaa CLAUDE.md:n kohdasta "Esc pysäyttää pelin taukotilaan". Myös automaattinen tauko, kun ikkuna menettää fokuksen, poistetaan, ettei taukoa saa sitä kautta (Claude Coden päätös). Jos peli jumittuu, Pasi antaa sen korjaustilassa uudelleen.
+- **Esc-tauko poistetaan kaikista peleistä** (Pasi valitsi, ettei taukoa ole missään pelissä), jotta kukaan ei voi pysäyttää peliä ja miettiä rauhassa. Tämä poikkeaa CLAUDE.md:n kohdasta "Esc pysäyttää pelin taukotilaan". Myös automaattinen tauko, kun ikkuna menettää fokuksen, poistettiin, ettei taukoa saa sitä kautta (Claude Coden päätös). Taukonäkymä on poistettu kokonaan. Jos välilehti vaihdetaan tai selain pienennetään, selain itse pysäyttää pelin, eikä sitä voi estää; koko näytön tilassa se näkyy kaikille. Jos peli jumittuu, Pasi antaa sen korjaustilassa uudelleen.
 - **Ohjeiden lyhennys:** Pasi antoi luvan tehdä suoraan esimerkin tyyliin (tavoite yhdellä lauseella, näppäimet, 2–3 lyhyttä sääntöä ja yksi pisteiden rivi). Pasi katsoo tuloksen pelissä.
 
 ## Aikataulu
@@ -282,6 +283,22 @@ Pasi: "älä vielä koodaa, kerätään kommentteja eri peleistä". Tehdään va
 Iltaan on 10 päivää (21.10.). Jäljellä on tasohyppelyn hiominen, salasanatoive, kurpitsalinko ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
 
 **Illan kesto:** kaikki pelaavat samalla koneella vuorotellen. Arvio yhden pelaajan koko vuorosta on 45–70 minuuttia (räiskintä enintään noin 12 minuuttia, ristikko 10, tasohyppely 3 yritystä × enintään noin 5 minuuttia). Kahdeksalla pelaajalla vuorot kestävät siis useita tunteja. Pasille kerrottu 20.10.
+
+**Illan kesto, arvio 23.10.** (laskettu peliasetuksista ja kurpitsalingon simuloiduista lentoajoista; selaintestit hyppäävät pelien yli apureilla, joten niistä ei voi kellottaa oikeaa pelaamista). Luvut ovat minuutteja yhdelle pelaajalle, ja ohjeiden lukeminen ja yritysten väliruudut ovat mukana:
+
+| Peli | Täydellinen | Taitava | Keskiverto | Aloittelija |
+|---|---|---|---|---|
+| Hirsipuu | 2,5 | 3 | 4,5 | 5,5 |
+| Kuva-arvoitukset | 2 | 2 | 2,5 | 3 |
+| Lentopeli | 2 | 3,5 | 3,5 | 2,5 |
+| Räiskintä | 5 | 14 | 8 | 4,5 |
+| Ristikko | 4 | 5,5 | 9 | 10,5 |
+| Tasohyppely | 6,5 | 8 | 12 | 9 |
+| Kurpitsalinko | 6 | 12 | 19 | 27 |
+| Aloitus ja kiitos | 1 | 1 | 1,5 | 2 |
+| **Yhteensä** | **noin 29** | **noin 49** | **noin 60** | **noin 64** |
+
+Täydellinen = 1000 pistettä ensimmäisellä yrityksellä, jolloin muut yritykset jäävät väliin. Räiskinnässä 1000 vaatii kaikkien vihollisten tuhoamisen, joten käytännössä taitavakin pelaa kolme täyttä yritystä (3 × noin 4,5 min). Kurpitsalinko on hitain, koska jokainen laukaus vie tähtäyksineen noin 8–10 s ja huti lisää laukauksia. Kahdeksalla pelaajalla vuorot kestävät yhteensä noin 7–8 tuntia.
 
 ## Tekninen muistio Claude Codelle
 
