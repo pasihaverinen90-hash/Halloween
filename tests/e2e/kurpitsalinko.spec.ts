@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createPlayer, expectNoRuntimeErrors, openGame, press, savedData, sceneState, selectGame, waitForScene, waitForState } from './helpers';
+import { createPlayer, expectNoRuntimeErrors, nextCatapultLevel, openGame, press, savedData, sceneState, selectGame, waitForScene, waitForState } from './helpers';
 
 /** Run code against the catapult scene (test helpers and its state). */
 async function catapult<T>(page: Page, fn: string): Promise<T> {
@@ -95,7 +95,13 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja k
       expect((await sceneState(page, 'Kurpitsalinko')).ammo.cluster).toBe(clustersBefore + 1);
     }
     await catapult(page, 'scene.debugClearLevel(scene.battle.skeletonsLeft() + 10)');
-    await waitForState(page, 'Kurpitsalinko', (s) => s.level > level || s.phase === 'won', 60_000);
+    if (level === 1) {
+      // Pasi 23.10.: the next level waits for Enter
+      await waitForState(page, 'Kurpitsalinko', (s) => s.phase === 'levelDone', 60_000);
+      await page.waitForTimeout(2500);
+      expect(await sceneState(page, 'Kurpitsalinko')).toMatchObject({ level: 1, phase: 'levelDone' });
+    }
+    await nextCatapultLevel(page, level);
   }
   const first = await sceneState(page, 'Kurpitsalinko');
   expect(first.levelPoints).toHaveLength(5);
@@ -113,7 +119,7 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja k
   for (let level = 0; level < 5; level++) {
     await waitForState(page, 'Kurpitsalinko', (s) => s.level === level && s.phase !== 'levelDone', 60_000);
     await catapult(page, 'scene.debugClearLevel(scene.battle.skeletonsLeft())');
-    await waitForState(page, 'Kurpitsalinko', (s) => s.level > level || s.phase === 'won', 60_000);
+    await nextCatapultLevel(page, level);
   }
   await waitForScene(page, 'AttemptResult', 120_000);
   result = await sceneState(page, 'AttemptResult');

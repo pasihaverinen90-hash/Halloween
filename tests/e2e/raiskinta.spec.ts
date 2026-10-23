@@ -15,7 +15,7 @@ async function startAttempt(page: Page): Promise<void> {
   await waitForScene(page, 'Raiskinta');
 }
 
-test('räiskintä: liikkuminen, tauko, boosti, liitonarkku, malja, pyhä vesi, Paholainen ja kolme yritystä', async ({ page }) => {
+test('räiskintä: liikkuminen, ei taukoa, boosti, liitonarkku, malja, pyhä vesi, Paholainen ja kolme yritystä', async ({ page }) => {
   test.setTimeout(420_000);
   await openGame(page);
   await createPlayer(page, 'Ampuja');
@@ -38,14 +38,11 @@ test('räiskintä: liikkuminen, tauko, boosti, liitonarkku, malja, pyhä vesi, P
   await waitForState(page, 'Raiskinta', (s) => s.popeY < 540);
   await page.keyboard.up('ArrowUp');
 
-  // Tauko pysäyttää ajan
+  // Esc ei pysäytä aikaa (Pasi 23.10.: taukoa ei ole)
   await waitForState(page, 'Raiskinta', (s) => s.time > 1);
   await press(page, 'Escape', 400);
-  const paused = (await sceneState(page, 'Raiskinta')).time;
-  await page.waitForTimeout(800);
-  expect((await sceneState(page, 'Raiskinta')).time).toBe(paused);
-  await press(page, 'Enter', 400);
-  await waitForState(page, 'Raiskinta', (s) => s.time > paused);
+  const afterEsc = (await sceneState(page, 'Raiskinta')).time;
+  await waitForState(page, 'Raiskinta', (s) => s.time > afterEsc);
 
   // Pudonnut boosti kerätään koskettamalla. Testin ajaksi paavi ei ammu itse, ja suojakehä pitää hänet hengissä.
   await shooter(page, 'scene.boosts.shield = 999; scene.fireCooldown = 99999;');

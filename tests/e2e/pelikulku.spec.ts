@@ -189,7 +189,7 @@ test('kaksi pelaajaa pelaavat illan läpi hirsipuulla', async ({ page }) => {
   await expectNoRuntimeErrors(page);
 });
 
-test('tauko pysäyttää hirsipuun, eikä mitään kulu tai katoa', async ({ page }) => {
+test('peliä ei voi pysäyttää Escillä eikä ikkunasta poistumalla (Pasi 23.10.)', async ({ page }) => {
   await openGame(page);
   await createPlayer(page, 'Taukoilija');
   await press(page, 'Enter');
@@ -200,21 +200,19 @@ test('tauko pysäyttää hirsipuun, eikä mitään kulu tai katoa', async ({ pag
   const before = await sceneState(page, 'Hirsipuu');
 
   await press(page, 'Escape', 400);
-  expect(await sceneState(page, 'GameHost')).toMatchObject({ state: 'paused' });
-  await waitForScene(page, 'Pause');
-  await typeText(page, 'abc', 80);
-  expect(await sceneState(page, 'Hirsipuu')).toEqual(before);
-
-  await press(page, 'Enter', 400);
+  await page.evaluate(() => {
+    const game = window.__peli!.game as any;
+    game.events.emit('blur');
+    game.events.emit('hidden');
+    game.events.emit('visible');
+    game.events.emit('focus');
+  });
+  await page.waitForTimeout(400);
   expect(await sceneState(page, 'GameHost')).toMatchObject({ state: 'playing' });
-  await waitForScene(page, 'Hirsipuu'); // the game scene resumes on the next frame
+  expect(await activeScenes(page)).toContain('Hirsipuu');
+  expect(await activeScenes(page)).not.toContain('Pause');
   await typeText(page, 'w');
   await waitForState(page, 'Hirsipuu', (s) => s.wrong.length > before.wrong.length);
   expect((await sceneState(page, 'Hirsipuu')).wrong).toEqual([...before.wrong, 'W']);
-
-  // Esc again pauses, Esc resumes
-  await press(page, 'Escape', 400);
-  await press(page, 'Escape', 400);
-  expect(await sceneState(page, 'GameHost')).toMatchObject({ state: 'playing' });
   await expectNoRuntimeErrors(page);
 });

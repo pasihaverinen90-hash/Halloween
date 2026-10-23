@@ -29,11 +29,11 @@ async function waitRiddle(page: Page, index: number): Promise<any> {
   return sceneState(page, 'Arvoitukset');
 }
 
-test('arvoitukset: pisteet, väärät vastaukset, tauko ja aikaraja', async ({ page }) => {
+test('arvoitukset: pisteet, väärät vastaukset, ei taukoa ja aikaraja', async ({ page }) => {
   await startRiddles(page, 'Arvaaja');
   let total = 0;
 
-  // 1: oikea vastaus nopeasti → täydet tai lähes täydet pisteet (täydet 5 sekunnin sisällä)
+  // 1: oikea vastaus nopeasti → täydet tai lähes täydet pisteet (täydet 3 sekunnin sisällä)
   expect((await waitRiddle(page, 0)).kind).toBe('monivalinta');
   await answerRiddle(page, 'correct');
   let state = await sceneState(page, 'Arvoitukset');
@@ -60,14 +60,12 @@ test('arvoitukset: pisteet, väärät vastaukset, tauko ja aikaraja', async ({ p
   total = state.total;
   await press(page, 'Enter');
 
-  // 4: tauko pysäyttää ajan, ja aika loppuu → 0
+  // 4: Esc ei pysäytä aikaa (Pasi 23.10.), ja aika loppuu → 0
   await waitRiddle(page, 3);
   await press(page, 'Escape', 300);
-  expect(await sceneState(page, 'GameHost')).toMatchObject({ state: 'paused' });
-  const pausedAt = (await sceneState(page, 'Arvoitukset')).elapsedMs;
-  await page.waitForTimeout(1500);
-  expect((await sceneState(page, 'Arvoitukset')).elapsedMs).toBe(pausedAt);
-  await press(page, 'Escape', 300);
+  expect(await sceneState(page, 'GameHost')).toMatchObject({ state: 'playing' });
+  const afterEsc = (await sceneState(page, 'Arvoitukset')).elapsedMs;
+  await waitForState(page, 'Arvoitukset', (s) => s.elapsedMs > afterEsc || s.phase === 'done');
   await typeText(page, 'en tiedä'); // not submitted
   await waitForState(page, 'Arvoitukset', (s) => s.phase === 'done', 180_000);
   state = await sceneState(page, 'Arvoitukset');

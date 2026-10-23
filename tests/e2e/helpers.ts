@@ -279,10 +279,24 @@ export async function playCatapultQuickly(page: Page): Promise<number> {
       const scene = (window.__peli!.game as any).scene.getScene('Kurpitsalinko');
       scene.debugClearLevel(scene.battle.skeletonsLeft());
     });
-    await waitForState(page, 'Kurpitsalinko', (s) => s.level > level || s.phase === 'won', 60_000);
+    await nextCatapultLevel(page, level);
   }
   await waitForScene(page, 'AttemptResult', 120_000);
   return (await sceneState(page, 'AttemptResult')).score as number;
+}
+
+/**
+ * Catapult: after a level is cleared, wait for "Kenttä läpäisty!" and press Enter
+ * until the next level starts (Pasi 23.10.). The last level ends by itself.
+ */
+export async function nextCatapultLevel(page: Page, level: number): Promise<void> {
+  await waitForState(page, 'Kurpitsalinko', (s) => s.level > level || s.phase === 'levelDone' || s.phase === 'won', 60_000);
+  for (let i = 0; i < 80; i++) {
+    const s = await sceneState(page, 'Kurpitsalinko');
+    if (!s || s.level > level || s.phase === 'won') return;
+    await press(page, 'Enter', 250);
+  }
+  throw new Error(`Kurpitsalingon kenttä ${level + 1} ei vaihtunut Enterillä`);
 }
 
 /** Crossword: from the instruction screen, let the time run out at once. Returns the score. */

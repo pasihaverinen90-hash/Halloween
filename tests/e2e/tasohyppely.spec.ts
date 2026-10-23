@@ -15,7 +15,7 @@ async function startAttempt(page: Page): Promise<void> {
   await waitForScene(page, 'Tasohyppely');
 }
 
-test('tasohyppely: liikkuminen, ruoska, tauko, kynttilä ja kolikko, zombi, kuoppa, esineet, kauppa, jatkaminen kentän alusta ja päänoita', async ({ page }) => {
+test('tasohyppely: liikkuminen, ruoska, ei taukoa, kynttilä ja kolikko, zombi, kuoppa, esineet, kauppa, jatkaminen kentän alusta ja päänoita', async ({ page }) => {
   test.setTimeout(480_000);
   await openGame(page);
   await createPlayer(page, 'Metsästäjä');
@@ -46,13 +46,10 @@ test('tasohyppely: liikkuminen, ruoska, tauko, kynttilä ja kolikko, zombi, kuop
   await press(page, 'x', 50);
   await waitForState(page, 'Tasohyppely', (s) => s.lashing === 'side');
 
-  // Tauko pysäyttää kentän ajan
+  // Esc ei pysäytä kentän aikaa (Pasi 23.10.: taukoa ei ole)
   await press(page, 'Escape', 400);
-  const paused = (await sceneState(page, 'Tasohyppely')).time;
-  await page.waitForTimeout(800);
-  expect((await sceneState(page, 'Tasohyppely')).time).toBe(paused);
-  await press(page, 'Enter', 400);
-  await waitForState(page, 'Tasohyppely', (s) => s.time > paused);
+  const afterEsc = (await sceneState(page, 'Tasohyppely')).time;
+  await waitForState(page, 'Tasohyppely', (s) => s.time > afterEsc);
 
   // Kynttilä: ruoska sammuttaa sen, ja siitä saa pisteitä ja kolikon (alun lyönti on voinut jo osua yhteen)
   const candlesBefore = (await sceneState(page, 'Tasohyppely')).candles;
