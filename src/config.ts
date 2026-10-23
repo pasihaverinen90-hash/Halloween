@@ -108,6 +108,14 @@ export const CONFIG = {
     maxSpeed: 460,
     /** Distance after the easy part over which speed, openings and obstacles reach their hardest. */
     rampDistance: 20000,
+    /**
+     * Freeplay's endless flight (Pasi 23.10.): no finish, and after the hardest
+     * point the speed keeps growing by this much (px/s) per pixel flown, up to
+     * endlessMaxSpeed. The course is endlessSeconds of flight long.
+     */
+    endlessSpeedGrowth: 0.004,
+    endlessMaxSpeed: 900,
+    endlessSeconds: 420,
     /** Speed builds up again after a crash (px/s²). */
     acceleration: 260,
     /** Gravity (px/s²), the upward kick of one Space press (px/s) and the fastest fall (px/s). */

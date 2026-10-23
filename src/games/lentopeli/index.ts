@@ -20,6 +20,12 @@ const lentopeli: GameDefinition = {
     rules: [`Musta kissa on lisäelämä. Kissoja voi olla enintään ${maxCats}.`, 'Törmäys vie kissan. Ilman kissaa yritys päättyy.'],
     scoring: ['Pääse mahdollisimman pitkälle. Maali antaa täydet pisteet.'],
   },
+  // Pasi 23.10.: in freeplay the flight goes on until the witch falls, faster and faster.
+  freeplayInstructions: {
+    goal: 'Lennätä noita esteiden ohi niin pitkälle kuin pääset. Maalia ei ole, ja vauhti kasvaa koko ajan.',
+    scoring: ['Pisteet tulevat lennetystä matkasta.'],
+  },
+  freeplayUncapped: true,
   preview: PREVIEW,
   assets: ASSETS,
 };

@@ -82,7 +82,12 @@ export class HighscoresScene extends Phaser.Scene {
     } else {
       this.layer.add(
         this.add
-          .text(W / 2, TABLE_TOP + 10 * 40 + 22, `Pisteitä enintään ${(CONFIG.maxScore * CONFIG.freeplay.scale).toLocaleString('fi-FI')}`, { ...TEXT.small })
+          .text(
+            W / 2,
+            TABLE_TOP + 10 * 40 + 22,
+            game.freeplayUncapped ? 'Ei ylärajaa' : `Pisteitä enintään ${(CONFIG.maxScore * CONFIG.freeplay.scale).toLocaleString('fi-FI')}`,
+            { ...TEXT.small },
+          )
           .setOrigin(0.5),
       );
     }

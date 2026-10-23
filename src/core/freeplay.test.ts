@@ -24,6 +24,8 @@ describe('freeplay', () => {
     expect(freeplayScore(-5)).toBe(0);
     expect(freeplayScore(2000)).toBe(10000);
     expect(freeplayScore(Number.NaN)).toBe(0);
+    // The endless flight has no upper limit
+    expect(freeplayScore(2345.67, true)).toBe(23457);
   });
 
   it('is closed at first and stays open once opened', () => {

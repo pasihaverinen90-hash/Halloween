@@ -101,6 +101,10 @@ export interface GameDefinition {
   /** The game scene class. Receives GameSceneData in init()/create(). */
   sceneClass: new () => Phaser.Scene;
   instructions: GameInstructions;
+  /** Freeplay's own goal, rules or scoring when the game plays differently there (Pasi 23.10.: the endless flight). */
+  freeplayInstructions?: Partial<Pick<GameInstructions, 'goal' | 'rules' | 'scoring'>>;
+  /** Freeplay points have no upper limit (the endless flight): the score may go past 1000 before the ×10. */
+  freeplayUncapped?: boolean;
   /** Attempts when not the usual for its kind (CONFIG.attempts), e.g. the platformer's 5 (Pasi 21.10.). */
   attempts?: number;
   /** A line for the "Yritys 2/5" screen from what the previous attempt handed on (e.g. where it continues). */

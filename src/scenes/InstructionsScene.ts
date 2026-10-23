@@ -109,11 +109,12 @@ export class InstructionsScene extends Phaser.Scene {
   /** Keys and scoring on the left; the font shrinks if a game's texts would not fit. */
   private buildLeft(def: GameDefinition, plan: AttemptPlan): void {
     drawPanel(this, LEFT_X - 20, TOP - 8, LEFT_W + 40, BOTTOM - TOP + 16, { radius: 16 });
+    const limit = def.freeplayUncapped ? 'ei ylärajaa' : `pisteitä enintään ${fi(CONFIG.maxScore * CONFIG.freeplay.scale)}`;
     const attemptRule = this.freeplay
-      ? `Freeplay: pisteitä enintään ${fi(CONFIG.maxScore * CONFIG.freeplay.scale)}. Parhaat pääsevät top ${CONFIG.freeplay.topSize} -listalle.`
+      ? `Freeplay: ${limit}. Parhaat pääsevät top ${CONFIG.freeplay.topSize} -listalle.`
       : (def.instructions.attemptRule ??
         (plan.kind === 'puzzle' ? 'Yksi kierros.' : plan.total === 1 ? 'Yksi yritys.' : `${plan.total} yritystä. Paras jää voimaan.`));
-    const scoreLines = [...def.instructions.scoring, attemptRule];
+    const scoreLines = [...this.text(def).scoring, attemptRule];
     const keys: Array<[string, string]> = [...def.instructions.keys];
 
     for (const size of [24, 22, 20, 18]) {
@@ -163,11 +164,11 @@ export class InstructionsScene extends Phaser.Scene {
         y += t.height + 6;
       };
       heading('Tavoite');
-      const goal = this.add.text(RIGHT_X, y, def.instructions.goal, { ...TEXT.body, fontSize: `${size}px`, wordWrap: { width: RIGHT_W } });
+      const goal = this.add.text(RIGHT_X, y, this.text(def).goal, { ...TEXT.body, fontSize: `${size}px`, wordWrap: { width: RIGHT_W } });
       objects.push(goal);
       y += goal.height + 18;
       heading('Säännöt');
-      y = this.bullets(objects, def.instructions.rules, RIGHT_X, y, RIGHT_W, size);
+      y = this.bullets(objects, this.text(def).rules, RIGHT_X, y, RIGHT_W, size);
       if (note) {
         const t = this.add.text(RIGHT_X, y + 4, note, { ...TEXT.bodyBold, fontSize: `${size}px`, color: CSS.orange, wordWrap: { width: RIGHT_W } });
         objects.push(t);
@@ -176,6 +177,11 @@ export class InstructionsScene extends Phaser.Scene {
       if (y <= BOTTOM || size === 18) return;
       for (const object of objects) object.destroy();
     }
+  }
+
+  /** The game's texts, with freeplay's own where it plays differently there. */
+  private text(def: GameDefinition): GameDefinition['instructions'] {
+    return this.freeplay ? { ...def.instructions, ...def.freeplayInstructions } : def.instructions;
   }
 
   /** Bulleted lines; returns the y below them. */

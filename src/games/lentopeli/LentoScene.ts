@@ -11,6 +11,8 @@ import {
   BAT_HEIGHT,
   blockScreenX,
   buildCourse,
+  ENDLESS_DISTANCE,
+  endlessPoints,
   distancePoints,
   GOAL_DISTANCE,
   GROUND_Y,
@@ -25,6 +27,17 @@ import {
 } from './logic';
 
 const C = CONFIG.lentopeli;
+
+/** The course is the same every time, so it is built once per kind (the endless one is long). */
+const courses = new Map<boolean, Column[]>();
+function courseFor(endless: boolean): Column[] {
+  let course = courses.get(endless);
+  if (!course) {
+    course = buildCourse(endless);
+    courses.set(endless, course);
+  }
+  return course;
+}
 const BAR_X = 380;
 const BAR_W = 520;
 const BAR_Y = 34;
@@ -54,6 +67,10 @@ function addTile(scene: Phaser.Scene, spec: AssetSpec, x: number, y: number, w: 
 /** Flying game: Space lifts the witch; avoid the obstacles and bats, collect black cats, reach the gate. One attempt. */
 export class LentoScene extends Phaser.Scene {
   private ctx!: GameContext;
+  /** Freeplay's endless flight (Pasi 23.10.): no finish, the speed keeps growing, points without a limit. */
+  private endless = false;
+  /** Where the course ends: the finish, or the far end of the endless course. */
+  private goal = GOAL_DISTANCE;
   private course: Column[] = [];
   private phase: Phase = 'ready';
   private distance = 0;
@@ -82,7 +99,9 @@ export class LentoScene extends Phaser.Scene {
 
   init(data: GameSceneData): void {
     this.ctx = data.ctx;
-    this.course = buildCourse();
+    this.endless = this.ctx.freeplay;
+    this.goal = this.endless ? ENDLESS_DISTANCE : GOAL_DISTANCE;
+    this.course = courseFor(this.endless);
     this.phase = 'ready';
     this.distance = 0;
     this.speed = 0;
@@ -132,8 +151,8 @@ export class LentoScene extends Phaser.Scene {
     }
     if (this.phase !== 'flying') return;
 
-    this.speed = Math.min(targetSpeed(this.distance), this.speed + C.acceleration * dt);
-    this.distance = Math.min(GOAL_DISTANCE, this.distance + this.speed * dt);
+    this.speed = Math.min(targetSpeed(this.distance, this.endless), this.speed + C.acceleration * dt);
+    this.distance = Math.min(this.goal, this.distance + this.speed * dt);
     const step = stepWitch(this.y, this.vy, dt, WITCH_RADIUS);
     this.y = step.y;
     this.vy = step.vy;
@@ -149,7 +168,7 @@ export class LentoScene extends Phaser.Scene {
     }
     this.collectCats();
     this.layout();
-    if (this.distance >= GOAL_DISTANCE) this.reachGoal();
+    if (this.distance >= this.goal) this.reachGoal();
   }
 
   getTestState(): unknown {
@@ -157,7 +176,8 @@ export class LentoScene extends Phaser.Scene {
     return {
       phase: this.phase,
       distance: Math.round(this.distance),
-      goal: GOAL_DISTANCE,
+      goal: this.goal,
+      endless: this.endless,
       speed: Math.round(this.speed),
       y: Math.round(this.y),
       cats: this.cats,
@@ -169,7 +189,7 @@ export class LentoScene extends Phaser.Scene {
 
   /** Test helper: move the witch (distance along the course and height) without flying there. */
   debugPlace(distance: number, y: number): void {
-    this.distance = Phaser.Math.Clamp(distance, 0, GOAL_DISTANCE);
+    this.distance = Phaser.Math.Clamp(distance, 0, this.goal);
     this.y = y;
     this.vy = 0;
     if (this.phase === 'ready') this.start();
@@ -193,6 +213,7 @@ export class LentoScene extends Phaser.Scene {
   }
 
   private points(): number {
+    if (this.endless) return endlessPoints(this.distance);
     return distancePoints(this.distance, this.phase === 'finished');
   }
 
@@ -244,7 +265,7 @@ export class LentoScene extends Phaser.Scene {
     this.ctx.sfx.play('fanfare');
     this.refreshHud();
     const text = this.add
-      .text(W / 2, H / 2 - 60, 'Maalissa! 1 000 pistettä', { ...TEXT.title, fontSize: '72px' })
+      .text(W / 2, H / 2 - 60, this.endless ? 'Rata loppui! Huikea lento!' : 'Maalissa! 1 000 pistettä', { ...TEXT.title, fontSize: '72px' })
       .setOrigin(0.5)
       .setDepth(10);
     text.setScale(0.6);
@@ -264,7 +285,7 @@ export class LentoScene extends Phaser.Scene {
   private layout(): void {
     this.far.tilePositionX = (this.distance * 0.3) / this.far.tileScaleX;
     this.ground.tilePositionX = this.distance / this.ground.tileScaleX;
-    this.finishGate.setX(WITCH_X + (GOAL_DISTANCE - this.distance) + 60);
+    this.finishGate.setX(WITCH_X + (this.goal - this.distance) + 60);
     for (const column of this.course) {
       const sx = WITCH_X + (column.x - this.distance);
       const visible = sx > -160 && sx < W + 160;
@@ -353,8 +374,10 @@ export class LentoScene extends Phaser.Scene {
     bar.fillStyle(COLORS.panelLight, 1);
     bar.fillRoundedRect(BAR_X, BAR_Y - 6, BAR_W, 12, 6);
     this.barFill = this.add.graphics().setDepth(21);
-    this.add.text(BAR_X + BAR_W + 22, BAR_Y, 'Maali', { ...TEXT.bodyBold, fontSize: '20px', color: CSS.gold }).setOrigin(0, 0.5).setDepth(21);
+    const label = this.add.text(BAR_X + BAR_W + 22, BAR_Y, 'Maali', { ...TEXT.bodyBold, fontSize: '20px', color: CSS.gold }).setOrigin(0, 0.5).setDepth(21);
     this.marker = addAsset(this, WITCH, BAR_X, BAR_Y, { width: 54, height: 36 }).setDepth(22);
+    // The endless flight has no finish to show progress to.
+    if (this.endless) for (const object of [bar, this.barFill, label, this.marker]) object.setVisible(false);
     this.pointsText = this.add.text(36, BAR_Y, '', { ...TEXT.bodyBold, fontSize: '26px', color: CSS.orange }).setOrigin(0, 0.5).setDepth(21);
     for (let i = 0; i < C.maxCats; i++) {
       this.catIcons.push(addAsset(this, CAT, W - 48 - i * 46, BAR_Y, { width: 40, height: 34 }).setDepth(21));
@@ -363,12 +386,14 @@ export class LentoScene extends Phaser.Scene {
   }
 
   private refreshHud(): void {
-    const share = this.distance / GOAL_DISTANCE;
+    const share = this.distance / this.goal;
     this.barFill.clear();
     this.barFill.fillStyle(COLORS.orange, 1);
     if (share > 0) this.barFill.fillRoundedRect(BAR_X, BAR_Y - 6, Math.max(12, BAR_W * share), 12, 6);
     this.marker.setX(BAR_X + BAR_W * share);
-    this.pointsText.setText(`Pisteet: ${this.points().toLocaleString('fi-FI')}`);
+    // Freeplay shows its own points (×10), as on the result screen.
+    const shown = this.endless ? Math.round(this.points() * CONFIG.freeplay.scale) : this.points();
+    this.pointsText.setText(`Pisteet: ${shown.toLocaleString('fi-FI')}`);
     this.catIcons.forEach((icon, i) => icon.setAlpha(i < this.cats ? 1 : 0.3).setTint(i < this.cats ? 0xffffff : 0x8877aa));
   }
 }

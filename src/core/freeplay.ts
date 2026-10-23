@@ -22,11 +22,14 @@ interface FreeplayData {
   lists: Record<string, FreeplayEntry[]>;
 }
 
-/** A game's result (0..1000, may have decimals) as freeplay points 0..10 000. */
-export function freeplayScore(raw: number): number {
+/**
+ * A game's result (0..1000, may have decimals) as freeplay points 0..10 000.
+ * uncapped: no upper limit (the endless flight).
+ */
+export function freeplayScore(raw: number, uncapped = false): number {
   if (typeof raw !== 'number' || !Number.isFinite(raw)) return 0;
-  const max = CONFIG.maxScore * CONFIG.freeplay.scale;
-  return Math.min(max, Math.max(0, Math.round(raw * CONFIG.freeplay.scale)));
+  const points = Math.max(0, Math.round(raw * CONFIG.freeplay.scale));
+  return uncapped ? points : Math.min(CONFIG.maxScore * CONFIG.freeplay.scale, points);
 }
 
 export class FreeplayStore {

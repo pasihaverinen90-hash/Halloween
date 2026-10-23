@@ -3,6 +3,8 @@ import { CONFIG } from '../../config';
 import {
   buildCourse,
   CEILING_Y,
+  ENDLESS_DISTANCE,
+  endlessPoints,
   difficulty,
   distancePoints,
   EASY_DISTANCE,
@@ -50,8 +52,8 @@ describe('points', () => {
  * after that, and presses Space at most about eight times a second.
  * With `cats`, it goes for every cat.
  */
-function autopilot(cats: boolean): { hits: number[]; cats: number; seconds: number } {
-  const course = buildCourse();
+function autopilot(cats: boolean, endless = false, until = GOAL_DISTANCE): { hits: number[]; cats: number; seconds: number } {
+  const course = buildCourse(endless);
   const dt = 1 / 60;
   let distance = 0;
   let speed = 0;
@@ -62,11 +64,11 @@ function autopilot(cats: boolean): { hits: number[]; cats: number; seconds: numb
   const hits: number[] = [];
   const collected = new Set<number>();
   let aimed = { index: -1, opening: { top: CEILING_Y, bottom: GROUND_Y } as Opening };
-  while (distance < GOAL_DISTANCE && seconds < 300) {
+  while (distance < until && seconds < 400) {
     seconds += dt;
     sinceFlap += dt;
-    speed = Math.min(targetSpeed(distance), speed + C.acceleration * dt);
-    distance = Math.min(GOAL_DISTANCE, distance + speed * dt);
+    speed = Math.min(targetSpeed(distance, endless), speed + C.acceleration * dt);
+    distance = Math.min(until, distance + speed * dt);
     const next = course.find((c) => c.x + 60 >= distance);
     let target = 360;
     if (next) {
@@ -156,6 +158,40 @@ describe('course', () => {
     const run = autopilot(true);
     expect(run.hits).toEqual([]);
     expect(run.cats).toBe(course.filter((c) => c.catY !== null).length);
+  });
+});
+
+describe('endless flight (freeplay, Pasi 23.10.)', () => {
+  const endless = buildCourse(true);
+
+  it('starts like the tournament course and goes on far beyond its finish', () => {
+    const course = buildCourse();
+    const easyPart = course.filter((c) => c.x < EASY_DISTANCE + C.rampDistance);
+    expect(endless.slice(0, easyPart.length)).toEqual(easyPart);
+    expect(endless[endless.length - 1].x).toBeGreaterThan(GOAL_DISTANCE * 4);
+    expect(endless[endless.length - 1].x).toBeLessThan(ENDLESS_DISTANCE);
+  });
+
+  it('gets faster and faster after the hardest point, up to a limit', () => {
+    const hardest = EASY_DISTANCE + C.rampDistance;
+    expect(targetSpeed(hardest, true)).toBe(C.maxSpeed);
+    expect(targetSpeed(hardest + 20000, true)).toBeGreaterThan(C.maxSpeed + 50);
+    expect(targetSpeed(ENDLESS_DISTANCE, true)).toBe(C.endlessMaxSpeed);
+    expect(targetSpeed(hardest + 20000)).toBe(C.maxSpeed);
+  });
+
+  it('scores the distance without an upper limit: the tournament finish is worth 1000', () => {
+    expect(endlessPoints(GOAL_DISTANCE)).toBeCloseTo(1000, 6);
+    expect(endlessPoints(GOAL_DISTANCE * 2.5)).toBeCloseTo(2500, 6);
+    expect(endlessPoints(-5)).toBe(0);
+  });
+
+  // The simple autopilot falls behind somewhat later, when the speed has grown: that is the idea.
+  it('can be flown well past the tournament finish into the faster part without crashing', () => {
+    const until = GOAL_DISTANCE * 1.6;
+    expect(targetSpeed(until, true)).toBeGreaterThan(C.maxSpeed);
+    const run = autopilot(false, true, until);
+    expect(run.hits, JSON.stringify(run.hits)).toEqual([]);
   });
 });
 

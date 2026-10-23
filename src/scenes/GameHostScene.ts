@@ -149,7 +149,7 @@ export class GameHostScene extends Phaser.Scene {
       const data: FreeplayResultData = {
         gameId: this.def.id,
         gameName: this.def.name,
-        score: freeplayScore(score),
+        score: freeplayScore(score, this.def.freeplayUncapped === true),
         onDone: (again) => (again ? switchTo(this, SCENES.GameHost, { gameId: this.def.id, freeplay: true }) : this.leave()),
       };
       this.scene.launch(SCENES.FreeplayResult, data);

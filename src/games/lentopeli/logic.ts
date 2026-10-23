@@ -25,26 +25,32 @@ export function difficulty(distance: number): number {
   return clamp((distance - EASY_DISTANCE) / C.rampDistance, 0, 1);
 }
 
-/** Flying speed (px/s) the witch accelerates to at this distance. */
-export function targetSpeed(distance: number): number {
-  return lerp(C.startSpeed, C.maxSpeed, difficulty(distance));
+/**
+ * Flying speed (px/s) the witch accelerates to at this distance. In the
+ * endless flight (freeplay) it keeps growing after the hardest point.
+ */
+export function targetSpeed(distance: number, endless = false): number {
+  const speed = lerp(C.startSpeed, C.maxSpeed, difficulty(distance));
+  if (!endless) return speed;
+  const beyond = Math.max(0, distance - EASY_DISTANCE - C.rampDistance);
+  return Math.min(C.endlessMaxSpeed, speed + beyond * C.endlessSpeedGrowth);
 }
 
 /** Seconds needed to fly from the start to this distance at full speed. */
-export function flightSeconds(distance: number): number {
+export function flightSeconds(distance: number, endless = false): number {
   const step = 10;
   let seconds = 0;
-  for (let x = 0; x < distance; x += step) seconds += Math.min(step, distance - x) / targetSpeed(x + step / 2);
+  for (let x = 0; x < distance; x += step) seconds += Math.min(step, distance - x) / targetSpeed(x + step / 2, endless);
   return seconds;
 }
 
 /** Distance flown in the given number of seconds at full speed. */
-function distanceAfter(seconds: number): number {
+function distanceAfter(seconds: number, endless = false): number {
   let lo = 0;
-  let hi = C.maxSpeed * seconds;
+  let hi = C.endlessMaxSpeed * seconds;
   for (let i = 0; i < 40; i++) {
     const mid = (lo + hi) / 2;
-    if (flightSeconds(mid) < seconds) lo = mid;
+    if (flightSeconds(mid, endless) < seconds) lo = mid;
     else hi = mid;
   }
   return lo;
@@ -52,6 +58,18 @@ function distanceAfter(seconds: number): number {
 
 /** Distance of the finish line. */
 export const GOAL_DISTANCE = Math.round(distanceAfter(C.goalSeconds) / 10) * 10;
+
+/** Length of the endless flight's course (freeplay). Nobody is expected to get this far. */
+export const ENDLESS_DISTANCE = Math.round(distanceAfter(C.endlessSeconds, true) / 10) * 10;
+
+/**
+ * Endless flight's points (freeplay, Pasi 23.10.): the tournament's scale
+ * without the upper limit, so the finish distance is worth 1000 and every
+ * pixel beyond it more. Unrounded.
+ */
+export function endlessPoints(distance: number): number {
+  return (CONFIG.maxScore * Math.max(0, distance)) / GOAL_DISTANCE;
+}
 
 /** Points: 1000 at the finish, otherwise the share of the way flown (at most 999). */
 export function distancePoints(distance: number, reachedGoal: boolean): number {
@@ -159,8 +177,8 @@ const reachUp = (t: number): number => SAFETY * CLIMB_SPEED * t;
 const reachDown = (t: number): number => SAFETY * Math.max(0, Math.min(0.5 * C.gravity * t * t, C.maxFallSpeed * t) - 100 * t);
 
 /** Seconds of free flight between two columns at full speed. */
-function travelTime(fromX: number, toX: number): number {
-  return Math.max(0.05, (toX - fromX - 120) / targetSpeed(fromX));
+function travelTime(fromX: number, toX: number, endless: boolean): number {
+  return Math.max(0.05, (toX - fromX - 120) / targetSpeed(fromX, endless));
 }
 
 /** Heights of the witch's centre that fit in the opening. */
@@ -253,22 +271,25 @@ function shapeColumn(pattern: Pattern, y: number, gap: number, d: number, flock:
 }
 
 /**
- * The whole course up to the finish. Same for everyone, every time.
- * Each column picks its kind first and then a height for its route that fits
- * the kind and can be reached through every opening of the previous column.
+ * The whole course up to the finish (or, endless = freeplay's endless flight,
+ * to ENDLESS_DISTANCE). Same for everyone, every time. Each column picks its
+ * kind first and then a height for its route that fits the kind and can be
+ * reached through every opening of the previous column.
  */
-export function buildCourse(): Column[] {
+export function buildCourse(endless = false): Column[] {
   const random = seededRandom(SEED);
   const catDistances: number[] = [];
-  for (let s = C.catEverySeconds; s <= C.goalSeconds - 10; s += C.catEverySeconds) catDistances.push(distanceAfter(s));
+  const lastCat = endless ? C.endlessSeconds - 10 : C.goalSeconds - 10;
+  for (let s = C.catEverySeconds; s <= lastCat; s += C.catEverySeconds) catDistances.push(distanceAfter(s, endless));
 
   const columns: Column[] = [];
   let x = FIRST_X;
-  for (let index = 0; x < GOAL_DISTANCE - 500; index++) {
+  const end = endless ? ENDLESS_DISTANCE : GOAL_DISTANCE;
+  for (let index = 0; x < end - 500; index++) {
     const d = difficulty(x);
     const gap = lerp(C.gapEasy, C.gapHard, d);
     const prev = columns[index - 1];
-    const t = prev ? travelTime(prev.x, x) : 0;
+    const t = prev ? travelTime(prev.x, x, endless) : 0;
     const withCat = index >= 2 && catDistances.length > 0 && x >= catDistances[0];
     if (withCat) catDistances.shift();
     // The first two are plain gates; a cat sits next to a flock of bats when possible.
