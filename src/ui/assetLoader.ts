@@ -1,6 +1,6 @@
 import type Phaser from 'phaser';
 import manifest from 'virtual:asset-manifest';
-import { GAMES } from '../games/registry';
+import { ALL_GAMES } from '../games/registry';
 import { assetKey, type AssetSpec } from '../games/types';
 import { UI_ASSETS } from './assets';
 import { ZOOM } from './screen';
@@ -14,7 +14,7 @@ import { ZOOM } from './screen';
 /** Every image the game knows: shared images, then each game's preview and images. Unique by file name. */
 export function allAssetSpecs(): AssetSpec[] {
   const byKey = new Map<string, AssetSpec>();
-  const all = [...UI_ASSETS, ...GAMES.flatMap((game) => [game.preview, ...game.assets])];
+  const all = [...UI_ASSETS, ...ALL_GAMES.flatMap((game) => [game.preview, ...game.assets])];
   for (const spec of all) {
     const key = assetKey(spec).toLowerCase();
     if (byKey.has(key)) {

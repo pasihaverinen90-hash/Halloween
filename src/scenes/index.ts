@@ -1,5 +1,5 @@
 import type Phaser from 'phaser';
-import { GAMES } from '../games/registry';
+import { ALL_GAMES } from '../games/registry';
 import { AttemptIntroScene } from '../ui/AttemptIntroScene';
 import { AttemptResultScene } from '../ui/AttemptResultScene';
 import { DialogScene } from '../ui/DialogScene';
@@ -35,7 +35,7 @@ export const ALL_SCENES: Array<new () => Phaser.Scene> = [
   GameResultsScene,
   PlayerResultsScene,
   CorrectionScene,
-  ...GAMES.map((game) => game.sceneClass),
+  ...ALL_GAMES.map((game) => game.sceneClass),
   AttemptIntroScene,
   AttemptResultScene,
   PasswordScene,

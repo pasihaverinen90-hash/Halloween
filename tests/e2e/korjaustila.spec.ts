@@ -4,24 +4,22 @@ import {
   activeScenes,
   createPlayer,
   expectNoRuntimeErrors,
-  hangman,
+  riddles,
   openCorrection,
   openGame,
   press,
   savedData,
   savedEvening,
   sceneState,
-  solveHangmanWord,
   typeText,
-  unlock,
   waitForScene,
   waitForState,
 } from './helpers';
 
 const EVENING = savedEvening([
-  { id: 'a', name: 'Aino', games: hangman(800), finished: true },
-  { id: 'b', name: 'Eero', games: hangman(600), finished: true },
-  { id: 'c', name: 'Testi', games: hangman(100), finished: true },
+  { id: 'a', name: 'Aino', games: riddles(800), finished: true },
+  { id: 'b', name: 'Eero', games: riddles(600), finished: true },
+  { id: 'c', name: 'Testi', games: riddles(100), finished: true },
 ]);
 
 /** Move the correction menu to the action with this label and press Enter. */
@@ -55,24 +53,22 @@ async function answerDialog(page: Page, confirm: boolean): Promise<void> {
   await page.waitForTimeout(400);
 }
 
-test('Ctrl+Shift+K kesken pelin: peruutus palaa peliin ennallaan', async ({ page }) => {
+test('Ctrl+Shift+K kesken pelin: peli odottaa, ja peruutus palaa peliin ennallaan', async ({ page }) => {
   await openGame(page);
   await createPlayer(page, 'Keskeyttäjä');
   await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Hirsipuu');
-  await typeText(page, 'q');
-  const before = await sceneState(page, 'Hirsipuu');
+  await waitForScene(page, 'Arvoitukset');
+  await waitForState(page, 'Arvoitukset', (s) => s.phase === 'answering' && s.elapsedMs > 0);
   await page.keyboard.press('Control+Shift+KeyK');
   await waitForScene(page, 'Password');
+  const paused = await sceneState(page, 'Arvoitukset');
   await typeText(page, 'xyz'); // goes to the password field, not to the game
+  await page.waitForTimeout(800);
+  expect(await sceneState(page, 'Arvoitukset')).toEqual(paused);
   await press(page, 'Escape', 400);
-  await waitForScene(page, 'Hirsipuu');
-  expect(await sceneState(page, 'Hirsipuu')).toEqual(before);
-  await typeText(page, 'w');
-  await waitForState(page, 'Hirsipuu', (s) => s.wrong.length > before.wrong.length);
-  expect((await sceneState(page, 'Hirsipuu')).wrong).toEqual([...before.wrong, 'W']);
+  await waitForScene(page, 'Arvoitukset');
+  await waitForState(page, 'Arvoitukset', (s) => s.elapsedMs > paused.elapsedMs || s.phase !== 'answering');
+  expect((await sceneState(page, 'Arvoitukset')).index).toBe(paused.index);
   await expectNoRuntimeErrors(page);
 });
 
@@ -95,7 +91,7 @@ test('tuloksen muutos, poisto ja pelin antaminen uudelleen', async ({ page }) =>
   await typeText(page, '640');
   await press(page, 'Enter', 150);
   await waitForScene(page, 'Correction');
-  expect((await savedData(page)).players[0].games.hirsipuu).toMatchObject({ manualScore: 640, finished: true });
+  expect((await savedData(page)).players[0].games.arvoitukset).toMatchObject({ manualScore: 640, finished: true });
 
   // Aino: poista tulos
   await press(page, 'Enter', 400);
@@ -103,11 +99,11 @@ test('tuloksen muutos, poisto ja pelin antaminen uudelleen', async ({ page }) =>
   expect((await sceneState(page, 'Correction')).popup).toBe('Poista tulos');
   await press(page, 'Enter');
   await answerDialog(page, true);
-  expect((await savedData(page)).players[0].games.hirsipuu).toBeUndefined();
+  expect((await savedData(page)).players[0].games.arvoitukset).toBeUndefined();
 
   // Eero: anna peli uudelleen ja aloita vuoro heti
   await press(page, 'ArrowDown');
-  expect((await sceneState(page, 'Correction')).cell).toEqual({ player: 'Eero', gameId: 'hirsipuu' });
+  expect((await sceneState(page, 'Correction')).cell).toEqual({ player: 'Eero', gameId: 'arvoitukset' });
   await press(page, 'Enter', 400);
   await press(page, 'ArrowDown');
   await press(page, 'ArrowDown');
@@ -115,45 +111,23 @@ test('tuloksen muutos, poisto ja pelin antaminen uudelleen', async ({ page }) =>
   await press(page, 'Enter');
   await answerDialog(page, true);
   await answerDialog(page, true); // "Aloita nyt"
-  await waitForScene(page, 'Menu');
-  const menu = await sceneState(page, 'Menu');
-  expect(menu.player).toBe('Eero');
-  expect(menu.tiles[0]).toEqual({ id: 'hirsipuu', status: 'unplayed', score: null });
+  // Pasi 23.10.: Eero's tournament continues with the game given again
+  await waitForScene(page, 'Instructions');
+  expect(await sceneState(page, 'Instructions')).toMatchObject({ gameId: 'arvoitukset', resumes: false });
+  expect((await savedData(page)).players[1].games.arvoitukset).toBeUndefined();
   expect((await savedData(page)).players[1].finishedAt).toBeNull();
   await expectNoRuntimeErrors(page);
 });
 
-test('kesken jäänyt hirsipuu jatkuu samasta kohdasta sivun uudelleenlatauksen jälkeen', async ({ page }) => {
-  await openGame(page);
-  await createPlayer(page, 'Katkonainen');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Hirsipuu');
-  await solveHangmanWord(page, 'q');
-  await press(page, 'Enter');
-  await waitForState(page, 'Hirsipuu', (s) => s.index === 1 && s.phase === 'guessing');
-  const phrase = (await sceneState(page, 'Hirsipuu')).phrase as string;
-  const letter = phrase.match(/[A-ZÅÄÖ]/)![0];
-  await typeText(page, `${letter.toLocaleLowerCase('fi-FI')}q`, 120);
-  const before = await sceneState(page, 'Hirsipuu');
-  expect(before).toMatchObject({ index: 1, scores: [175], tried: [letter, 'Q'], wrong: ['Q'] });
-
+test('kesken jäänyt vuoro jatkuu korjaustilasta seuraavasta turnauspelistä', async ({ page }) => {
+  await openGame(page, savedEvening([{ id: 'k', name: 'Katkonainen', games: riddles(300) }]));
   // Declining the offer to continue at the lock, the turn can still be continued in correction mode.
-  await page.reload();
-  await unlock(page);
   await openCorrection(page);
   await chooseAction(page, 'Jatka kesken jäänyttä vuoroa');
   expect((await sceneState(page, 'Correction')).popup).toBe('Katkonainen');
   await press(page, 'Enter');
-  await waitForScene(page, 'Menu');
-  expect((await sceneState(page, 'Menu')).tiles[0]).toMatchObject({ id: 'hirsipuu', status: 'inProgress' });
-  await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
-  expect((await sceneState(page, 'Instructions')).resumes).toBe(true);
-  await press(page, 'Enter');
-  await waitForScene(page, 'Hirsipuu');
-  expect(await sceneState(page, 'Hirsipuu')).toMatchObject({ index: 1, scores: [175], tried: [letter, 'Q'], wrong: ['Q'], phase: 'guessing' });
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('lentopeli');
   await expectNoRuntimeErrors(page);
 });
 
@@ -185,7 +159,7 @@ test('ei JSON-varmuuskopioita; CSV, pelaajan poisto ja tyhjennys kahdella vahvis
   expect(csvFile.suggestedFilename()).toMatch(/^halloween-tulokset-.*\.csv$/);
   const csv = await readFile((await csvFile.path())!, 'utf8');
   expect(csv.charCodeAt(0)).toBe(0xfeff);
-  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Viimeinen sana;Enteet;Yölento;Kiirastuli;Kalmanristikko;MonsterSlayer3000;Piiritys;Yhteensä', '1;Aino;800;;;;;;;800']);
+  expect(csv.slice(1).split('\r\n').slice(0, 2)).toEqual(['Sija;Nimi;Enteet;Yölento;Kiirastuli;MonsterSlayer3000;Piiritys;Yhteensä', '1;Aino;800;;;;;800']);
 
   // Pelaajan poisto
   await chooseAction(page, 'Poista pelaaja');

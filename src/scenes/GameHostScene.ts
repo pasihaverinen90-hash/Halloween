@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { getDb } from '../core/db';
-import { isPlayerDone, recordScore } from '../core/scores';
+import { recordScore } from '../core/scores';
 import { session } from '../core/session';
 import { sfx } from '../core/sfx';
 import type { AttemptEnd } from '../core/types';
-import { GAME_IDS, getGame } from '../games/registry';
+import { getGame } from '../games/registry';
 import type { GameContext, GameDefinition, GameSceneData } from '../games/types';
 import { H, W } from '../ui/screen';
 import { COLORS } from '../ui/theme';
@@ -12,6 +12,7 @@ import { showToast } from '../ui/toast';
 import { attemptCount, planAttempts } from './attemptFlow';
 import { SCENES, type AttemptIntroData, type AttemptResultData, type GameHostData } from './keys';
 import { switchTo } from './nav';
+import { continueTournament } from './tournament';
 
 type HostState = 'idle' | 'intro' | 'playing' | 'result';
 
@@ -56,7 +57,7 @@ export class GameHostScene extends Phaser.Scene {
       return;
     }
     if (!def) {
-      switchTo(this, SCENES.Menu);
+      continueTournament(this);
       return;
     }
     this.def = def;
@@ -157,7 +158,6 @@ export class GameHostScene extends Phaser.Scene {
   }
 
   private leave(): void {
-    const player = getDb().getPlayer(this.playerId);
-    switchTo(this, player && isPlayerDone(player, GAME_IDS) ? SCENES.Thanks : SCENES.Menu);
+    continueTournament(this);
   }
 }

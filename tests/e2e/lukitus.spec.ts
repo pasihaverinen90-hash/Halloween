@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { activeScenes, expectNoRuntimeErrors, hangman, PASSWORD, press, savedEvening, sceneState, STORAGE_KEY, typeText, unlock, waitForScene } from './helpers';
+import { activeScenes, expectNoRuntimeErrors, riddles, PASSWORD, press, savedEvening, sceneState, STORAGE_KEY, typeText, unlock, waitForScene } from './helpers';
 
 /*
  * Pasi 21.10.: the game opens only with Pasi's password, every time the page
@@ -28,7 +28,7 @@ test('kesken jäänyt vuoro: salasanan jälkeen sitä tarjotaan jatkettavaksi', 
   await page.goto('./');
   await page.evaluate(
     ([key, value]) => window.localStorage.setItem(key, value),
-    [STORAGE_KEY, JSON.stringify(savedEvening([{ id: 'p1', name: 'Kesken', games: hangman(500) }]))] as const,
+    [STORAGE_KEY, JSON.stringify(savedEvening([{ id: 'p1', name: 'Kesken', games: riddles(500) }]))] as const,
   );
   await page.reload();
   await waitForScene(page, 'Password');
@@ -37,7 +37,8 @@ test('kesken jäänyt vuoro: salasanan jälkeen sitä tarjotaan jatkettavaksi', 
   await waitForScene(page, 'Dialog');
   expect((await sceneState(page, 'Dialog')).message).toMatch(/Kesken/);
   await page.reload();
+  // Pasi 23.10.: the turn continues straight from the next tournament game
   await unlock(page, true);
-  expect(await sceneState(page, 'Menu')).toMatchObject({ player: 'Kesken', total: 500 });
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('lentopeli');
   await expectNoRuntimeErrors(page);
 });

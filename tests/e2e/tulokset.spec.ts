@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { expectNoRuntimeErrors, hangman, openGame, PASSWORD, press, savedEvening, sceneState, typeText, waitForScene, waitForState } from './helpers';
+import { expectNoRuntimeErrors, riddles, openGame, PASSWORD, press, savedEvening, sceneState, typeText, waitForScene, waitForState } from './helpers';
 
 const EVENING = savedEvening([
-  { id: 'a', name: 'Liisa', games: hangman(950), finished: true },
-  { id: 'b', name: 'Matti', games: hangman(875), finished: true },
-  { id: 'c', name: 'Äijö', games: hangman(875), finished: true },
-  { id: 'd', name: 'Öhkö', games: hangman(700), finished: true },
+  { id: 'a', name: 'Liisa', games: riddles(950), finished: true },
+  { id: 'b', name: 'Matti', games: riddles(875), finished: true },
+  { id: 'c', name: 'Äijö', games: riddles(875), finished: true },
+  { id: 'd', name: 'Öhkö', games: riddles(700), finished: true },
   { id: 'e', name: 'Emma' },
 ]);
 

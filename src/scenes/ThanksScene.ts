@@ -18,6 +18,7 @@ import { riseIn } from '../ui/widgets/motion';
 import { drawPanel } from '../ui/widgets/panel';
 import { SCENES } from './keys';
 import { switchTo } from './nav';
+import { continueTournament } from './tournament';
 
 const fi = (n: number): string => n.toLocaleString('fi-FI');
 
@@ -40,7 +41,7 @@ export class ThanksScene extends Phaser.Scene {
       return;
     }
     if (!isPlayerDone(this.player, GAME_IDS)) {
-      switchTo(this, SCENES.Menu);
+      continueTournament(this);
       return;
     }
     const player = this.player;

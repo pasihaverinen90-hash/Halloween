@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createPlayer, expectNoRuntimeErrors, openGame, press, savedData, sceneState, selectGame, waitForScene } from './helpers';
+import { createPlayer, expectNoRuntimeErrors, openGame, press, savedData, sceneState, waitForScene } from './helpers';
 
 /*
  * The three-attempt flow of action games, tested with an invisible test-only
@@ -13,11 +13,9 @@ async function setScore(page: import('@playwright/test').Page, score: number): P
 test('toimintapelissä on kolme yritystä putkeen ja paras jää voimaan', async ({ page }) => {
   await openGame(page);
   await page.evaluate(() => window.__peli!.addTestActionGame());
+  // The test game is the tournament's first game
   await createPlayer(page, 'Yrittäjä');
-  expect((await sceneState(page, 'Menu')).tiles.map((t: { id: string }) => t.id)).toEqual(['hirsipuu', 'arvoitukset', 'lentopeli', 'raiskinta', 'ristikko', 'tasohyppely', 'kurpitsalinko', 'testipeli']);
-  await selectGame(page, 'testipeli');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('testipeli');
   await press(page, 'Enter');
 
   // Yritys 1/3
@@ -59,23 +57,12 @@ test('toimintapelissä on kolme yritystä putkeen ja paras jää voimaan', async
   expect(await sceneState(page, 'AttemptResult')).toMatchObject({ attempt: 3, score: 900, best: 900, isFinal: true });
   expect((await savedData(page)).players[0].games.testipeli).toMatchObject({ attempts: [400, 250, 900], finished: true });
 
-  // Takaisin valikkoon: testipeli harmaana, hirsipuu yhä pelattavissa
+  // Turnaus jatkuu seuraavaan peliin (Pasi 23.10.), eikä pelattuun peliin pääse takaisin
   await press(page, 'Enter');
-  await waitForScene(page, 'Menu');
-  expect((await sceneState(page, 'Menu')).tiles).toEqual([
-    { id: 'hirsipuu', status: 'unplayed', score: null },
-    { id: 'arvoitukset', status: 'unplayed', score: null },
-    { id: 'lentopeli', status: 'unplayed', score: null },
-    { id: 'raiskinta', status: 'unplayed', score: null },
-    { id: 'ristikko', status: 'unplayed', score: null },
-    { id: 'tasohyppely', status: 'unplayed', score: null },
-    { id: 'kurpitsalinko', status: 'unplayed', score: null },
-    { id: 'testipeli', status: 'finished', score: 900 },
-  ]);
-  // Pelattua peliä ei voi valita uudelleen
-  await selectGame(page, 'testipeli');
-  await press(page, 'Enter', 500);
-  expect(await page.evaluate(() => window.__peli!.activeScenes())).toContain('Menu');
+  await waitForScene(page, 'Instructions');
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('arvoitukset');
+  await press(page, 'Escape', 500);
+  expect(await page.evaluate(() => window.__peli!.activeScenes())).toContain('Instructions');
   await expectNoRuntimeErrors(page);
 });
 
@@ -83,9 +70,6 @@ test('keskeytynyt toimintapeli jatkuu seuraavasta yrityksestä', async ({ page }
   await openGame(page);
   await page.evaluate(() => window.__peli!.addTestActionGame());
   await createPlayer(page, 'Katkos');
-  await selectGame(page, 'testipeli');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
   await press(page, 'Enter');
   await waitForScene(page, 'AttemptIntro');
   await setScore(page, 500);
@@ -93,7 +77,7 @@ test('keskeytynyt toimintapeli jatkuu seuraavasta yrityksestä', async ({ page }
   await waitForScene(page, 'Testipeli');
   await press(page, 'Enter');
   await waitForScene(page, 'AttemptResult');
-  // Kesken toista yritystä palataan valikkoon korjaustilan kautta (peli "jumittui")
+  // Kesken toista yritystä vuoro jatkuu korjaustilan kautta (peli "jumittui")
   await press(page, 'Enter');
   await waitForScene(page, 'AttemptIntro');
   await press(page, 'Enter');
@@ -106,11 +90,8 @@ test('keskeytynyt toimintapeli jatkuu seuraavasta yrityksestä', async ({ page }
   await press(page, 'ArrowDown');
   await press(page, 'Enter');
   await press(page, 'Enter'); // the only unfinished player
-  await waitForScene(page, 'Menu');
-  expect((await sceneState(page, 'Menu')).tiles.find((t: { id: string }) => t.id === 'testipeli')).toEqual({ id: 'testipeli', status: 'inProgress', score: 500 });
-  await selectGame(page, 'testipeli');
-  await press(page, 'Enter');
   await waitForScene(page, 'Instructions');
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('testipeli');
   await press(page, 'Enter');
   await waitForScene(page, 'AttemptIntro');
   expect(await sceneState(page, 'AttemptIntro')).toEqual({ attempt: 2, total: 3, best: 500 });

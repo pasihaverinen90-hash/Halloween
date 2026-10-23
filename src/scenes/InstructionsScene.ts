@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { getDb } from '../core/db';
 import { session } from '../core/session';
-import { getGame } from '../games/registry';
+import { GAME_IDS, getGame } from '../games/registry';
 import type { GameDefinition } from '../games/types';
 import { addBackdrop } from '../ui/backdrop';
 import { addKeyCap, addKeyHints } from '../ui/hints';
@@ -13,6 +13,7 @@ import { drawPanel } from '../ui/widgets/panel';
 import { attemptCount, planAttempts, type AttemptPlan } from './attemptFlow';
 import { SCENES, type InstructionsData } from './keys';
 import { switchTo } from './nav';
+import { continueTournament } from './tournament';
 
 const LEFT_X = 60;
 const LEFT_W = 430;
@@ -23,7 +24,7 @@ const BOTTOM = 626;
 
 const fi = (n: number): string => n.toLocaleString('fi-FI');
 
-/** Ohjeruutu: keys, rules and scoring of one game. Static; Enter starts, Esc goes back. */
+/** Ohjeruutu: keys, rules and scoring of one game. Static; Enter starts. */
 export class InstructionsScene extends Phaser.Scene {
   private def: GameDefinition | undefined;
   private plan: AttemptPlan | null = null;
@@ -50,7 +51,7 @@ export class InstructionsScene extends Phaser.Scene {
     const def = this.def;
     this.plan = def ? planAttempts(def.kind, db.getRecord(player.id, def.id), attemptCount(def)) : null;
     if (!def || !this.plan || this.plan.finished) {
-      switchTo(this, SCENES.Menu);
+      continueTournament(this);
       return;
     }
 
@@ -58,28 +59,29 @@ export class InstructionsScene extends Phaser.Scene {
     this.add.text(W / 2, 58, def.name, { ...TEXT.title, fontSize: '66px' }).setOrigin(0.5);
     this.add.text(W / 2, 106, def.genre, { ...TEXT.heading, fontSize: '28px', color: CSS.muted }).setOrigin(0.5);
     addAsset(this, def.preview, 60 + 86, 66, { width: 172, height: 96 });
+    const index = GAME_IDS.indexOf(def.id);
+    if (index >= 0) {
+      this.add
+        .text(W - 60, 66, `Peli ${index + 1}/${GAME_IDS.length}`, { ...TEXT.heading, fontSize: '30px', color: CSS.muted })
+        .setOrigin(1, 0.5);
+    }
 
     this.buildLeft(def, this.plan);
     this.buildRight(def, this.plan);
 
-    addKeyHints(this, [
-      ['Enter', 'Aloita peli'],
-      ['Esc', 'Takaisin valikkoon'],
-    ]);
-    onKeys(this, {
-      Enter: () => this.go(SCENES.GameHost),
-      Escape: () => this.go(SCENES.Menu),
-    });
+    // Pasi 23.10.: the tournament goes from game to game, so there is no way back to a menu.
+    addKeyHints(this, [['Enter', 'Aloita peli']]);
+    onKeys(this, { Enter: () => this.go() });
   }
 
   getTestState(): unknown {
     return { gameId: this.def?.id ?? null, resumes: this.plan?.resumes ?? false, next: this.plan?.next ?? null };
   }
 
-  private go(key: string): void {
+  private go(): void {
     if (this.leaving || !this.def) return;
     this.leaving = true;
-    switchTo(this, key, key === SCENES.GameHost ? { gameId: this.def.id } : undefined);
+    switchTo(this, SCENES.GameHost, { gameId: this.def.id });
   }
 
   /** Keys and scoring on the left; the font shrinks if a game's texts would not fit. */

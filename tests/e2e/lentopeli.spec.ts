@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createPlayer, expectNoRuntimeErrors, openGame, press, savedData, sceneState, selectGame, waitForScene, waitForState } from './helpers';
+import { expectNoRuntimeErrors, press, savedData, sceneState, startTournamentAt, waitForScene, waitForState } from './helpers';
 
 /** Move the witch along the course (test helper of the scene). */
 async function place(page: Page, distance: number, y: number): Promise<void> {
@@ -26,11 +26,7 @@ async function startAttempt(page: Page): Promise<void> {
 }
 
 test('lentopeli: törmäys, kissa, maali ja loput yritykset väliin', async ({ page }) => {
-  await openGame(page);
-  await createPlayer(page, 'Lentäjä');
-  await selectGame(page, 'lentopeli');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
+  await startTournamentAt(page, 'Lentäjä', 'lentopeli');
   await press(page, 'Enter');
 
   // Yritys 1: noita lähtee, liukuu maata pitkin ja törmää ensimmäiseen inkvisiittoriin ilman kissaa
@@ -68,7 +64,9 @@ test('lentopeli: törmäys, kissa, maali ja loput yritykset väliin', async ({ p
   expect(record.attempts[1]).toBe(1000);
   expect(record.finished).toBe(true);
   await press(page, 'Enter');
-  await waitForScene(page, 'Menu');
-  expect((await sceneState(page, 'Menu')).tiles[2]).toEqual({ id: 'lentopeli', status: 'finished', score: 1000 });
+  // Turnaus jatkuu seuraavaan peliin (Pasi 23.10.)
+  await waitForScene(page, 'Instructions');
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('raiskinta');
+  expect((await savedData(page)).players[0].games.lentopeli).toMatchObject({ finished: true, attempts: expect.arrayContaining([1000]) });
   await expectNoRuntimeErrors(page);
 });

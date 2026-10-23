@@ -20,6 +20,7 @@ import { drawPanel } from '../ui/widgets/panel';
 import { addAdminHeader, fi } from './admin/common';
 import { SCENES } from './keys';
 import { switchTo } from './nav';
+import { continueTournament } from './tournament';
 
 type Mode = 'menu' | 'grid' | 'popup' | 'busy';
 
@@ -269,7 +270,7 @@ export class CorrectionScene extends Phaser.Scene {
   private startTurn(player: PlayerRecord): void {
     session.playerId = player.id;
     this.leaving = true;
-    switchTo(this, SCENES.Menu);
+    continueTournament(this);
   }
 
   private async importBackup(): Promise<void> {

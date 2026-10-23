@@ -15,11 +15,9 @@ import {
 
 async function startRiddles(page: Page, name: string): Promise<void> {
   await openGame(page);
+  // Pasi 23.10.: the tournament starts with the riddles
   await createPlayer(page, name);
-  await press(page, 'ArrowRight');
-  expect((await sceneState(page, 'Menu')).selected).toBe('arvoitukset');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('arvoitukset');
   await press(page, 'Enter');
   await waitForScene(page, 'Arvoitukset');
 }
@@ -103,11 +101,7 @@ test('kesken jäänyt arvoituskierros jatkuu samasta arvoituksesta', async ({ pa
   // Pasi's password opens the game again, and it offers to continue the unfinished turn.
   await page.reload();
   await unlock(page, true);
-  expect((await sceneState(page, 'Menu')).tiles[1]).toMatchObject({ id: 'arvoitukset', status: 'inProgress' });
-  await press(page, 'ArrowRight');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
-  expect((await sceneState(page, 'Instructions')).resumes).toBe(true);
+  expect(await sceneState(page, 'Instructions')).toMatchObject({ gameId: 'arvoitukset', resumes: true });
   await press(page, 'Enter');
   await waitForScene(page, 'Arvoitukset');
   const after = await sceneState(page, 'Arvoitukset');

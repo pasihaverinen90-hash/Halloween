@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GAMES, GAME_IDS } from './games/registry';
+import { ALL_GAMES, GAMES, GAME_IDS } from './games/registry';
 import { assetKey } from './games/types';
 import type { AssetSpec, GameContext, GameDefinition, GameSceneData } from './games/types';
 import { SCENES } from './scenes/keys';
@@ -88,11 +88,15 @@ const definition: GameDefinition = {
   assets: [],
 };
 
-/** Register the test-only action game. Call on the Start screen, before a player is created. */
+/**
+ * Register the test-only action game as the tournament's first game. Call on
+ * the Start screen, before a player is created.
+ */
 export function addTestActionGame(game: Phaser.Game): void {
   if (GAME_IDS.includes(TEST_GAME_ID)) return;
-  (GAMES as GameDefinition[]).push(definition);
-  (GAME_IDS as string[]).push(TEST_GAME_ID);
+  (ALL_GAMES as GameDefinition[]).push(definition);
+  (GAMES as GameDefinition[]).unshift(definition);
+  (GAME_IDS as string[]).unshift(TEST_GAME_ID);
 
   const key = assetKey(preview);
   if (!game.textures.exists(key)) {

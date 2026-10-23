@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createPlayer, expectNoRuntimeErrors, nextCatapultLevel, openGame, press, savedData, sceneState, selectGame, waitForScene, waitForState } from './helpers';
+import { expectNoRuntimeErrors, nextCatapultLevel, press, savedData, sceneState, startTournamentAt, waitForScene, waitForState } from './helpers';
 
 /** Run code against the catapult scene (test helpers and its state). */
 async function catapult<T>(page: Page, fn: string): Promise<T> {
@@ -18,11 +18,7 @@ async function startAttempt(page: Page): Promise<void> {
 
 test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja yksi yritys', async ({ page }) => {
   test.setTimeout(480_000);
-  await openGame(page);
-  await createPlayer(page, 'Piirittäjä');
-  await selectGame(page, 'kurpitsalinko');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
+  await startTournamentAt(page, 'Piirittäjä', 'kurpitsalinko');
   await press(page, 'Enter');
 
   // Pasi 23.10.: yksi yritys
@@ -114,7 +110,8 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja y
   // Pisteet tulevat kentittäin (200 per kenttä), ja yksi yritys on heti lopullinen
   expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 1, isFinal: true, score: first.levelPoints.reduce((a: number, b: number) => a + b, 0) });
   await press(page, 'Enter');
-  await waitForScene(page, 'Menu');
+  // Viimeinen turnauspeli: kiitosnäkymä (Pasi 23.10.)
+  await waitForScene(page, 'Thanks');
   const record = (await savedData(page)).players[0].games.kurpitsalinko;
   expect(record.attempts).toHaveLength(1);
   expect(record.finished).toBe(true);

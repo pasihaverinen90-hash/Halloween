@@ -10,6 +10,7 @@ import { H, W } from '../ui/screen';
 import { CSS, TEXT } from '../ui/theme';
 import { SCENES } from './keys';
 import { switchTo } from './nav';
+import { continueTournament } from './tournament';
 
 /**
  * The game opens only with Pasi's password, every time the page loads (Pasi
@@ -55,7 +56,7 @@ export class UnlockScene extends Phaser.Scene {
       });
       if (resume) {
         session.playerId = player.id;
-        switchTo(this, SCENES.Menu);
+        continueTournament(this);
         return;
       }
     }

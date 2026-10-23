@@ -15,6 +15,7 @@ import { drawPanel } from '../ui/widgets/panel';
 import { TextInput } from '../ui/widgets/TextInput';
 import { SCENES } from './keys';
 import { switchTo } from './nav';
+import { continueTournament } from './tournament';
 
 const PANEL_W = 640;
 
@@ -61,7 +62,7 @@ export class StartScene extends Phaser.Scene {
       this,
       W / 2,
       top + 204,
-      [{ label: 'Aloita peli' }, { label: 'Tulokset', detail: 'Vaatii salasanan' }],
+      [{ label: 'Turnaus', detail: 'Aloita vuoro' }, { label: 'Tulokset', detail: 'Vaatii salasanan' }],
       { width: 520, itemHeight: 54, gap: 10, fontSize: 26, onSelect: (index) => (index === 0 ? this.startPlayer() : void this.openResults()) },
     );
     this.nameField.on('change', () => {
@@ -108,7 +109,7 @@ export class StartScene extends Phaser.Scene {
       return;
     }
     this.busy = true;
-    switchTo(this, SCENES.Menu);
+    continueTournament(this);
   }
 
   private async openResults(): Promise<void> {

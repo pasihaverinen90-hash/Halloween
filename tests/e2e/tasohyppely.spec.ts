@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createPlayer, expectNoRuntimeErrors, openGame, press, savedData, sceneState, selectGame, waitForScene, waitForState } from './helpers';
+import { expectNoRuntimeErrors, press, savedData, sceneState, startTournamentAt, waitForScene, waitForState } from './helpers';
 
 /** Run code against the platformer scene (test helpers and its state). */
 async function platformer<T>(page: Page, fn: string): Promise<T> {
@@ -17,11 +17,7 @@ async function startAttempt(page: Page): Promise<void> {
 
 test('tasohyppely: liikkuminen, ruoska, ei taukoa, kynttilä ja kolikko, zombi, kuoppa, esineet, kauppa, jatkaminen kentän alusta ja päänoita', async ({ page }) => {
   test.setTimeout(480_000);
-  await openGame(page);
-  await createPlayer(page, 'Metsästäjä');
-  await selectGame(page, 'tasohyppely');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
+  await startTournamentAt(page, 'Metsästäjä', 'tasohyppely');
   await press(page, 'Enter');
 
   // Yritys 1 alkaa hautausmaalta täysillä sydämillä
@@ -174,12 +170,13 @@ test('tasohyppely: liikkuminen, ruoska, ei taukoa, kynttilä ja kolikko, zombi, 
   expect(result).toMatchObject({ attempt: 2, total: 3, isFinal: true, score: won.points });
   await press(page, 'Enter');
 
-  await waitForScene(page, 'Menu');
+  // Turnaus jatkuu seuraavaan peliin (Pasi 23.10.)
+  await waitForScene(page, 'Instructions');
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('kurpitsalinko');
   const record = (await savedData(page)).players[0].games.tasohyppely;
   expect(record.attempts).toHaveLength(2);
   expect(record.finished).toBe(true);
   expect(record).not.toHaveProperty('carry');
-  const tile = (await sceneState(page, 'Menu')).tiles.find((t: { id: string }) => t.id === 'tasohyppely');
-  expect(tile).toEqual({ id: 'tasohyppely', status: 'finished', score: won.points });
+  expect(Math.max(...record.attempts)).toBe(won.points);
   await expectNoRuntimeErrors(page);
 });

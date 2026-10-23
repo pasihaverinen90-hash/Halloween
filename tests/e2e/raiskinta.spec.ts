@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { createPlayer, expectNoRuntimeErrors, openGame, press, savedData, sceneState, selectGame, waitForScene, waitForState } from './helpers';
+import { expectNoRuntimeErrors, press, savedData, sceneState, startTournamentAt, waitForScene, waitForState } from './helpers';
 
 /** Run code against the shooter scene (test helpers and its state). */
 async function shooter<T>(page: Page, fn: string): Promise<T> {
@@ -17,11 +17,7 @@ async function startAttempt(page: Page): Promise<void> {
 
 test('räiskintä: liikkuminen, ei taukoa, boosti, liitonarkku, malja, pyhä vesi, Paholainen ja kaksi yritystä', async ({ page }) => {
   test.setTimeout(420_000);
-  await openGame(page);
-  await createPlayer(page, 'Ampuja');
-  await selectGame(page, 'raiskinta');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
+  await startTournamentAt(page, 'Ampuja', 'raiskinta');
   await press(page, 'Enter');
 
   // Yritys 1
@@ -101,10 +97,12 @@ test('räiskintä: liikkuminen, ei taukoa, boosti, liitonarkku, malja, pyhä ves
     expect(result.score).toBeLessThan(20);
     await press(page, 'Enter');
   }
-  await waitForScene(page, 'Menu');
+  // Turnaus jatkuu seuraavaan peliin (Pasi 23.10.)
+  await waitForScene(page, 'Instructions');
+  expect((await sceneState(page, 'Instructions')).gameId).toBe('tasohyppely');
   const record = (await savedData(page)).players[0].games.raiskinta;
   expect(record.attempts).toHaveLength(2);
   expect(record.finished).toBe(true);
-  expect((await sceneState(page, 'Menu')).tiles[3]).toEqual({ id: 'raiskinta', status: 'finished', score: won.points });
+  expect((await savedData(page)).players[0].games.raiskinta).toMatchObject({ finished: true, attempts: expect.arrayContaining([won.points]) });
   await expectNoRuntimeErrors(page);
 });

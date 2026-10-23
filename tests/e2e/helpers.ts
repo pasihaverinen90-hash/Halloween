@@ -10,7 +10,7 @@ export const STORAGE_KEY = 'halloween-peli-ilta:v1';
 export const PASSWORD = 'Pasi1234';
 
 /** Open the game with the given saved data (or empty results). */
-export async function openGame(page: Page, data: unknown = null): Promise<void> {
+export async function openGame(page: Page, data: unknown = null, continueTurn = false): Promise<void> {
   await page.goto('./');
   await page.evaluate(
     ([key, value]) => {
@@ -20,7 +20,7 @@ export async function openGame(page: Page, data: unknown = null): Promise<void> 
     [STORAGE_KEY, data] as const,
   );
   await page.reload();
-  await unlock(page);
+  await unlock(page, continueTurn);
 }
 
 /**
@@ -44,7 +44,8 @@ export async function unlock(page: Page, continueTurn = false): Promise<void> {
     if (state.selected !== wanted) await press(page, 'ArrowLeft', 150);
     await press(page, 'Enter');
   }
-  await waitForScene(page, continueTurn ? 'Menu' : 'Start');
+  // Pasi 23.10.: a continued tournament turn goes straight to the next game.
+  await waitForScene(page, continueTurn ? 'Instructions' : 'Start');
 }
 
 /** Thanks screen: Enter and Pasi's password let the next player in. */
@@ -110,11 +111,31 @@ export async function typeText(page: Page, text: string, pauseMs = 50): Promise<
   }
 }
 
-/** Create a player on the start screen and go to the menu. */
+/** Create a player on the start screen; the tournament starts with the first game's instructions. */
 export async function createPlayer(page: Page, name: string): Promise<void> {
   await typeText(page, name);
   await press(page, 'Enter');
-  await waitForScene(page, 'Menu');
+  await waitForScene(page, 'Instructions');
+}
+
+/** The tournament's games in playing order (src/games/registry.ts). */
+export const TOURNAMENT = ['arvoitukset', 'lentopeli', 'raiskinta', 'tasohyppely', 'kurpitsalinko'];
+
+/** Finished records with the given score for these games. */
+export function finishedGames(ids: string[], score = 0): Record<string, unknown> {
+  return Object.fromEntries(
+    ids.map((id) => [id, { attempts: [score], finished: true, checkpoint: null, manualScore: null, updatedAt: '2026-10-31T19:00:00.000Z' }]),
+  );
+}
+
+/**
+ * Tournament: a player who has played every game before this one continues
+ * the turn, which opens this game's instruction screen.
+ */
+export async function startTournamentAt(page: Page, name: string, gameId: string): Promise<void> {
+  const before = TOURNAMENT.slice(0, TOURNAMENT.indexOf(gameId));
+  await openGame(page, savedEvening([{ id: 'p1', name, games: finishedGames(before) }]), true);
+  expect((await sceneState(page, 'Instructions')).gameId).toBe(gameId);
 }
 
 /** Hangman: guess the given wrong letters, then every letter of the current phrase. */
@@ -166,9 +187,9 @@ export function savedEvening(players: Array<{ id: string; name: string; games?: 
   };
 }
 
-/** A finished hangman record with the given score. */
-export function hangman(score: number, extra: Record<string, unknown> = {}): Record<string, unknown> {
-  return { hirsipuu: { attempts: [score], finished: true, checkpoint: null, manualScore: null, updatedAt: '2026-10-31T19:00:00.000Z', ...extra } };
+/** A finished riddle record (the tournament's first game) with the given score. */
+export function riddles(score: number, extra: Record<string, unknown> = {}): Record<string, unknown> {
+  return { arvoitukset: { attempts: [score], finished: true, checkpoint: null, manualScore: null, updatedAt: '2026-10-31T19:00:00.000Z', ...extra } };
 }
 
 /**
