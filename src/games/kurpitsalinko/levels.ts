@@ -17,6 +17,13 @@ export interface LevelDef {
   water: Array<{ x0: number; x1: number; y: number }>;
   skeletons: Array<{ x: number; fromY?: number; moves?: boolean }>;
   barrels: Array<{ x: number; fromY?: number }>;
+  /** Pasi 23.10.: a crate with a fixed special weapon inside; a blast opens it. */
+  crates: Array<{ x: number; fromY?: number; weapon: 'cluster' | 'homing' | 'beam' | 'bomb'; amount: number }>;
+  /**
+   * Pasi 23.10.: floating symbols that take shots off the level's count when a projectile flies through.
+   * The −1 is on a natural path to a skeleton, the −3 somewhere tricky.
+   */
+  tokens: Array<{ x: number; y: number; value: 1 | 3 }>;
 }
 
 const BEDROCK: Shape = { kind: 'rect', material: 'stone', x: 0, y: 690, w: 2560, h: 30 };
@@ -57,6 +64,11 @@ const EDUSTA: LevelDef = {
   water: [],
   skeletons: [{ x: 720 }, { x: 1100 }, { x: 1520 }, { x: 1950 }, { x: 2420 }],
   barrels: [],
+  crates: [{ x: 2250, weapon: 'cluster', amount: 1 }],
+  tokens: [
+    { x: 480, y: 330, value: 1 },
+    { x: 1300, y: 110, value: 3 },
+  ],
 };
 
 /** 2. Vallihauta ja silta: a bridge over the moat, a hill, a floating rock and a tower on the far side. */
@@ -114,6 +126,11 @@ const VALLIHAUTA: LevelDef = {
   water: [{ x0: 900, x1: 1300, y: 640 }],
   skeletons: [{ x: 610 }, { x: 1100 }, { x: 1460 }, { x: 1640 }, { x: 1880 }, { x: 2405 }],
   barrels: [{ x: 2240 }],
+  crates: [{ x: 1545, weapon: 'bomb', amount: 1 }],
+  tokens: [
+    { x: 850, y: 380, value: 1 },
+    { x: 1640, y: 385, value: 3 },
+  ],
 };
 
 /** 3. Linnanpiha: three towers of different heights, a terrace and skeletons walking between them. */
@@ -145,6 +162,11 @@ const PIHA: LevelDef = {
   water: [],
   skeletons: [{ x: 935 }, { x: 1260, moves: true }, { x: 1580 }, { x: 1760, fromY: 300 }, { x: 2000, moves: true }, { x: 2195 }],
   barrels: [{ x: 1330 }, { x: 2080 }, { x: 2380 }],
+  crates: [{ x: 2470, weapon: 'homing', amount: 1 }],
+  tokens: [
+    { x: 700, y: 260, value: 1 },
+    { x: 1690, y: 355, value: 3 },
+  ],
 };
 
 /** 4. Muurit ja vartiotornit: a high wall, two wooden watchtowers, a hill and a ridge at the end. */
@@ -189,6 +211,11 @@ const MUURIT: LevelDef = {
     { x: 2470 },
   ],
   barrels: [{ x: 1380 }, { x: 2120 }],
+  crates: [{ x: 2520, weapon: 'cluster', amount: 1 }],
+  tokens: [
+    { x: 800, y: 250, value: 1 },
+    { x: 1450, y: 150, value: 3 },
+  ],
 };
 
 /** 5. Hautaholvi: a crypt under a low, uneven ceiling with hanging pillars; flat shots needed. The vault is a stone mound with the night above it; the far end is a ruin open to the sky, reached with a high arc over the mound. */
@@ -201,8 +228,8 @@ const HOLVI: LevelDef = {
       kind: 'poly',
       material: 'stone',
       points: [
-        [480, 130],
-        [700, 110],
+        [640, 150],
+        [760, 110],
         [1300, 100],
         [1900, 140],
         [1950, 180],
@@ -211,7 +238,7 @@ const HOLVI: LevelDef = {
         [1400, 260],
         [1100, 300],
         [800, 280],
-        [480, 250],
+        [640, 260],
       ],
     },
     // Broken walls of the ruin.
@@ -233,6 +260,11 @@ const HOLVI: LevelDef = {
     { x: 2460, fromY: 330, moves: true },
   ],
   barrels: [{ x: 1220, fromY: 320 }, { x: 1900, fromY: 320 }, { x: 2150, fromY: 330 }],
+  crates: [{ x: 2440, weapon: 'beam', amount: 1 }],
+  tokens: [
+    { x: 700, y: 450, value: 1 },
+    { x: 1200, y: 40, value: 3 },
+  ],
 };
 
 export const LEVELS: readonly LevelDef[] = [EDUSTA, VALLIHAUTA, PIHA, MUURIT, HOLVI];

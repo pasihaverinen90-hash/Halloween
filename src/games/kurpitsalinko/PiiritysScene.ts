@@ -6,9 +6,9 @@ import { addAsset } from '../../ui/place';
 import { applyCameraZoom, H, W, ZOOM } from '../../ui/screen';
 import { COLORS, CSS, TEXT } from '../../ui/theme';
 import { assetKey, type GameContext, type GameSceneData } from '../types';
-import { ARM, BARREL, CATAPULT, CRYPT, EARTH, PROJECTILES, SKELETON, SKY, STONE, WARRIOR, WOOD } from './assets';
+import { ARM, BARREL, CATAPULT, CRATE, CRYPT, EARTH, PROJECTILES, SKELETON, SKY, STONE, TOKENS, WARRIOR, WOOD } from './assets';
 import { LEVELS } from './levels';
-import { Battle, levelScore, powerAt, SKELETON_H, WEAPONS, type BattleEvent, type Weapon } from './logic';
+import { Battle, levelScore, powerAt, SKELETON_H, WEAPON_NAMES, WEAPONS, type BattleEvent, type Weapon } from './logic';
 import type { Material, Shape } from './terrain';
 
 const C = CONFIG.kurpitsalinko;
@@ -58,8 +58,11 @@ export class PiiritysScene extends Phaser.Scene {
   private charging = false;
   private chargeTime = 0;
   private weapon: Weapon = 'pumpkin';
-  /** Special weapons left in this level (Pasi 22.10.: each once a level). */
-  private ammo: Record<Weapon, number> = { pumpkin: Infinity, cluster: 1, homing: 1, beam: 1, bomb: 1 };
+  /** Special weapons left in this attempt (Pasi 23.10.: they carry over from level to level). */
+  private ammo: Record<Weapon, number> = { pumpkin: Infinity, ...CONFIG.kurpitsalinko.startAmmo };
+  /** The previous shot's power and angle, shown on the power bar and as a faint line (Pasi 23.10.). */
+  private lastPower: number | null = null;
+  private lastAngle: number | null = null;
   private previousTrail: Array<[number, number]> = [];
   private finished = false;
   private keys!: HeldKeys;
@@ -84,6 +87,8 @@ export class PiiritysScene extends Phaser.Scene {
   private effects!: Phaser.GameObjects.Graphics;
   private skeletonImages = new Map<number, Phaser.GameObjects.Image>();
   private barrelImages = new Map<number, Phaser.GameObjects.Image>();
+  private crateImages = new Map<number, Phaser.GameObjects.Image>();
+  private tokenImages = new Map<number, Phaser.GameObjects.Image>();
   private projectileImages = new Map<number, Phaser.GameObjects.Image>();
   private levelText!: Phaser.GameObjects.Text;
   private shotText!: Phaser.GameObjects.Text;
@@ -116,6 +121,9 @@ export class PiiritysScene extends Phaser.Scene {
     this.charging = false;
     this.chargeTime = 0;
     this.weapon = 'pumpkin';
+    this.ammo = { pumpkin: Infinity, ...C.startAmmo };
+    this.lastPower = null;
+    this.lastAngle = null;
     this.previousTrail = [];
     this.finished = false;
     this.camZoom = AIM_ZOOM;
@@ -123,6 +131,8 @@ export class PiiritysScene extends Phaser.Scene {
     this.bursts = [];
     this.skeletonImages = new Map();
     this.barrelImages = new Map();
+    this.crateImages = new Map();
+    this.tokenImages = new Map();
     this.projectileImages = new Map();
     this.weaponTexts = [];
     this.weaponIcons = [];
@@ -209,18 +219,29 @@ export class PiiritysScene extends Phaser.Scene {
   private startLevel(index: number): void {
     this.levelIndex = index;
     this.battle = new Battle(index);
-    this.ammo = { pumpkin: Infinity, cluster: 1, homing: 1, beam: 1, bomb: 1 };
+    // Pasi 23.10.: the special weapons carry over; every new level brings a few more.
+    if (index > 0) for (const [weapon, more] of Object.entries(C.ammoPerLevel)) this.ammo[weapon as Weapon] += more;
     this.weapon = 'pumpkin';
     this.levelShots = 0;
+    this.lastPower = null;
+    this.lastAngle = null;
     this.panX = null;
     this.previousTrail = [];
     this.charging = false;
-    for (const img of [...this.skeletonImages.values(), ...this.barrelImages.values(), ...this.projectileImages.values()]) {
+    for (const img of [
+      ...this.skeletonImages.values(),
+      ...this.barrelImages.values(),
+      ...this.crateImages.values(),
+      ...this.tokenImages.values(),
+      ...this.projectileImages.values(),
+    ]) {
       this.tweens.killTweensOf(img);
       img.destroy();
     }
     this.skeletonImages.clear();
     this.barrelImages.clear();
+    this.crateImages.clear();
+    this.tokenImages.clear();
     this.projectileImages.clear();
     const level = this.battle.level;
     const crypt = index === LEVELS.length - 1;
@@ -236,6 +257,14 @@ export class PiiritysScene extends Phaser.Scene {
     }
     for (const b of this.battle.barrels) {
       this.barrelImages.set(b.id, this.inWorld(addAsset(this, BARREL, b.x, b.y, { origin: [0.5, 1] }).setDepth(8)));
+    }
+    for (const c of this.battle.crates) {
+      this.crateImages.set(c.id, this.inWorld(addAsset(this, CRATE, c.x, c.y, { origin: [0.5, 1] }).setDepth(8)));
+    }
+    for (const t of this.battle.tokens) {
+      const img = this.inWorld(addAsset(this, TOKENS, t.x, t.y, { frame: t.value === 3 ? 1 : 0 }).setDepth(9));
+      this.tweens.add({ targets: img, y: t.y - 8, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+      this.tokenImages.set(t.id, img);
     }
     this.drawWater();
     this.phase = 'intro';
@@ -438,7 +467,10 @@ export class PiiritysScene extends Phaser.Scene {
     this.levelShots++;
     this.panX = null;
     this.battle.fire(weapon, this.angle, power);
-    if (this.ammo[this.weapon] <= 0) this.weapon = 'pumpkin';
+    this.lastPower = weapon === 'beam' ? this.lastPower : power;
+    this.lastAngle = this.angle;
+    // After a special weapon the normal pumpkin is chosen again, so the rare ones are not used by accident.
+    this.weapon = 'pumpkin';
     this.phase = 'flight';
     this.phaseTime = 0;
     const sfx = this.ctx.sfx;
@@ -498,6 +530,31 @@ export class PiiritysScene extends Phaser.Scene {
         }
         sfx.noise({ duration: 0.25, volume: 0.1, filterFreq: 3000, filterType: 'highpass', delay: 0.05 });
         sfx.tone({ freq: 700, slideTo: 300, duration: 0.25, type: 'triangle', volume: 0.06 });
+        break;
+      }
+      case 'crate': {
+        this.ammo[e.weapon] += e.amount;
+        this.floatText(e.x, e.y - 30, `+${e.amount} ${WEAPON_NAMES[e.weapon]}`, CSS.gold);
+        sfx.tone({ freq: 660, slideTo: 1320, duration: 0.3, type: 'triangle', volume: 0.08 });
+        const img = [...this.crateImages.entries()].find(([, image]) => Math.abs(image.x - e.x) < 2);
+        if (img) {
+          this.crateImages.delete(img[0]);
+          this.tweens.add({ targets: img[1], alpha: 0, scale: img[1].scale * 1.4, duration: 300, onComplete: () => img[1].destroy() });
+        }
+        break;
+      }
+      case 'token': {
+        this.levelShots = Math.max(0, this.levelShots - e.value);
+        this.floatText(e.x, e.y - 30, `Laukauksia −${e.value}`, e.value === 3 ? CSS.gold : CSS.green);
+        sfx.tone({ freq: 880, slideTo: 1760, duration: 0.25, type: 'sine', volume: 0.08 });
+        sfx.tone({ freq: 1320, slideTo: 2200, duration: 0.25, type: 'sine', volume: 0.06, delay: 0.1 });
+        const token = this.battle.tokens.find((t) => t.x === e.x && t.y === e.y);
+        const img = token ? this.tokenImages.get(token.id) : undefined;
+        if (token && img) {
+          this.tokenImages.delete(token.id);
+          this.tweens.killTweensOf(img);
+          this.tweens.add({ targets: img, alpha: 0, scale: img.scale * 1.8, duration: 350, onComplete: () => img.destroy() });
+        }
         break;
       }
       case 'splash':
@@ -562,6 +619,17 @@ export class PiiritysScene extends Phaser.Scene {
       img.setPosition(barrel.x, barrel.y);
       img.setTint(barrel.fuse !== null && Math.floor(this.time.now / 60) % 2 === 0 ? 0xffd04a : 0xffffff);
     }
+    for (const c of b.crates) {
+      const img = this.crateImages.get(c.id);
+      if (!img) continue;
+      if (!c.alive) {
+        // Lost in the moat (an opened crate is removed when it opens).
+        this.crateImages.delete(c.id);
+        img.destroy();
+        continue;
+      }
+      img.setPosition(c.x, c.y);
+    }
     // Projectiles
     const seen = new Set<number>();
     for (const p of b.projectiles) {
@@ -584,6 +652,10 @@ export class PiiritysScene extends Phaser.Scene {
     const launch = b.launch;
     const aiming = this.phase === 'aim';
     this.aimLine.clear();
+    if (aiming && this.lastAngle !== null) {
+      const a = (this.lastAngle * Math.PI) / 180;
+      this.aimLine.lineStyle(3, 0xffffff, 0.35).lineBetween(launch.x, launch.y, launch.x + Math.cos(a) * 80, launch.y - Math.sin(a) * 80);
+    }
     if (aiming) {
       const a = (this.angle * Math.PI) / 180;
       const len = 90;
@@ -629,6 +701,12 @@ export class PiiritysScene extends Phaser.Scene {
 
     this.updateCamera(dt);
     this.refreshPower();
+  }
+
+  private floatText(x: number, y: number, text: string, color: string): void {
+    const label = this.inWorld(this.add.text(x, y, text, { ...TEXT.bodyBold, fontSize: '30px', color }).setOrigin(0.5).setDepth(40));
+    label.setShadow(0, 2, '#000000', 6, true, true);
+    this.tweens.add({ targets: label, y: y - 60, alpha: 0, delay: 500, duration: 900, onComplete: () => label.destroy() });
   }
 
   private boneBurst(x: number, y: number): void {
@@ -732,6 +810,12 @@ export class PiiritysScene extends Phaser.Scene {
     for (const barrel of b.barrels) {
       if (barrel.alive) g.fillStyle(0xe5484d, 1).fillCircle(MAP_X + barrel.x * sx, MAP_Y + (barrel.y - 20) * sy, 2.5);
     }
+    for (const c of b.crates) {
+      if (c.alive) g.fillStyle(0xc08040, 1).fillRect(MAP_X + c.x * sx - 3, MAP_Y + (c.y - 18) * sy - 3, 6, 6);
+    }
+    for (const t of b.tokens) {
+      if (!t.taken) g.fillStyle(t.value === 3 ? 0xf5c542 : 0x8fdc5a, 1).fillCircle(MAP_X + t.x * sx, MAP_Y + Math.max(0, t.y) * sy, 3);
+    }
     for (const p of b.projectiles) g.fillStyle(0xffd04a, 1).fillCircle(MAP_X + p.x * sx, MAP_Y + Math.max(0, p.y) * sy, 3);
     // What the camera shows now.
     const left = this.camX - viewW / 2;
@@ -787,7 +871,8 @@ export class PiiritysScene extends Phaser.Scene {
   private refreshHud(): void {
     if (!this.levelText) return;
     this.levelText.setText(`Kenttä ${this.levelIndex + 1}/${LEVELS.length}: ${this.battle.level.name}`);
-    this.shotText.setText(`Laukaukset: ${this.shots}`);
+    // Shots in this level, and how many still give the full 200 points.
+    this.shotText.setText(`Laukaukset: ${this.levelShots} / ${this.battle.level.skeletons.length + C.pointSteps[0].extra}`);
     this.leftText.setText(`Luurankoja jäljellä: ${this.battle.skeletonsLeft()}`);
     const g = this.weaponBar.clear();
     WEAPONS.forEach((weapon, i) => {
@@ -816,6 +901,12 @@ export class PiiritysScene extends Phaser.Scene {
     g.fillStyle(COLORS.panelLight, 1).fillRoundedRect(x, 58, 150, 16, 6);
     const p = this.power();
     if (p > 0) g.fillStyle(p > 0.85 ? COLORS.red : COLORS.orange, 1).fillRoundedRect(x, 58, Math.max(8, 150 * p), 16, 6);
+    // The previous shot's power as a white mark (Pasi 23.10.).
+    if (this.lastPower !== null) {
+      const mx = x + 150 * this.lastPower;
+      g.fillStyle(0xffffff, 1).fillRect(mx - 1.5, 53, 3, 26);
+      g.fillTriangle(mx - 6, 50, mx + 6, 50, mx, 57);
+    }
   }
 
   private showMessage(title: string, sub: string): void {

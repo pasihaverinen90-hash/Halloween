@@ -1104,6 +1104,27 @@ Hyvä tietää:
 
 > Punertava ruutitynnyri, jossa on keltainen huutomerkki. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 40 × 48 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
+### `piiritys-laatikko.png` – Aselaatikko
+
+- **Koko:** 40 × 36 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Puinen laatikko, jonka kyljessä on kurpitsamerkki. Räjähdys avaa sen. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 40 × 36 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
+### `piiritys-merkit.png` – Laukausmerkit −1 ja −3
+
+- **Koko:** 64 × 64 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+- **Animaatio:** 2 kuvaa vierekkäin vasemmalta oikealle: −1, −3
+
+**Kuvaus generaattorille:**
+
+> Ilmassa leijuvat hehkuvat merkit: vihreä ympyrä, jossa on teksti −1, ja kultainen ympyrä, jossa on teksti −3. Tyyli: Pelkistetty piirroskuva, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 2 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (−1, −3). Yksi ruutu on 64 × 64 pikseliä, koko kuva 128 × 64 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
 ### `piiritys-ammukset.png` – Ammukset
 
 - **Koko:** 36 × 36 px

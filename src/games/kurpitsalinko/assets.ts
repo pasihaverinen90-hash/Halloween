@@ -362,6 +362,51 @@ function drawBarrel(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   ctx.fillText('!', w / 2, h / 2 + 1);
 }
 
+/** Weapon crate (Pasi 23.10.): a wooden box with a pumpkin mark. */
+function drawCrate(ctx: CanvasRenderingContext2D, w: number, h: number): void {
+  shape(ctx, '#8a5c34', () => ctx.rect(3, 3, w - 6, h - 6));
+  ctx.strokeStyle = '#5b3b24';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(4, 4);
+  ctx.lineTo(w - 4, h - 4);
+  ctx.moveTo(w - 4, 4);
+  ctx.lineTo(4, h - 4);
+  ctx.stroke();
+  outline(ctx, 3);
+  ctx.strokeRect(3, 3, w - 6, h - 6);
+  shape(ctx, '#ef7d1e', () => ctx.ellipse(w / 2, h / 2, w * 0.2, h * 0.18, 0, 0, Math.PI * 2), 2);
+  shape(ctx, '#3f5f34', () => ctx.rect(w / 2 - 2, h / 2 - h * 0.18 - 4, 4, 5), 1.5);
+}
+
+/** Floating symbols that take shots off the count (Pasi 23.10.): −1 and −3. */
+function drawTokens(ctx: CanvasRenderingContext2D, w: number, h: number): void {
+  const fw = w / 2;
+  for (const [i, label, color, glowColor] of [
+    [0, '−1', '#8fdc5a', 'rgba(143, 220, 90, 0.35)'],
+    [1, '−3', '#f5c542', 'rgba(245, 197, 66, 0.4)'],
+  ] as const) {
+    const cx = i * fw + fw / 2;
+    const cy = h / 2;
+    const glow = ctx.createRadialGradient(cx, cy, 4, cx, cy, fw / 2);
+    glow.addColorStop(0, glowColor);
+    glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(cx - fw / 2, 0, fw, h);
+    shape(ctx, '#1d1230', () => ctx.arc(cx, cy, fw * 0.32, 0, Math.PI * 2), 3);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, fw * 0.32, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.font = `800 ${Math.round(fw * 0.32)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, cx, cy + 1);
+  }
+}
+
 /** The five projectiles side by side: pumpkin, cluster pumpkin, homing pumpkin, bomb, bomblet. */
 function drawProjectiles(ctx: CanvasRenderingContext2D, w: number, h: number): void {
   const fw = w / 5;
@@ -504,6 +549,11 @@ export const PROJECTILES = spec(
   true,
   { count: 5, order: 'kurpitsa, rypälekurpitsa, ohjautuva kurpitsa, kurpitsapommi, pikkukurpitsa' },
 );
+export const CRATE = spec('piiritys-laatikko.png', 'Aselaatikko', 'Puinen laatikko, jonka kyljessä on kurpitsamerkki. Räjähdys avaa sen.', 40, 36, drawCrate);
+export const TOKENS = spec('piiritys-merkit.png', 'Laukausmerkit −1 ja −3', 'Ilmassa leijuvat hehkuvat merkit: vihreä ympyrä, jossa on teksti −1, ja kultainen ympyrä, jossa on teksti −3.', 64, 64, drawTokens, true, {
+  count: 2,
+  order: '−1, −3',
+});
 export const PREVIEW = spec('piiritys-esikatselu.png', 'Valikon esikatselukuva', 'Katapultti heittää kurpitsan kohti linnan muurilla seisovaa luurankoa yöllä.', 360, 200, drawPreview, false);
 
-export const ASSETS: AssetSpec[] = [SKY, CRYPT, EARTH, STONE, WOOD, CATAPULT, ARM, WARRIOR, SKELETON, BARREL, PROJECTILES];
+export const ASSETS: AssetSpec[] = [SKY, CRYPT, EARTH, STONE, WOOD, CATAPULT, ARM, WARRIOR, SKELETON, BARREL, CRATE, TOKENS, PROJECTILES];

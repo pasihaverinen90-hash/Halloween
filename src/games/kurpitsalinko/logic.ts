@@ -63,8 +63,28 @@ export interface Barrel {
   fuse: number | null;
 }
 
+/** A crate with a special weapon inside (Pasi 23.10.); `alive` = still closed. */
+export interface Crate extends Barrel {
+  weapon: Exclude<Weapon, 'pumpkin'>;
+  amount: number;
+}
+
+/** A floating −1 or −3 that takes shots off the level's count (Pasi 23.10.). */
+export interface Token {
+  id: number;
+  x: number;
+  y: number;
+  value: number;
+  taken: boolean;
+}
+
+export const CRATE_W = 40;
+export const CRATE_H = 36;
+
 export type BattleEvent =
   | { type: 'blast'; x: number; y: number; r: number; barrel: boolean }
+  | { type: 'crate'; x: number; y: number; weapon: Exclude<Weapon, 'pumpkin'>; amount: number }
+  | { type: 'token'; x: number; y: number; value: number }
   | { type: 'beam'; x0: number; y0: number; x1: number; y1: number; width: number }
   | { type: 'kill'; id: number; x: number; y: number; how: 'blast' | 'fall' | 'water' | 'out' }
   | { type: 'splash'; x: number; y: number }
@@ -92,8 +112,8 @@ export function powerAt(heldSeconds: number): number {
 }
 
 /**
- * Points of one level (Pasi 22.10.): 200 when the shots are at most the
- * skeletons + 1, then less in steps (+2–5: 150, +6–10: 100, +11–15: 50, more: 25).
+ * Points of one level (Pasi 22.10., 23.10. more forgiving): 200 when the shots
+ * are at most the skeletons + 3, then less in steps (CONFIG.kurpitsalinko.pointSteps).
  */
 export function levelScore(skeletons: number, shots: number): number {
   const extra = shots - skeletons;
@@ -130,6 +150,8 @@ export class Battle {
   readonly terrain: Terrain;
   skeletons: Skeleton[];
   barrels: Barrel[];
+  crates: Crate[];
+  tokens: Token[];
   projectiles: Projectile[] = [];
   /** Things that happened since the last takeEvents() (for pictures and sounds). */
   private events: BattleEvent[] = [];
@@ -162,6 +184,17 @@ export class Battle {
       alive: true,
       fuse: null,
     }));
+    this.crates = this.level.crates.map((c, i) => ({
+      id: 200 + i,
+      x: c.x,
+      y: this.terrain.surfaceBelow(c.x, c.fromY ?? 0) ?? C.levelHeight,
+      vy: 0,
+      alive: true,
+      fuse: null,
+      weapon: c.weapon,
+      amount: c.amount,
+    }));
+    this.tokens = this.level.tokens.map((t, i) => ({ id: 300 + i, x: t.x, y: t.y, value: t.value, taken: false }));
   }
 
   get launch(): { x: number; y: number } {
@@ -184,6 +217,7 @@ export class Battle {
       this.projectiles.length > 0 ||
       this.beamLeft > 0 ||
       this.barrels.some((b) => b.alive && (b.fuse !== null || b.vy !== 0)) ||
+      this.crates.some((c) => c.alive && c.vy !== 0) ||
       this.skeletons.some((s) => s.alive && (s.fallFrom !== null || s.walkLeft > 0))
     );
   }
@@ -216,6 +250,10 @@ export class Battle {
       for (const b of this.barrels) {
         if (b.alive && b.fuse === null && rectCircle(x, y, half, b.x - BARREL_W / 2, b.y - BARREL_H, BARREL_W, BARREL_H)) b.fuse = C.barrelDelay;
       }
+      for (const c of this.crates) {
+        if (c.alive && rectCircle(x, y, half, c.x - CRATE_W / 2, c.y - CRATE_H, CRATE_W, CRATE_H)) this.openCrate(c);
+      }
+      this.collectTokens(x, y);
       this.trail.push([x, y]);
       x += dx * 6;
       y += dy * 6;
@@ -246,6 +284,7 @@ export class Battle {
       }
       this.fall(b, dt);
     }
+    for (const c of this.crates) if (c.alive) this.fall(c, dt);
     for (const s of this.skeletons) {
       if (!s.alive) continue;
       this.fall(s, dt);
@@ -253,30 +292,46 @@ export class Battle {
     }
   }
 
+  private openCrate(c: Crate): void {
+    c.alive = false;
+    this.events.push({ type: 'crate', x: c.x, y: c.y - CRATE_H / 2, weapon: c.weapon, amount: c.amount });
+  }
+
+  private collectTokens(x: number, y: number): void {
+    for (const t of this.tokens) {
+      if (!t.taken && Math.hypot(t.x - x, t.y - y) <= C.tokenRadius) {
+        t.taken = true;
+        this.events.push({ type: 'token', x: t.x, y: t.y, value: t.value });
+      }
+    }
+  }
+
   private moveProjectile(p: Projectile, dt: number): void {
     p.age += dt;
-    if (p.kind === 'homing' && p.age > C.homingDelay) {
-      const target = this.nearestSkeleton(p.x, p.y);
-      if (target) {
-        const want = Math.atan2(target.y - SKELETON_H / 2 - p.y, target.x - p.x);
-        const have = Math.atan2(p.vy, p.vx);
-        let turn = want - have;
-        while (turn > Math.PI) turn -= Math.PI * 2;
-        while (turn < -Math.PI) turn += Math.PI * 2;
-        const a = have + Math.max(-C.homingTurn * dt, Math.min(C.homingTurn * dt, turn));
-        p.vx = Math.cos(a) * C.homingSpeed;
-        p.vy = Math.sin(a) * C.homingSpeed;
-      } else p.vy += C.gravity * dt;
-      if (p.age > C.homingSeconds) {
-        this.explodeProjectile(p);
-        return;
-      }
+    // Pasi 23.10.: the homing pumpkin flies freely until it starts to come down, then turns gently
+    // towards the nearest skeleton within reach.
+    const target = p.kind === 'homing' && p.vy > 0 ? this.nearestSkeleton(p.x, p.y, C.homingRange) : null;
+    if (target) {
+      const want = Math.atan2(target.y - SKELETON_H / 2 - p.y, target.x - p.x);
+      const have = Math.atan2(p.vy, p.vx);
+      let turn = want - have;
+      while (turn > Math.PI) turn -= Math.PI * 2;
+      while (turn < -Math.PI) turn += Math.PI * 2;
+      const a = have + Math.max(-C.homingTurn * dt, Math.min(C.homingTurn * dt, turn));
+      const speed = Math.max(C.homingSpeed, Math.hypot(p.vx, p.vy));
+      p.vx = Math.cos(a) * speed;
+      p.vy = Math.sin(a) * speed;
     } else {
       p.vy += C.gravity * dt;
+    }
+    if (p.kind === 'homing' && p.age > C.homingSeconds) {
+      this.explodeProjectile(p);
+      return;
     }
     p.x += p.vx * dt;
     p.y += p.vy * dt;
     if (p.kind !== 'bomblet' && this.projectiles[0] === p) this.trail.push([p.x, p.y]);
+    this.collectTokens(p.x, p.y);
 
     // Into the moat: it sinks without exploding.
     for (const w of this.level.water) {
@@ -293,7 +348,8 @@ export class Battle {
     }
     const hitsThing =
       this.skeletons.some((s) => s.alive && rectCircle(p.x, p.y, 8, s.x - SKELETON_W / 2, s.y - SKELETON_H, SKELETON_W, SKELETON_H)) ||
-      this.barrels.some((b) => b.alive && rectCircle(p.x, p.y, 8, b.x - BARREL_W / 2, b.y - BARREL_H, BARREL_W, BARREL_H));
+      this.barrels.some((b) => b.alive && rectCircle(p.x, p.y, 8, b.x - BARREL_W / 2, b.y - BARREL_H, BARREL_W, BARREL_H)) ||
+      this.crates.some((c) => c.alive && rectCircle(p.x, p.y, 8, c.x - CRATE_W / 2, c.y - CRATE_H, CRATE_W, CRATE_H));
     if (hitsThing || this.terrain.isSolid(p.x, p.y)) this.explodeProjectile(p);
   }
 
@@ -327,6 +383,9 @@ export class Battle {
     }
     for (const b of this.barrels) {
       if (b.alive && b.fuse === null && rectCircle(x, y, r * 0.85, b.x - BARREL_W / 2, b.y - BARREL_H, BARREL_W, BARREL_H)) b.fuse = C.barrelDelay;
+    }
+    for (const c of this.crates) {
+      if (c.alive && rectCircle(x, y, r * 0.85, c.x - CRATE_W / 2, c.y - CRATE_H, CRATE_W, CRATE_H)) this.openCrate(c);
     }
     this.events.push({ type: 'blast', x, y, r, barrel });
   }
@@ -411,9 +470,9 @@ export class Battle {
     if (s.walkLeft <= 0) s.dir = s.dir === 1 ? -1 : 1;
   }
 
-  private nearestSkeleton(x: number, y: number): Skeleton | null {
+  private nearestSkeleton(x: number, y: number, range = Infinity): Skeleton | null {
     let best: Skeleton | null = null;
-    let bestD = Infinity;
+    let bestD = range;
     for (const s of this.skeletons) {
       if (!s.alive) continue;
       const d = Math.hypot(s.x - x, s.y - SKELETON_H / 2 - y);

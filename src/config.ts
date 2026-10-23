@@ -337,24 +337,28 @@ export const CONFIG = {
     bombRadius: 110,
     bombletRadius: 34,
     bombletCount: 5,
-    /** Homing pumpkin: flies normally this long, then turns towards the nearest skeleton (radians per second). */
-    homingDelay: 0.35,
-    homingTurn: 3.2,
-    homingSpeed: 520,
-    homingSeconds: 6,
+    /**
+     * Homing pumpkin (Pasi 23.10.: it was too good): flies freely until it starts to come down, then turns
+     * gently (radians per second) towards the nearest skeleton within this distance.
+     */
+    homingRange: 640,
+    homingTurn: 1.6,
+    homingSpeed: 560,
+    homingSeconds: 7,
     /** Pumpkin beam: width of the burnt corridor, and how long it glows. */
     beamWidth: 26,
     beamSeconds: 0.7,
     /**
-     * Points per level (Pasi 22.10.): 200 when the shots are at most skeletons + 1, then less in steps.
+     * Points per level (Pasi 22.10.; 23.10. more forgiving): 200 when the shots are at most skeletons + 3, then less in steps.
      * Each step: extra shots (beyond the skeletons) up to `extra` give `points`; more than all of them gives `fewest`.
      */
     levelPoints: 200,
     pointSteps: [
-      { extra: 1, points: 200 },
-      { extra: 5, points: 150 },
-      { extra: 10, points: 100 },
-      { extra: 15, points: 50 },
+      // Pasi 23.10.: a little more forgiving, two more shots on every step.
+      { extra: 3, points: 200 },
+      { extra: 7, points: 150 },
+      { extra: 12, points: 100 },
+      { extra: 17, points: 50 },
     ],
     fewestPoints: 25,
     /** Camera while aiming and while a pumpkin flies, and how fast A and D move it while aiming. */
@@ -365,6 +369,14 @@ export const CONFIG = {
     fallBreak: 110,
     /** Moving skeletons walk this far after each shot (from level 3, Pasi 22.10.). */
     walkDistance: 56,
+    /**
+     * Special weapons for the whole attempt (Pasi 23.10.): these at the start, and this many more at the
+     * start of every following level. More come from crates in the levels.
+     */
+    startAmmo: { cluster: 3, homing: 2, beam: 1, bomb: 3 },
+    ammoPerLevel: { cluster: 1, homing: 0, beam: 0, bomb: 0 },
+    /** A floating −1 or −3 is collected by any projectile passing this close (Pasi 23.10.). */
+    tokenRadius: 30,
     /** Wood burns away in a larger circle than earth and stone. */
     woodBlastFactor: 1.5,
     /** Barrels explode with this radius, a moment after they are hit. */

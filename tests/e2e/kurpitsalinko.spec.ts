@@ -68,7 +68,8 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja k
   await page.screenshot({ path: '/tmp/kuvat/kl-sade.png' });
   await waitForState(page, 'Kurpitsalinko', (s) => s.phase === 'aim' || s.phase === 'levelDone', 60_000);
   if ((await sceneState(page, 'Kurpitsalinko')).phase === 'aim') {
-    expect(await sceneState(page, 'Kurpitsalinko')).toMatchObject({ weapon: 'pumpkin', ammo: { beam: 0, cluster: 1 } });
+    // Pasi 23.10.: one beam for the whole attempt, three cluster pumpkins
+    expect(await sceneState(page, 'Kurpitsalinko')).toMatchObject({ weapon: 'pumpkin', ammo: { beam: 0, cluster: 3, homing: 2, bomb: 3 } });
     await press(page, '4');
     expect((await sceneState(page, 'Kurpitsalinko')).weapon).toBe('pumpkin');
   }
@@ -82,11 +83,18 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja k
     if ((await sceneState(page, 'Kurpitsalinko')).phase === 'levelDone') break;
   }
 
-  // Loput kentät: luurangot kaatuvat testin apurilla, ja kuhunkin kuluu 8 ylimääräistä laukausta (100 pistettä)
+  // Loput kentät: luurangot kaatuvat testin apurilla, ja kuhunkin kuluu 10 ylimääräistä laukausta (100 pistettä).
+  // Aseet säilyvät, ja uusi kenttä tuo yhden rypäleen lisää.
+  const clustersBefore = (await sceneState(page, 'Kurpitsalinko')).ammo.cluster;
+  let checkedAmmo = false;
   for (let level = (await sceneState(page, 'Kurpitsalinko')).level; level < 5; level++) {
     await waitForState(page, 'Kurpitsalinko', (s) => s.level === level && (s.phase === 'aim' || s.phase === 'levelDone' || s.phase === 'intro'), 60_000);
     if (level === 4) await page.screenshot({ path: '/tmp/kuvat/kl-holvi.png' });
-    await catapult(page, 'scene.debugClearLevel(scene.battle.skeletonsLeft() + 8)');
+    if (level === 1 && !checkedAmmo) {
+      checkedAmmo = true;
+      expect((await sceneState(page, 'Kurpitsalinko')).ammo.cluster).toBe(clustersBefore + 1);
+    }
+    await catapult(page, 'scene.debugClearLevel(scene.battle.skeletonsLeft() + 10)');
     await waitForState(page, 'Kurpitsalinko', (s) => s.level > level || s.phase === 'won', 60_000);
   }
   const first = await sceneState(page, 'Kurpitsalinko');

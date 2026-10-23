@@ -46,17 +46,16 @@ describe('aiming and points', () => {
     expect(powerAt(C.powerSwingSeconds * 0.25)).toBeCloseTo(0.5, 5);
   });
 
-  it('gives 200 a level, less in steps for extra shots (Pasi 22.10.)', () => {
+  it('gives 200 a level, less in steps for extra shots (Pasi 22.10., 23.10. more forgiving)', () => {
     expect(levelScore(6, 4)).toBe(200);
-    expect(levelScore(6, 6)).toBe(200);
-    expect(levelScore(6, 7)).toBe(200);
-    expect(levelScore(6, 8)).toBe(150);
-    expect(levelScore(6, 11)).toBe(150);
-    expect(levelScore(6, 12)).toBe(100);
-    expect(levelScore(6, 16)).toBe(100);
-    expect(levelScore(6, 17)).toBe(50);
-    expect(levelScore(6, 21)).toBe(50);
-    expect(levelScore(6, 22)).toBe(25);
+    expect(levelScore(6, 9)).toBe(200);
+    expect(levelScore(6, 10)).toBe(150);
+    expect(levelScore(6, 13)).toBe(150);
+    expect(levelScore(6, 14)).toBe(100);
+    expect(levelScore(6, 18)).toBe(100);
+    expect(levelScore(6, 19)).toBe(50);
+    expect(levelScore(6, 23)).toBe(50);
+    expect(levelScore(6, 24)).toBe(25);
     expect(levelScore(6, 200)).toBe(25);
     // Five levels at most 1000.
     expect(LEVELS.length * levelScore(1, 1)).toBe(1000);
@@ -138,12 +137,44 @@ describe('battle', () => {
     expect(events.filter((e) => e.type === 'blast').length).toBe(1 + C.bombletCount);
   });
 
-  it('a homing pumpkin turns towards the nearest skeleton', () => {
+  it('a homing pumpkin flies freely while rising, and only then turns towards a skeleton near it (Pasi 23.10.)', () => {
+    const homing = new Battle(0);
+    const plain = new Battle(0);
+    homing.fire('homing', 55, 0.45);
+    plain.fire('pumpkin', 55, 0.45);
+    let turnedAt: number | null = null;
+    for (let t = 0; t < 6 && homing.projectiles.length > 0 && plain.projectiles.length > 0; t += 1 / 60) {
+      const rising = plain.projectiles[0].vy < 0;
+      homing.step(1 / 60);
+      plain.step(1 / 60);
+      const h = homing.projectiles[0];
+      const p = plain.projectiles[0];
+      if (!h || !p) break;
+      if (rising) expect(Math.hypot(h.x - p.x, h.y - p.y)).toBeLessThan(1);
+      if (turnedAt === null && Math.hypot(h.x - p.x, h.y - p.y) > 5) turnedAt = t;
+    }
+    // It turned at some point after the top of the arc (or flew like a pumpkin, if nothing was near).
+    expect(turnedAt === null || turnedAt > 0.5).toBe(true);
+  });
+
+  it('a crate opens when a blast reaches it, and gives its weapon (Pasi 23.10.)', () => {
     const b = new Battle(0);
-    // Far too weak to reach anything by itself.
-    b.fire('homing', 60, 0.05);
-    settle(b);
-    expect(b.skeletonsLeft()).toBeLessThan(LEVELS[0].skeletons.length);
+    const crate = b.crates[0];
+    b.explode(crate.x + 20, crate.y - 10, C.blastRadius, false);
+    const events = b.takeEvents();
+    expect(crate.alive).toBe(false);
+    expect(events).toContainEqual(expect.objectContaining({ type: 'crate', weapon: 'cluster', amount: 1 }));
+  });
+
+  it('a projectile flying through a −1 or −3 collects it once', () => {
+    const b = new Battle(0);
+    const token = b.tokens[1];
+    expect(token.value).toBe(3);
+    // A pumpkin dropped right onto the symbol.
+    b.projectiles.push({ id: 99, kind: 'pumpkin', x: token.x, y: token.y - 40, vx: 0, vy: 50, age: 0 });
+    const events = settle(b);
+    expect(events.filter((e) => e.type === 'token')).toEqual([{ type: 'token', x: token.x, y: token.y, value: 3 }]);
+    expect(token.taken).toBe(true);
   });
 
   it('a big bomb makes a larger hole than a pumpkin', () => {
@@ -195,6 +226,42 @@ describe('every level can be cleared', () => {
       }
       const missing = LEVELS[i].skeletons.map((s, k) => ({ x: s.x, id: k + 1 })).filter((s) => !hit.has(s.id));
       expect(missing, `${LEVELS[i].name}: näihin ei osu yhdellä kurpitsalla`).toEqual([]);
+    }
+  });
+
+  it('each −1 can be collected with a shot that also fells a skeleton, and each −3 can be reached (Pasi 23.10.)', { timeout: 240_000 }, () => {
+    for (let i = 0; i < LEVELS.length; i++) {
+      const found = new Map<number, boolean>();
+      for (let angle = C.angleMin; angle <= C.angleMax; angle += 1) {
+        for (let power = 0; power <= 1.0001; power += 0.02) {
+          const b = new Battle(i);
+          b.fire('pumpkin', angle, power);
+          for (let t = 0; t < 7 && b.projectiles.length > 0; t += 1 / 60) b.step(1 / 60);
+          const killed = b.skeletons.some((s) => !s.alive);
+          for (const token of b.tokens) {
+            if (!token.taken) continue;
+            if (token.value === 3 || killed) found.set(token.value, true);
+          }
+        }
+        if (found.size === 2) break;
+      }
+      expect(found.get(1), `${LEVELS[i].name}: −1 ei osu kaatolaukauksen reitille`).toBe(true);
+      expect(found.get(3), `${LEVELS[i].name}: −3:een ei ylety`).toBe(true);
+    }
+  });
+
+  it('every crate can be opened with one pumpkin', { timeout: 240_000 }, () => {
+    for (let i = 0; i < LEVELS.length; i++) {
+      let opened = false;
+      for (let angle = C.angleMin; angle <= C.angleMax && !opened; angle += 1) {
+        for (let power = 0; power <= 1.0001 && !opened; power += 0.02) {
+          const b = new Battle(i);
+          b.fire('pumpkin', angle, power);
+          for (let t = 0; t < 7 && b.projectiles.length > 0; t += 1 / 60) b.step(1 / 60);
+          opened = b.crates.every((c) => !c.alive);
+        }
+      }
+      expect(opened, `${LEVELS[i].name}: laatikkoon ei osu`).toBe(true);
     }
   });
 

@@ -6,6 +6,18 @@ import { totalSkeletons } from './logic';
 import { META } from './meta';
 import { PiiritysScene } from './PiiritysScene';
 
+/** "Laukauksia enintään luurangot + 3: 200. + 4–7: 150. …" from the settings. */
+function pointStepsText(): string {
+  const C = CONFIG.kurpitsalinko;
+  let from = 0;
+  const parts = C.pointSteps.map((step, i) => {
+    const text = i === 0 ? `Laukauksia enintään luurangot + ${step.extra}: ${step.points}.` : `+ ${from}–${step.extra}: ${step.points}.`;
+    from = step.extra + 1;
+    return text;
+  });
+  return `${parts.join(' ')} Enemmän: ${C.fewestPoints}.`;
+}
+
 /** 7. Kurpitsalinko – drawn style, Worms-like. Rules: CLAUDE.md, game 7, and Pasi's choices 22.10. */
 const kurpitsalinko: GameDefinition = {
   ...META,
@@ -26,12 +38,13 @@ const kurpitsalinko: GameDefinition = {
       'Kurpitsa räjähtää osuessaan ja kaataa lähellä olevat luurangot. Räjähdys tekee maahan kuopan.',
       'Luuranko hajoaa myös, jos se putoaa korkealta, vallihautaan tai kentän ulkopuolelle.',
       'Ruutitynnyri räjähtää osumasta, ja puurakenteet hajoavat helposti.',
-      'Tavallisia kurpitsoja on loputtomasti. Jokaista erikoisasetta saa käyttää kerran kentässä: rypälekurpitsa, ohjautuva kurpitsa, maaston läpäisevä kurpitsasäde ja iso kurpitsapommi.',
+      'Tavallisia kurpitsoja on loputtomasti. Erikoisaseet (rypäle, ohjautuva, maaston läpäisevä säde ja iso pommi) säilyvät kentästä toiseen, ja niitä saa lisää laatikoista ja uusista kentistä.',
+      'Ammu ilmassa leijuvan −1:n tai −3:n läpi, niin kentän laukauksista vähennetään sen verran.',
       'Kentästä 3 alkaen osa luurangoista liikkuu laukausten välissä. Edellisen laukauksen rata jää näkyviin, ja ylhäällä näkyy koko kentän kartta.',
     ],
     scoring: [
       'Jokaisesta kentästä enintään 200.',
-      'Laukauksia enintään luurangot + 1: 200. + 2–5: 150. + 6–10: 100. + 11–15: 50. Enemmän: 25.',
+      `${pointStepsText()} Ylhäällä näkyy, montako laukausta riittää täysiin pisteisiin.`,
     ],
   },
   preview: PREVIEW,
