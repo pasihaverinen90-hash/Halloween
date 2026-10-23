@@ -258,6 +258,15 @@ Kesken:
 Seuraavaksi:
 - Pasin palautteen mukaiset korjaukset, sitten vaihe 8, viimeistely (koko ilta kolmella testipelaajalla).
 
+### 23.10.2026 – seuraavaksi: hiominen
+
+Pasi 23.10.: kun kurpitsalinko on testattu, aloitetaan konseptin, pelien nimien ja pelien hiominen. Jokaiseen peliin tehdään pieniä säätöjä. Sovittu järjestys (Claude Coden ehdotus):
+1. Teema ja konsepti: Claude Code tuo vaihtoehdot, ja Pasi valitsee. Tarinaa ei keksitä ilman Pasin lupaa.
+2. Pelien lopulliset nimet teeman mukaan.
+3. Valikon ulkoasu.
+4. Pienet säädöt peli kerrallaan: vaikeus, tekstit, kysymykset ja sanat, äänet ja kuvat.
+5. Viimeistely: koko ilta kolmella testipelaajalla ja illan keston tarkistus.
+
 ## Aikataulu
 
 Iltaan on 10 päivää (21.10.). Jäljellä on tasohyppelyn hiominen, salasanatoive, kurpitsalinko ja viimeistely. Aikataulu on tiukka mutta mahdollinen, jos jokaisesta pelistä saadaan palaute nopeasti. Jos aika alkaa loppua, Pasi päättää, mikä peli jätetään pois tai mitä yksinkertaistetaan.
