@@ -91,7 +91,6 @@ export class PiiritysScene extends Phaser.Scene {
   private tokenImages = new Map<number, Phaser.GameObjects.Image>();
   private projectileImages = new Map<number, Phaser.GameObjects.Image>();
   private levelText!: Phaser.GameObjects.Text;
-  private shotText!: Phaser.GameObjects.Text;
   private leftText!: Phaser.GameObjects.Text;
   private aimText!: Phaser.GameObjects.Text;
   private powerBar!: Phaser.GameObjects.Graphics;
@@ -830,12 +829,11 @@ export class PiiritysScene extends Phaser.Scene {
     const panel = this.add.graphics();
     panel.fillStyle(COLORS.night, 0.72);
     panel.fillRoundedRect(16, 12, 410, 92, 14);
-    panel.fillRoundedRect(W - 418, 12, 402, 74, 14);
+    panel.fillRoundedRect(W - 330, 12, 314, 50, 14);
     this.levelText = this.add.text(32, 36, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.bone }).setOrigin(0, 0.5);
     this.aimText = this.add.text(32, 66, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.gold }).setOrigin(0, 0.5);
     this.powerBar = this.add.graphics();
-    this.shotText = this.add.text(W - 32, 34, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.orange }).setOrigin(1, 0.5);
-    this.leftText = this.add.text(W - 32, 64, '', { ...TEXT.bodyBold, fontSize: '19px', color: CSS.bone }).setOrigin(1, 0.5);
+    this.leftText = this.add.text(W - 32, 37, '', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.bone }).setOrigin(1, 0.5);
     // Minimap between the panels: the ground of the whole level, skeletons, barrels and the camera's view.
     panel.fillRoundedRect(MAP_X - 8, MAP_Y - 6, MAP_W + 16, MAP_H + 12, 10);
     const existingMap = this.textures.exists(MAP_KEY) ? (this.textures.get(MAP_KEY) as Phaser.Textures.CanvasTexture) : null;
@@ -871,8 +869,6 @@ export class PiiritysScene extends Phaser.Scene {
   private refreshHud(): void {
     if (!this.levelText) return;
     this.levelText.setText(`Kenttä ${this.levelIndex + 1}/${LEVELS.length}: ${this.battle.level.name}`);
-    // Shots in this level, and how many still give the full 200 points.
-    this.shotText.setText(`Laukaukset: ${this.levelShots} / ${this.battle.level.skeletons.length + C.pointSteps[0].extra}`);
     this.leftText.setText(`Luurankoja jäljellä: ${this.battle.skeletonsLeft()}`);
     const g = this.weaponBar.clear();
     WEAPONS.forEach((weapon, i) => {
