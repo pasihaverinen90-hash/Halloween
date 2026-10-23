@@ -10,9 +10,9 @@ const EVENING = savedEvening([
 ]);
 
 async function openResults(page: import('@playwright/test').Page): Promise<void> {
-  // The start menu remembers its selection; move to "Tulokset" (index 1).
-  if ((await sceneState(page, 'Start')).selected !== 1) await press(page, 'ArrowDown');
-  expect((await sceneState(page, 'Start')).selected).toBe(1);
+  // The start menu: Turnaus, Freeplay, Tulokset (index 2).
+  while ((await sceneState(page, 'Start')).selected < 2) await press(page, 'ArrowDown');
+  expect((await sceneState(page, 'Start')).selected).toBe(2);
   await press(page, 'Enter');
   await waitForScene(page, 'Password');
   await typeText(page, PASSWORD);
@@ -23,8 +23,10 @@ async function openResults(page: import('@playwright/test').Page): Promise<void>
 test('tulokset aukeavat vain oikealla salasanalla', async ({ page }) => {
   await openGame(page, EVENING);
   await press(page, 'ArrowDown');
+  await press(page, 'ArrowDown');
   await press(page, 'Enter');
   await waitForScene(page, 'Password');
+  expect(await sceneState(page, 'Password')).toMatchObject({ title: 'Tulokset' });
   await typeText(page, 'pasi1234');
   await press(page, 'Enter', 500);
   expect((await sceneState(page, 'Password')).error).toMatch(/Väärä salasana/);

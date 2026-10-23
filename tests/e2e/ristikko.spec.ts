@@ -1,14 +1,13 @@
 import { expect, test, type Page } from '@playwright/test';
 import {
-  createPlayer,
   expectNoRuntimeErrors,
+  openFreeplay,
   openGame,
   press,
   savedData,
   sceneState,
-  selectGame,
+  startFreeplayGame,
   typeText,
-  unlock,
   waitForScene,
   waitForState,
 } from './helpers';
@@ -26,19 +25,16 @@ async function openLetters(page: Page): Promise<string> {
   return crossword<string>(page, 'return x.cellsOf(x.currentWord()).filter((k) => !x.locked(k)).map((k) => x.solution.get(k)).join("")');
 }
 
-async function startCrossword(page: Page, name: string): Promise<void> {
+/** Pasi 23.10.: the crossword is played in freeplay only. */
+async function startCrossword(page: Page): Promise<void> {
   await openGame(page);
-  await createPlayer(page, name);
-  await selectGame(page, 'ristikko');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Ristikko', 60_000);
+  await openFreeplay(page);
+  await startFreeplayGame(page, 'ristikko', 'Ristikko');
 }
 
 test('ristikko: oikea ja väärä sana, vihje, hiiri ja koko ristikon ratkaisu', async ({ page }) => {
   test.setTimeout(300_000);
-  await startCrossword(page, 'Ristikoija');
+  await startCrossword(page);
   const start = await sceneState(page, 'Ristikko');
   expect(start).toMatchObject({ phase: 'playing', solved: 0, word: 0, filled: 0, prompt: false });
   expect(start.total).toBeGreaterThanOrEqual(16);
@@ -81,38 +77,15 @@ test('ristikko: oikea ja väärä sana, vihje, hiiri ja koko ristikon ratkaisu',
     await typeText(page, letters.toLocaleLowerCase('fi-FI'), 40);
     await expect.poll(() => crossword<boolean>(page, `return x.solved.has(${i})`), { timeout: 30_000 }).toBe(true);
   }
-  await waitForScene(page, 'AttemptResult', 60_000);
-  const result = await sceneState(page, 'AttemptResult');
-  expect(result).toMatchObject({ kind: 'puzzle', isFinal: true });
-  expect(result.score).toBeGreaterThanOrEqual(600);
-  expect(result.score).toBeLessThanOrEqual(1000);
-  expect((await savedData(page)).players[0].games.ristikko).toMatchObject({ attempts: [result.score], finished: true, checkpoint: null });
-  await press(page, 'Enter');
+  // Freeplay: 0–10 000 points, and the first result gets on the empty top list
+  await waitForScene(page, 'FreeplayResult', 60_000);
+  const result = await sceneState(page, 'FreeplayResult');
+  expect(result).toMatchObject({ gameId: 'ristikko', place: 1, phase: 'name' });
+  expect(result.score).toBeGreaterThanOrEqual(6000);
+  expect(result.score).toBeLessThanOrEqual(10000);
+  expect((await savedData(page))?.players ?? []).toEqual([]);
+  await press(page, 'Escape');
+  await press(page, 'Escape');
   await waitForScene(page, 'Menu');
-  expect((await sceneState(page, 'Menu')).tiles[4]).toEqual({ id: 'ristikko', status: 'finished', score: result.score });
-  await expectNoRuntimeErrors(page);
-});
-
-test('kesken jäänyt ristikko jatkuu samasta kohdasta sivun uudelleenlatauksen jälkeen', async ({ page }) => {
-  test.setTimeout(240_000);
-  await startCrossword(page, 'Katkoristikko');
-  await typeText(page, (await openLetters(page)).toLocaleLowerCase('fi-FI'), 60);
-  await waitForState(page, 'Ristikko', (s) => s.solved === 1);
-  await typeText(page, (await openLetters(page)).slice(0, 1).toLocaleLowerCase('fi-FI'), 60);
-  const before = await sceneState(page, 'Ristikko');
-  await page.waitForTimeout(500);
-
-  // Pasi's password opens the game again, and it offers to continue the unfinished turn.
-  await page.reload();
-  await unlock(page, true);
-  expect((await sceneState(page, 'Menu')).tiles[4]).toMatchObject({ id: 'ristikko', status: 'inProgress' });
-  await selectGame(page, 'ristikko');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Instructions');
-  await press(page, 'Enter');
-  await waitForScene(page, 'Ristikko', 60_000);
-  const after = await sceneState(page, 'Ristikko');
-  expect(after).toMatchObject({ solved: 1, filled: before.filled, row: before.row, col: before.col, dir: before.dir });
-  expect(Math.abs(after.secondsLeft - before.secondsLeft)).toBeLessThan(30);
   await expectNoRuntimeErrors(page);
 });

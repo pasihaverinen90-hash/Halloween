@@ -6,6 +6,7 @@ import {
   expectNoRuntimeErrors,
   riddles,
   openCorrection,
+  openFreeplay,
   openGame,
   press,
   savedData,
@@ -139,7 +140,7 @@ test('ei JSON-varmuuskopioita; CSV, pelaajan poisto ja tyhjennys kahdella vahvis
 
   // Pasi 20.10.: JSON-varmuuskopiot pois käytöstä, joten valikossa ei ole niitä
   const labels: string[] = [(await sceneState(page, 'Correction')).action];
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 10; i++) {
     await press(page, 'ArrowDown', 120);
     labels.push((await sceneState(page, 'Correction')).action);
   }
@@ -148,10 +149,12 @@ test('ei JSON-varmuuskopioita; CSV, pelaajan poisto ja tyhjennys kahdella vahvis
     'Jatka kesken jäänyttä vuoroa',
     'Vie tulokset CSV-tiedostona',
     'Poista pelaaja',
+    'Avaa tai sulje freeplay',
+    'Tyhjennä freeplayn top-listat',
     'Tyhjennä kaikki tulokset',
     'Poistu korjaustilasta',
   ]);
-  for (let i = 0; i < 8; i++) await press(page, 'ArrowUp', 120);
+  for (let i = 0; i < 10; i++) await press(page, 'ArrowUp', 120);
 
   const csvDownload = page.waitForEvent('download');
   await chooseAction(page, 'Vie tulokset CSV-tiedostona');
@@ -184,5 +187,24 @@ test('ei JSON-varmuuskopioita; CSV, pelaajan poisto ja tyhjennys kahdella vahvis
 
   await chooseAction(page, 'Poistu korjaustilasta');
   await waitForScene(page, 'Start');
+  await expectNoRuntimeErrors(page);
+});
+
+test('korjaustila sulkee freeplayn, jolloin se vaatii taas salasanan (Pasi 23.10.)', async ({ page }) => {
+  await openGame(page);
+  await openFreeplay(page);
+  await press(page, 'Escape');
+  await waitForScene(page, 'Start');
+  await openCorrection(page);
+  await chooseAction(page, 'Avaa tai sulje freeplay');
+  await waitForScene(page, 'Dialog');
+  expect((await sceneState(page, 'Dialog')).title).toBe('Suljetaanko freeplay?');
+  await answerDialog(page, true);
+  await chooseAction(page, 'Poistu korjaustilasta');
+  await waitForScene(page, 'Start');
+  await press(page, 'ArrowDown');
+  await press(page, 'Enter');
+  await waitForScene(page, 'Password');
+  expect(await sceneState(page, 'Password')).toMatchObject({ title: 'Avaa freeplay' });
   await expectNoRuntimeErrors(page);
 });

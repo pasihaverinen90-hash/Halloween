@@ -248,6 +248,33 @@ export async function playFlightQuickly(page: Page): Promise<number> {
   return (await sceneState(page, 'AttemptResult')).best as number;
 }
 
+/**
+ * Start screen → freeplay (Pasi 23.10.): the second button; Pasi's password
+ * the first time, after that freeplay stays open. Waits for the freeplay menu.
+ */
+export async function openFreeplay(page: Page): Promise<void> {
+  if ((await sceneState(page, 'Start')).selected !== 1) await press(page, 'ArrowDown');
+  expect((await sceneState(page, 'Start')).selected).toBe(1);
+  await press(page, 'Enter');
+  await expect.poll(async () => (await activeScenes(page)).some((k) => k === 'Password' || k === 'Menu'), { timeout: 30_000 }).toBe(true);
+  if ((await activeScenes(page)).includes('Password')) {
+    await page.waitForTimeout(350);
+    await typeText(page, PASSWORD);
+    await press(page, 'Enter');
+  }
+  await waitForScene(page, 'Menu');
+}
+
+/** Freeplay menu → this game's instruction screen → the game starts. */
+export async function startFreeplayGame(page: Page, id: string, sceneKey: string): Promise<void> {
+  await selectGame(page, id);
+  await press(page, 'Enter');
+  await waitForScene(page, 'Instructions');
+  expect(await sceneState(page, 'Instructions')).toMatchObject({ gameId: id, freeplay: true });
+  await press(page, 'Enter');
+  await waitForScene(page, sceneKey, 60_000);
+}
+
 /** Menu: move the selection to the game with this id. */
 export async function selectGame(page: Page, id: string): Promise<void> {
   for (let i = 0; i < 12; i++) {
