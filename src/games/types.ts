@@ -44,6 +44,13 @@ export interface GameContext {
   carry: unknown | null;
   checkpoint: GameCheckpoint;
   sfx: Sfx;
+  /**
+   * Pasi 23.10.: true in freeplay. Each play is one attempt with nothing
+   * carried over or saved mid-way; report the score unrounded (0..1000), as
+   * freeplay shows it with one more digit. A game may also play differently
+   * (e.g. the endless flight).
+   */
+  freeplay: boolean;
 }
 
 /** Scene data every game scene receives: this.scene.launch(def.sceneKey, { ctx }). */

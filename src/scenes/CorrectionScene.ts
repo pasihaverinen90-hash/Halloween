@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { CONFIG } from '../config';
 import { backupSummary, parseBackup } from '../core/backup';
 import { getDb } from '../core/db';
+import { getFreeplay } from '../core/freeplay';
 import { BACKUP_FILE_ACCEPT, downloadBackupFile, downloadResultsCsv, pickTextFile } from '../core/files';
 import { gameStatus, isPlayerDone, playerTotal, recordScore } from '../core/scores';
 import { session } from '../core/session';
@@ -27,7 +28,7 @@ type Mode = 'menu' | 'grid' | 'popup' | 'busy';
 /** JSON backup files are in use (Pasi 20.10.: turned off, see CONFIG.storage.jsonBackups). */
 const BACKUPS: boolean = CONFIG.storage.jsonBackups;
 
-type ActionId = 'results' | 'continue' | 'backup' | 'import' | 'csv' | 'deletePlayer' | 'clear' | 'exit';
+type ActionId = 'results' | 'continue' | 'backup' | 'import' | 'csv' | 'deletePlayer' | 'freeplay' | 'clearFreeplay' | 'clear' | 'exit';
 
 const ALL_ACTIONS: Array<MenuItem & { id: ActionId; help: string }> = [
   { id: 'results', label: 'Tulokset ja korjaukset', help: 'Kaikki tulokset taulukkona. Valitse ruutu ja paina Enter: voit muuttaa tai poistaa tuloksen tai antaa pelin uudelleen.' },
@@ -36,6 +37,8 @@ const ALL_ACTIONS: Array<MenuItem & { id: ActionId; help: string }> = [
   { id: 'import', label: 'Tuo varmuuskopio', help: 'Palauttaa tulokset varmuuskopiotiedostosta. Nykyisistä tuloksista ladataan ensin varmuuskopio.' },
   { id: 'csv', label: 'Vie tulokset CSV-tiedostona', help: 'Tulostaulukko, jonka voi avata Excelissä tai muussa taulukkolaskentaohjelmassa.' },
   { id: 'deletePlayer', label: 'Poista pelaaja', help: 'Poistaa pelaajan ja kaikki hänen tuloksensa, esimerkiksi testipelaajan.' },
+  { id: 'freeplay', label: 'Avaa tai sulje freeplay', help: 'Freeplay aukeaa aloitusnäkymästä salasanalla ja pysyy auki. Täältä sen voi sulkea uudelleen (tai avata).' },
+  { id: 'clearFreeplay', label: 'Tyhjennä freeplayn top-listat', help: 'Poistaa kaikkien pelien freeplay-tulokset. Turnauksen tuloksiin tämä ei koske.' },
   {
     id: 'clear',
     label: 'Tyhjennä kaikki tulokset',
@@ -198,6 +201,7 @@ export class CorrectionScene extends Phaser.Scene {
       `Pelaajia: ${players.length}`,
       `Kaikki pelit pelanneita: ${players.length - unfinished.length}`,
       `Vuoro kesken: ${unfinished.length === 0 ? '–' : unfinished.map((p) => p.name).join(', ')}`,
+      `Freeplay: ${getFreeplay().isOpen() ? 'auki' : 'kiinni'}`,
       `Tallennus: ${db.saveProblem ? `EI TOIMI – ${BACKUPS ? 'lataa varmuuskopio' : 'vie tulokset CSV-tiedostona'}!` : 'kunnossa'}`,
     ];
     this.info.add(
@@ -239,6 +243,12 @@ export class CorrectionScene extends Phaser.Scene {
         return;
       case 'deletePlayer':
         this.deletePlayer();
+        return;
+      case 'freeplay':
+        void this.toggleFreeplay();
+        return;
+      case 'clearFreeplay':
+        void this.clearFreeplay();
         return;
       case 'clear':
         void this.clearAll();
@@ -324,6 +334,35 @@ export class CorrectionScene extends Phaser.Scene {
     if (!ok) return;
     getDb().deletePlayer(player.id);
     showToast(this, `${player.name} poistettiin.`, 'success');
+    this.renderInfo();
+  }
+
+  /** Pasi 23.10.: freeplay stays open until it is closed here. */
+  private async toggleFreeplay(): Promise<void> {
+    const freeplay = getFreeplay();
+    const open = freeplay.isOpen();
+    const ok = await confirmDialog(this, {
+      title: open ? 'Suljetaanko freeplay?' : 'Avataanko freeplay?',
+      message: open ? 'Freeplayn voi avata taas aloitusnäkymästä salasanalla. Top-listat säilyvät.' : 'Kuka tahansa pääsee pelaamaan freeplayta.',
+      confirmLabel: open ? 'Sulje' : 'Avaa',
+      defaultChoice: 'confirm',
+    });
+    if (!ok) return;
+    freeplay.setOpen(!open);
+    showToast(this, open ? 'Freeplay suljettiin.' : 'Freeplay avattiin.', 'success');
+    this.renderInfo();
+  }
+
+  private async clearFreeplay(): Promise<void> {
+    const ok = await confirmDialog(this, {
+      title: 'Tyhjennetäänkö freeplayn top-listat?',
+      message: 'Kaikkien pelien freeplay-tulokset poistetaan. Tätä ei voi perua.',
+      confirmLabel: 'Tyhjennä',
+      danger: true,
+    });
+    if (!ok) return;
+    getFreeplay().clearLists();
+    showToast(this, 'Freeplayn top-listat tyhjennettiin.', 'success');
     this.renderInfo();
   }
 

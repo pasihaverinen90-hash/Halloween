@@ -296,7 +296,7 @@ export class RistikkoScene extends Phaser.Scene {
   private finish(): void {
     if (this.finished) return;
     this.finished = true;
-    this.ctx.finish(this.crossword.points());
+    this.ctx.finish(this.crossword.points(this.ctx.freeplay));
   }
 
   // ---------------------------------------------------------------- drawing

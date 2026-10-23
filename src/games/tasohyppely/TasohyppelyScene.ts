@@ -748,22 +748,25 @@ export class TasohyppelyScene extends Phaser.Scene {
     return this.phase === 'dead';
   }
 
-  private points(): number {
-    return score({
+  private points(exact = false): number {
+    return score(
+      {
       levelsDone: this.levelsDone,
       progress: this.bestProgress,
       candlesBroken: this.candlesBroken,
       candlesTotal: totalCandles(),
       bossShare: this.boss ? bossShare(this.boss) : 0,
-    });
+      },
+      exact,
+    );
   }
 
   private end(): void {
     if (this.finished) return;
     this.finished = true;
     // The witch fell: nothing is left to play. Otherwise the next attempt continues from the start of this level.
-    if (this.phase === 'won') this.ctx.finish(this.points(), { complete: true });
-    else this.ctx.finish(this.points(), { carry: this.levelStart });
+    if (this.phase === 'won') this.ctx.finish(this.points(this.ctx.freeplay), { complete: true });
+    else this.ctx.finish(this.points(this.ctx.freeplay), { carry: this.levelStart });
   }
 
   // ---------------------------------------------------------------- enemies, shots and items

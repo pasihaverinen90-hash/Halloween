@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { getDb } from '../core/db';
+import { freeplayScore } from '../core/freeplay';
 import { recordScore } from '../core/scores';
 import { session } from '../core/session';
 import { sfx } from '../core/sfx';
@@ -10,7 +11,7 @@ import { H, W } from '../ui/screen';
 import { COLORS } from '../ui/theme';
 import { showToast } from '../ui/toast';
 import { attemptCount, planAttempts } from './attemptFlow';
-import { SCENES, type AttemptIntroData, type AttemptResultData, type GameHostData } from './keys';
+import { SCENES, type AttemptIntroData, type AttemptResultData, type FreeplayResultData, type GameHostData } from './keys';
 import { switchTo } from './nav';
 import { continueTournament } from './tournament';
 
@@ -21,11 +22,15 @@ type HostState = 'idle' | 'intro' | 'playing' | 'result';
  * saving every attempt and result screens. The game itself only plays one
  * attempt and calls ctx.finish(score). There is no pause (Pasi 23.10.): nobody
  * can stop a game to think, not with Esc and not by leaving the window.
+ *
+ * In freeplay (Pasi 23.10.) there is no player: one attempt, nothing saved but
+ * the result on the game's top list (FreeplayResult).
  */
 export class GameHostScene extends Phaser.Scene {
   private def!: GameDefinition;
   private gameId = '';
   private playerId = '';
+  private freeplay = false;
   private state: HostState = 'idle';
   private attempt = 1;
   private total = 1;
@@ -43,6 +48,7 @@ export class GameHostScene extends Phaser.Scene {
 
   init(data: GameHostData): void {
     this.gameId = data?.gameId ?? '';
+    this.freeplay = data?.freeplay === true;
     this.state = 'idle';
     this.attempt = 1;
     this.total = 1;
@@ -52,16 +58,16 @@ export class GameHostScene extends Phaser.Scene {
     const db = getDb();
     const player = session.playerId ? db.getPlayer(session.playerId) : undefined;
     const def = getGame(this.gameId);
-    if (!player) {
+    if (!player && !this.freeplay) {
       switchTo(this, SCENES.Start);
       return;
     }
     if (!def) {
-      continueTournament(this);
+      this.leave();
       return;
     }
     this.def = def;
-    this.playerId = player.id;
+    this.playerId = player?.id ?? '';
     this.add.rectangle(W / 2, H / 2, W, H, COLORS.night);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -74,10 +80,14 @@ export class GameHostScene extends Phaser.Scene {
   }
 
   getTestState(): unknown {
-    return { gameId: this.gameId, state: this.state, attempt: this.attempt, total: this.total };
+    return { gameId: this.gameId, freeplay: this.freeplay, state: this.state, attempt: this.attempt, total: this.total };
   }
 
   private nextAttempt(): void {
+    if (this.freeplay) {
+      this.startAttempt();
+      return;
+    }
     const record = getDb().getRecord(this.playerId, this.def.id);
     const plan = planAttempts(this.def.kind, record, attemptCount(this.def));
     this.total = plan.total;
@@ -104,7 +114,7 @@ export class GameHostScene extends Phaser.Scene {
 
   private startAttempt(): void {
     const db = getDb();
-    const record = db.getRecord(this.playerId, this.def.id);
+    const record = this.freeplay ? undefined : db.getRecord(this.playerId, this.def.id);
     const token = ++this.token;
     const ctx: GameContext = {
       finish: (score, end) => this.finishAttempt(token, score, end),
@@ -112,7 +122,7 @@ export class GameHostScene extends Phaser.Scene {
       checkpoint: {
         initial: record?.checkpoint ?? null,
         save: (state) => {
-          if (token !== this.token || this.state !== 'playing') return;
+          if (token !== this.token || this.state !== 'playing' || this.freeplay) return;
           try {
             db.saveCheckpoint(this.playerId, this.def.id, state);
           } catch (error) {
@@ -121,6 +131,7 @@ export class GameHostScene extends Phaser.Scene {
         },
       },
       sfx,
+      freeplay: this.freeplay,
     };
     this.state = 'playing';
     window.addEventListener('beforeunload', this.guardUnload);
@@ -134,6 +145,16 @@ export class GameHostScene extends Phaser.Scene {
     window.removeEventListener('beforeunload', this.guardUnload);
     this.scene.stop(this.def.sceneKey);
 
+    if (this.freeplay) {
+      const data: FreeplayResultData = {
+        gameId: this.def.id,
+        gameName: this.def.name,
+        score: freeplayScore(score),
+        onDone: (again) => (again ? switchTo(this, SCENES.GameHost, { gameId: this.def.id, freeplay: true }) : this.leave()),
+      };
+      this.scene.launch(SCENES.FreeplayResult, data);
+      return;
+    }
     let record;
     try {
       record = getDb().recordAttempt(this.playerId, this.def.id, score, this.total, end);
@@ -158,6 +179,7 @@ export class GameHostScene extends Phaser.Scene {
   }
 
   private leave(): void {
-    continueTournament(this);
+    if (this.freeplay) switchTo(this, SCENES.Menu);
+    else continueTournament(this);
   }
 }

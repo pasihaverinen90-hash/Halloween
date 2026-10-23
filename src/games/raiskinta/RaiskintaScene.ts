@@ -378,8 +378,8 @@ export class RaiskintaScene extends Phaser.Scene {
     this.bossHealth = health;
   }
 
-  private points(): number {
-    return scoreOf(this.killed, this.playTime, this.bossDefeated);
+  private points(exact = false): number {
+    return scoreOf(this.killed, this.playTime, this.bossDefeated, exact);
   }
 
   // ---------------------------------------------------------------- pope
@@ -440,7 +440,7 @@ export class RaiskintaScene extends Phaser.Scene {
   private end(): void {
     if (this.finished) return;
     this.finished = true;
-    this.ctx.finish(this.points());
+    this.ctx.finish(this.points(this.ctx.freeplay));
   }
 
   // ---------------------------------------------------------------- enemies

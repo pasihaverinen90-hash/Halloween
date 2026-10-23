@@ -267,9 +267,11 @@ export function buildLayout(words: CrosswordWord[]): Layout | null {
  * (400): full time points when solved within 3 minutes, then evenly down to
  * 0 at the end of the time.
  */
-export function crosswordPoints(countedWords: number, totalWords: number, secondsLeft: number): number {
-  const words = Math.floor((C.wordPoints * Math.min(countedWords, totalWords)) / Math.max(1, totalWords));
+export function crosswordPoints(countedWords: number, totalWords: number, secondsLeft: number, exact = false): number {
+  // exact: unrounded, for freeplay's finer points (Pasi 23.10.)
+  const cut = exact ? (n: number) => n : Math.floor;
+  const words = cut((C.wordPoints * Math.min(countedWords, totalWords)) / Math.max(1, totalWords));
   const fullFrom = C.seconds - C.fullTimePointsWithinSeconds;
-  const time = Math.floor(C.timePoints * Math.min(1, Math.max(0, secondsLeft) / fullFrom));
+  const time = cut(C.timePoints * Math.min(1, Math.max(0, secondsLeft) / fullFrom));
   return Math.min(CONFIG.maxScore, words + time);
 }

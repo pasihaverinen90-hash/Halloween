@@ -382,9 +382,11 @@ export function enemyShotSpeed(t: number): number {
  * survived time as a share of the time before the Devil (300) and 300 for
  * defeating the Devil.
  */
-export function scoreOf(killed: number, seconds: number, bossDefeated: boolean): number {
-  const enemies = Math.floor((C.enemyPoints * clamp(killed, 0, ENEMY_TOTAL)) / ENEMY_TOTAL);
-  const survival = Math.floor((C.survivalPoints * clamp(seconds, 0, C.bossAfterSeconds)) / C.bossAfterSeconds);
+export function scoreOf(killed: number, seconds: number, bossDefeated: boolean, exact = false): number {
+  // exact: unrounded, for freeplay's finer points (Pasi 23.10.)
+  const cut = exact ? (n: number) => n : Math.floor;
+  const enemies = cut((C.enemyPoints * clamp(killed, 0, ENEMY_TOTAL)) / ENEMY_TOTAL);
+  const survival = cut((C.survivalPoints * clamp(seconds, 0, C.bossAfterSeconds)) / C.bossAfterSeconds);
   return Math.min(CONFIG.maxScore, enemies + survival + (bossDefeated ? C.bossPoints : 0));
 }
 

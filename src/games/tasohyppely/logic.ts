@@ -735,13 +735,14 @@ export interface ScoreInput {
 }
 
 /** Points (Pasi 21.10.): distance 600 (200 per level), candles 100 (share of all), head witch 300 (share of her health taken). */
-export function score(s: ScoreInput): number {
+export function score(s: ScoreInput, exact = false): number {
   const levels = getLevels().length;
   const distance = Math.min(1, (s.levelsDone + Math.min(1, Math.max(0, s.progress))) / levels);
   const candles = s.candlesTotal > 0 ? Math.min(1, s.candlesBroken / s.candlesTotal) : 0;
   const boss = Math.min(1, Math.max(0, s.bossShare));
   const total = distance * C.distancePoints + candles * C.candlePoints + boss * C.bossPoints;
-  return Math.min(CONFIG.maxScore, Math.round(total));
+  // exact: unrounded, for freeplay's finer points (Pasi 23.10.)
+  return Math.min(CONFIG.maxScore, exact ? total : Math.round(total));
 }
 
 /** All candles of all levels (the candle points are a share of these). */

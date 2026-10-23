@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CONFIG } from '../config';
 import { getDb } from '../core/db';
 import { session } from '../core/session';
 import { GAME_IDS, getGame } from '../games/registry';
@@ -30,6 +31,7 @@ export class InstructionsScene extends Phaser.Scene {
   private plan: AttemptPlan | null = null;
   private leaving = false;
   private gameId = '';
+  private freeplay = false;
 
   constructor() {
     super(SCENES.Instructions);
@@ -37,6 +39,7 @@ export class InstructionsScene extends Phaser.Scene {
 
   init(data: InstructionsData): void {
     this.gameId = data?.gameId ?? '';
+    this.freeplay = data?.freeplay === true;
     this.leaving = false;
   }
 
@@ -44,14 +47,17 @@ export class InstructionsScene extends Phaser.Scene {
     const db = getDb();
     this.def = getGame(this.gameId);
     const player = session.playerId ? db.getPlayer(session.playerId) : undefined;
-    if (!player) {
+    if (!player && !this.freeplay) {
       switchTo(this, SCENES.Start);
       return;
     }
     const def = this.def;
-    this.plan = def ? planAttempts(def.kind, db.getRecord(player.id, def.id), attemptCount(def)) : null;
+    // Freeplay: one attempt every time, nothing remembered from earlier plays.
+    const record = player && !this.freeplay && def ? db.getRecord(player.id, def.id) : undefined;
+    this.plan = def ? planAttempts(def.kind, record, this.freeplay ? 1 : attemptCount(def)) : null;
     if (!def || !this.plan || this.plan.finished) {
-      continueTournament(this);
+      if (this.freeplay) switchTo(this, SCENES.Menu);
+      else continueTournament(this);
       return;
     }
 
@@ -59,8 +65,10 @@ export class InstructionsScene extends Phaser.Scene {
     this.add.text(W / 2, 58, def.name, { ...TEXT.title, fontSize: '66px' }).setOrigin(0.5);
     this.add.text(W / 2, 106, def.genre, { ...TEXT.heading, fontSize: '28px', color: CSS.muted }).setOrigin(0.5);
     addAsset(this, def.preview, 60 + 86, 66, { width: 172, height: 96 });
-    const index = GAME_IDS.indexOf(def.id);
-    if (index >= 0) {
+    const index = this.freeplay ? -1 : GAME_IDS.indexOf(def.id);
+    if (this.freeplay) {
+      this.add.text(W - 60, 66, 'Freeplay', { ...TEXT.heading, fontSize: '30px', color: CSS.muted }).setOrigin(1, 0.5);
+    } else if (index >= 0) {
       this.add
         .text(W - 60, 66, `Peli ${index + 1}/${GAME_IDS.length}`, { ...TEXT.heading, fontSize: '30px', color: CSS.muted })
         .setOrigin(1, 0.5);
@@ -70,26 +78,41 @@ export class InstructionsScene extends Phaser.Scene {
     this.buildRight(def, this.plan);
 
     // Pasi 23.10.: the tournament goes from game to game, so there is no way back to a menu.
-    addKeyHints(this, [['Enter', 'Aloita peli']]);
-    onKeys(this, { Enter: () => this.go() });
+    if (this.freeplay) {
+      addKeyHints(this, [
+        ['Enter', 'Aloita peli'],
+        ['Esc', 'Takaisin valikkoon'],
+      ]);
+      onKeys(this, { Enter: () => this.go(), Escape: () => this.back() });
+    } else {
+      addKeyHints(this, [['Enter', 'Aloita peli']]);
+      onKeys(this, { Enter: () => this.go() });
+    }
   }
 
   getTestState(): unknown {
-    return { gameId: this.def?.id ?? null, resumes: this.plan?.resumes ?? false, next: this.plan?.next ?? null };
+    return { gameId: this.def?.id ?? null, freeplay: this.freeplay, resumes: this.plan?.resumes ?? false, next: this.plan?.next ?? null };
   }
 
   private go(): void {
     if (this.leaving || !this.def) return;
     this.leaving = true;
-    switchTo(this, SCENES.GameHost, { gameId: this.def.id });
+    switchTo(this, SCENES.GameHost, { gameId: this.def.id, freeplay: this.freeplay });
+  }
+
+  private back(): void {
+    if (this.leaving) return;
+    this.leaving = true;
+    switchTo(this, SCENES.Menu);
   }
 
   /** Keys and scoring on the left; the font shrinks if a game's texts would not fit. */
   private buildLeft(def: GameDefinition, plan: AttemptPlan): void {
     drawPanel(this, LEFT_X - 20, TOP - 8, LEFT_W + 40, BOTTOM - TOP + 16, { radius: 16 });
-    const attemptRule =
-      def.instructions.attemptRule ??
-      (plan.kind === 'puzzle' ? 'Yksi kierros.' : plan.total === 1 ? 'Yksi yritys.' : `${plan.total} yritystä. Paras jää voimaan.`);
+    const attemptRule = this.freeplay
+      ? `Freeplay: pisteitä enintään ${fi(CONFIG.maxScore * CONFIG.freeplay.scale)}. Parhaat pääsevät top ${CONFIG.freeplay.topSize} -listalle.`
+      : (def.instructions.attemptRule ??
+        (plan.kind === 'puzzle' ? 'Yksi kierros.' : plan.total === 1 ? 'Yksi yritys.' : `${plan.total} yritystä. Paras jää voimaan.`));
     const scoreLines = [...def.instructions.scoring, attemptRule];
     const keys: Array<[string, string]> = [...def.instructions.keys];
 

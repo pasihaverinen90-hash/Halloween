@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { getDb } from '../core/db';
+import { getFreeplay } from '../core/freeplay';
 import { isNameChar } from '../core/names';
 import { session } from '../core/session';
 import { sfx } from '../core/sfx';
@@ -19,7 +20,7 @@ import { continueTournament } from './tournament';
 
 const PANEL_W = 640;
 
-/** Aloitusnäkymä: the player types a name; Pasi can open the results from here. */
+/** Aloitusnäkymä: a name starts the tournament; freeplay and the results open with Pasi's password. */
 export class StartScene extends Phaser.Scene {
   private nameField!: TextInput;
   private menu!: MenuList;
@@ -46,8 +47,8 @@ export class StartScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    const top = 236;
-    drawPanel(this, W / 2 - PANEL_W / 2, top, PANEL_W, 348, { radius: 20, borderWidth: 3 });
+    const top = 222;
+    drawPanel(this, W / 2 - PANEL_W / 2, top, PANEL_W, 412, { radius: 20, borderWidth: 3 });
     this.add.text(W / 2, top + 46, 'Kirjoita nimesi', { ...TEXT.heading, fontSize: '40px' }).setOrigin(0.5);
     this.nameField = new TextInput(this, W / 2, top + 116, {
       width: 520,
@@ -62,8 +63,18 @@ export class StartScene extends Phaser.Scene {
       this,
       W / 2,
       top + 204,
-      [{ label: 'Turnaus', detail: 'Aloita vuoro' }, { label: 'Tulokset', detail: 'Vaatii salasanan' }],
-      { width: 520, itemHeight: 54, gap: 10, fontSize: 26, onSelect: (index) => (index === 0 ? this.startPlayer() : void this.openResults()) },
+      [
+        { label: 'Turnaus', detail: 'Aloita vuoro' },
+        { label: 'Freeplay', detail: getFreeplay().isOpen() ? 'Pelaa vapaasti' : 'Vaatii salasanan' },
+        { label: 'Tulokset', detail: 'Vaatii salasanan' },
+      ],
+      {
+        width: 520,
+        itemHeight: 54,
+        gap: 10,
+        fontSize: 26,
+        onSelect: (index) => (index === 0 ? this.startPlayer() : index === 1 ? void this.openFreeplay() : void this.openResults()),
+      },
     );
     this.nameField.on('change', () => {
       this.error.setText('');
@@ -73,7 +84,7 @@ export class StartScene extends Phaser.Scene {
     const problem = db.loadProblem ?? db.saveProblem;
     if (problem) {
       this.add
-        .text(W / 2, 616, problem, { ...TEXT.bodyBold, fontSize: '20px', color: CSS.red, align: 'center', wordWrap: { width: 1100 } })
+        .text(W / 2, 652, problem, { ...TEXT.bodyBold, fontSize: '20px', color: CSS.red, align: 'center', wordWrap: { width: 1100 } })
         .setOrigin(0.5);
     }
 
@@ -110,6 +121,18 @@ export class StartScene extends Phaser.Scene {
     }
     this.busy = true;
     continueTournament(this);
+  }
+
+  /** Pasi 23.10.: freeplay opens with Pasi's password once and then stays open (correction mode closes it). */
+  private async openFreeplay(): Promise<void> {
+    if (this.busy) return;
+    const freeplay = getFreeplay();
+    if (!freeplay.isOpen()) {
+      if (!(await askPassword(this, 'Avaa freeplay'))) return;
+      freeplay.setOpen(true);
+    }
+    this.busy = true;
+    switchTo(this, SCENES.Menu);
   }
 
   private async openResults(): Promise<void> {

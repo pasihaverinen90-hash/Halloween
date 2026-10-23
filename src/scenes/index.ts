@@ -2,6 +2,7 @@ import type Phaser from 'phaser';
 import { ALL_GAMES } from '../games/registry';
 import { AttemptIntroScene } from '../ui/AttemptIntroScene';
 import { AttemptResultScene } from '../ui/AttemptResultScene';
+import { FreeplayResultScene } from '../ui/FreeplayResultScene';
 import { DialogScene } from '../ui/DialogScene';
 import { PasswordScene } from '../ui/PasswordScene';
 import { PromptScene } from '../ui/PromptScene';
@@ -9,6 +10,7 @@ import { BootScene } from './BootScene';
 import { CorrectionScene } from './CorrectionScene';
 import { GameHostScene } from './GameHostScene';
 import { GameResultsScene } from './GameResultsScene';
+import { HighscoresScene } from './HighscoresScene';
 import { InstructionsScene } from './InstructionsScene';
 import { MenuScene } from './MenuScene';
 import { PlayerResultsScene } from './PlayerResultsScene';
@@ -30,6 +32,7 @@ export const ALL_SCENES: Array<new () => Phaser.Scene> = [
   InstructionsScene,
   GameHostScene,
   ThanksScene,
+  HighscoresScene,
   ResultsMenuScene,
   PodiumScene,
   GameResultsScene,
@@ -38,6 +41,7 @@ export const ALL_SCENES: Array<new () => Phaser.Scene> = [
   ...ALL_GAMES.map((game) => game.sceneClass),
   AttemptIntroScene,
   AttemptResultScene,
+  FreeplayResultScene,
   PasswordScene,
   DialogScene,
   PromptScene,

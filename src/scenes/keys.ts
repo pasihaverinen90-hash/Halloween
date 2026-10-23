@@ -6,10 +6,12 @@ export const SCENES = {
   Unlock: 'Unlock', // Pasi's password before anyone can play (Pasi 21.10.)
   // Player flow
   Start: 'Start', // aloitusnäkymä: name entry
-  Menu: 'Menu', // päävalikko: game grid
+  Menu: 'Menu', // freeplayn pelivalikko: game grid
   Instructions: 'Instructions', // ohjeruutu
   GameHost: 'GameHost', // runs attempts of one game, pause, saving
   Thanks: 'Thanks', // kiitosnäkymä
+  // Freeplay (Pasi 23.10.); Menu is its game grid
+  Highscores: 'Highscores', // freeplayn top-listat
   // Password-protected
   ResultsMenu: 'ResultsMenu', // tulosnäkymien valikko
   Podium: 'Podium', // palkintojenjako
@@ -19,6 +21,7 @@ export const SCENES = {
   // Overlays (src/ui)
   AttemptIntro: 'AttemptIntro',
   AttemptResult: 'AttemptResult',
+  FreeplayResult: 'FreeplayResult',
   Password: 'Password',
   Dialog: 'Dialog', // confirm / info dialog
   Prompt: 'Prompt', // single-line text/number input
@@ -28,10 +31,29 @@ export const SCENES = {
 
 export interface InstructionsData {
   gameId: string;
+  /** Pasi 23.10.: freeplay instead of the tournament. */
+  freeplay?: boolean;
 }
 
 export interface GameHostData {
   gameId: string;
+  /** Pasi 23.10.: freeplay instead of the tournament. */
+  freeplay?: boolean;
+}
+
+/** Freeplay result over the finished game: score, top 10 place and name. */
+export interface FreeplayResultData {
+  gameId: string;
+  gameName: string;
+  /** Freeplay points 0..10 000. */
+  score: number;
+  /** again = play the same game again, otherwise back to the freeplay menu. */
+  onDone: (again: boolean) => void;
+}
+
+/** Top lists of freeplay, one game at a time. */
+export interface HighscoresData {
+  gameId?: string;
 }
 
 /** "Yritys 2/3" screen before an action-game attempt. Calls onStart when the player presses Enter. */

@@ -40,6 +40,19 @@ export const CONFIG = {
     jsonBackups: false,
   },
 
+  /**
+   * Freeplay (Pasi 23.10.): opened with Pasi's password, every game as often as
+   * you like, and a top 10 list per game that everyone may see. Separate from
+   * the tournament's results.
+   */
+  freeplay: {
+    /** localStorage key of the freeplay lists. Changing it starts from empty lists. */
+    key: 'halloween-peli-ilta:freeplay:v1',
+    /** A game's 0..1000 is shown as 0..10 000 in freeplay, with one more digit of precision. */
+    scale: 10,
+    /** Length of each game's top list; a name is asked only for a result that gets on it. */
+    topSize: 10,
+  },
   audio: {
     /** Master volume of generated sound effects (0..1). Keep low so Pasi's music stays audible. */
     masterVolume: 0.22,

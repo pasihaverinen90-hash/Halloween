@@ -40,7 +40,8 @@ const TIMER_X = 360;
 const TIMER_W = 560;
 const TIMER_Y = 158;
 
-const fi = (n: number): string => n.toLocaleString('fi-FI');
+// Freeplay keeps unrounded points (Pasi 23.10.); the screen always shows whole points.
+const fi = (n: number): string => Math.round(n).toLocaleString('fi-FI');
 
 /** Picture and emoji riddles: ten riddles, 20 seconds each. Plays one round. */
 export class ArvoitusScene extends Phaser.Scene {
@@ -356,7 +357,7 @@ export class ArvoitusScene extends Phaser.Scene {
     const riddle = this.riddle;
     if (riddle.kind === 'monivalinta') {
       const choice = this.selected;
-      if (this.options[choice] === riddle.answers[0]) this.finishRiddle('correct', riddlePoints(current.elapsedMs, 0), choice);
+      if (this.options[choice] === riddle.answers[0]) this.finishRiddle('correct', riddlePoints(current.elapsedMs, 0, this.ctx.freeplay), choice);
       else this.finishRiddle('wrong', 0, choice);
       return true;
     }
@@ -368,7 +369,7 @@ export class ArvoitusScene extends Phaser.Scene {
       return true;
     }
     if (isCorrectAnswer(riddle, field.value)) {
-      this.finishRiddle('correct', riddlePoints(current.elapsedMs, current.wrong));
+      this.finishRiddle('correct', riddlePoints(current.elapsedMs, current.wrong, this.ctx.freeplay));
       return true;
     }
     current.wrong += 1;

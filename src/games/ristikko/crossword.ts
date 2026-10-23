@@ -106,8 +106,8 @@ export class Crossword {
     return [...this.solved].filter((w) => this.cellsOf(w).some((key) => !this.revealed.has(key))).length;
   }
 
-  points(): number {
-    return crosswordPoints(this.counted(), this.layout.words.length, this.allSolved() ? this.secondsLeft : 0);
+  points(exact = false): number {
+    return crosswordPoints(this.counted(), this.layout.words.length, this.allSolved() ? this.secondsLeft : 0, exact);
   }
 
   // ---------------------------------------------------------------- moving

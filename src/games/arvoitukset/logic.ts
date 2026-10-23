@@ -58,13 +58,15 @@ export function isCorrectAnswer(riddle: Riddle, typed: string): boolean {
  * the time; each wrong answer (open riddles) takes 20, never below 0.
  * Time up gives 0.
  */
-export function riddlePoints(elapsedMs: number, wrongAnswers: number): number {
+export function riddlePoints(elapsedMs: number, wrongAnswers: number, exact = false): number {
   const { maxPoints, minPoints, wrongAnswerPenalty, fullPointsSeconds } = CONFIG.arvoitukset;
   if (!(elapsedMs < LIMIT_MS)) return 0;
   const fullMs = fullPointsSeconds * 1000;
   const progress = Math.max(0, elapsedMs - fullMs) / (LIMIT_MS - fullMs);
   const base = maxPoints - (maxPoints - minPoints) * progress;
-  return Math.max(0, Math.round(base - wrongAnswerPenalty * Math.max(0, wrongAnswers)));
+  const points = Math.max(0, base - wrongAnswerPenalty * Math.max(0, wrongAnswers));
+  // exact: unrounded, for freeplay's finer points (Pasi 23.10.)
+  return exact ? points : Math.round(points);
 }
 
 /** Small deterministic hash (FNV-1a), so every player sees the options in the same order. */
