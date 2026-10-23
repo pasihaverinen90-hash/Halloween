@@ -253,7 +253,7 @@ Pasin palaute 22.10.: katapultin varsi oli väärällä puolella, kentät olivat
 Pasin palaute 23.10. (ks. "Pasin kanssa sovitut asiat"): tehty samassa rupeamassa. Testit varmistavat, että jokaisen −1:n saa samalla laukauksella, joka kaataa luurangon, ja että jokaiseen −3:een ja laatikkoon ylettyy yhdellä laukauksella.
 
 Kesken:
-- Illan lyhennys osissa (ks. "Työjärjestys" alempana). Kaikki viisi osaa tehty 23.10.: osa 1 (lyhennykset), osat 2 ja 3 (turnaus ja freeplay), osat 4 ja 5 (loputon lentopeli ja uudet kuva-arvoitukset). Osat 1–3 on julkaistu. Osat 4 ja 5 ovat haarassa `turnaus` (a1e19ef): niiden yksikkötestit ja pelien selaintestit menevät läpi, mutta koko turnauksen testi (`pelikulku.spec.ts`) jäi kesken, kun Pasi sulki koneen 23.10. illalla. Seuraavaksi: aja se, ja jos se menee läpi, vie haara mainiin (`git push origin turnaus:main`) ja kerro Pasille.
+- Illan lyhennys osissa (ks. "Työjärjestys" alempana). Kaikki viisi osaa tehty 23.10.: osa 1 (lyhennykset), osat 2 ja 3 (turnaus ja freeplay), osat 4 ja 5 (loputon lentopeli ja uudet kuva-arvoitukset). Osat 1–3 on julkaistu. Osat 4 ja 5 julkaistiin 23.10. illalla, kun koko turnauksen testi meni läpi. Työ tehtiin haarassa `turnaus`, joka on nyt sama kuin main.
 
 Seuraavaksi:
 - Pasin palautteen mukaiset korjaukset ja lisäominaisuudet, sitten vaihe 8, viimeistely (koko ilta kolmella testipelaajalla).
