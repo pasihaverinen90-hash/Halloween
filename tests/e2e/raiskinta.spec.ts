@@ -86,24 +86,24 @@ test('räiskintä: liikkuminen, ei taukoa, boosti, liitonarkku, malja, pyhä ves
   const won = await sceneState(page, 'Raiskinta');
   await waitForScene(page, 'AttemptResult', 120_000);
   let result = await sceneState(page, 'AttemptResult');
-  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 3, isFinal: false, score: won.points });
+  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 2, isFinal: false, score: won.points });
   expect(result.score).toBeGreaterThanOrEqual(600);
   await press(page, 'Enter');
 
-  // Yritykset 2 ja 3: paavi kaatuu heti
-  for (const attempt of [2, 3]) {
+  // Yritys 2 (Pasi 23.10.: kaksi yritystä): paavi kaatuu heti
+  for (const attempt of [2]) {
     await startAttempt(page);
     expect(await sceneState(page, 'Raiskinta')).toMatchObject({ health: 10, weapon: 1, killed: 0 });
     await shooter(page, 'scene.debugHurt(10)');
     await waitForScene(page, 'AttemptResult', 120_000);
     result = await sceneState(page, 'AttemptResult');
-    expect(result).toMatchObject({ attempt, isFinal: attempt === 3 });
+    expect(result).toMatchObject({ attempt, isFinal: attempt === 2 });
     expect(result.score).toBeLessThan(20);
     await press(page, 'Enter');
   }
   await waitForScene(page, 'Menu');
   const record = (await savedData(page)).players[0].games.raiskinta;
-  expect(record.attempts).toHaveLength(3);
+  expect(record.attempts).toHaveLength(2);
   expect(record.finished).toBe(true);
   expect((await sceneState(page, 'Menu')).tiles[3]).toEqual({ id: 'raiskinta', status: 'finished', score: won.points });
   await expectNoRuntimeErrors(page);

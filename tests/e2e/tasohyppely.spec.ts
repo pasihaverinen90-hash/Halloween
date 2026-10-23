@@ -135,13 +135,13 @@ test('tasohyppely: liikkuminen, ruoska, ei taukoa, kynttilä ja kolikko, zombi, 
   await waitForState(page, 'Tasohyppely', (s) => s.phase === 'dead');
   await waitForScene(page, 'AttemptResult', 120_000);
   let result = await sceneState(page, 'AttemptResult');
-  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 5, isFinal: false });
+  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 3, isFinal: false });
   expect(result.score).toBeGreaterThanOrEqual(200);
   await press(page, 'Enter');
 
-  // Yritys 2/5 jatkuu linnan alusta tavaroilla, jotka olivat kentän alkaessa (ostokset perutaan)
+  // Yritys 2/3 jatkuu linnan alusta tavaroilla, jotka olivat kentän alkaessa (ostokset perutaan)
   await waitForScene(page, 'AttemptIntro');
-  expect(await sceneState(page, 'AttemptIntro')).toMatchObject({ attempt: 2, total: 5, note: 'Jatkat kentän 2 alusta: Linna' });
+  expect(await sceneState(page, 'AttemptIntro')).toMatchObject({ attempt: 2, total: 3, note: 'Jatkat kentän 2 alusta: Linna' });
   await press(page, 'Enter');
   await waitForScene(page, 'Tasohyppely');
   expect(await sceneState(page, 'Tasohyppely')).toMatchObject({
@@ -171,7 +171,7 @@ test('tasohyppely: liikkuminen, ruoska, ei taukoa, kynttilä ja kolikko, zombi, 
   expect(won.points).toBeGreaterThanOrEqual(900);
   await waitForScene(page, 'AttemptResult', 120_000);
   result = await sceneState(page, 'AttemptResult');
-  expect(result).toMatchObject({ attempt: 2, total: 5, isFinal: true, score: won.points });
+  expect(result).toMatchObject({ attempt: 2, total: 3, isFinal: true, score: won.points });
   await press(page, 'Enter');
 
   await waitForScene(page, 'Menu');

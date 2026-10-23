@@ -12,7 +12,7 @@ const tasohyppely: GameDefinition = {
   ...META,
   sceneKey: 'Tasohyppely',
   sceneClass: TasohyppelyScene,
-  // Pasi 22.10.: five attempts, and each continues from the level where the previous one ended.
+  // Pasi 23.10.: three attempts (before 5), and each continues from the level where the previous one ended.
   attempts: C.attempts,
   attemptNote: continueNote,
   // Pasi 23.10.: short instructions; scoring only says what gives points.

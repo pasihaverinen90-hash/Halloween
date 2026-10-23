@@ -66,7 +66,7 @@ describe('aiming and points', () => {
     // Pasi 22.10.: 5–8 skeletons a level.
     expect(LEVELS.map((l) => l.skeletons.length)).toEqual([5, 6, 6, 7, 8]);
     expect(totalSkeletons()).toBe(32);
-    expect(C.attempts).toBe(2);
+    expect(C.attempts).toBe(1);
     // Moving skeletons only from level 3 (Pasi 22.10.).
     expect(LEVELS.slice(0, 2).some((l) => l.skeletons.some((s) => s.moves))).toBe(false);
     expect(LEVELS.slice(2).every((l) => l.skeletons.some((s) => s.moves))).toBe(true);

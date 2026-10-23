@@ -83,8 +83,10 @@ export const CONFIG = {
 
   /** 3. Lentopeli. Distances are in pixels of the 1280-wide game space. */
   lentopeli: {
-    /** The finish is this many seconds of flight away for a flight without crashes. */
-    goalSeconds: 90,
+    /** Pasi 23.10.: two attempts (the evening was too long). */
+    attempts: 2,
+    /** The finish is this many seconds of flight away for a flight without crashes (Pasi 23.10.: 60, before 90). */
+    goalSeconds: 60,
     /** The first seconds are easy: slower speed, wide openings and calmer obstacles. */
     easySeconds: 20,
     /** Flying speed at the start (px/s) … */
@@ -156,10 +158,12 @@ export const CONFIG = {
   raiskinta: {
     /** How big everything looks: under 1 shows the graveyard from further away (Pasi 20.10.: zoom out a little). */
     viewScale: 0.72,
-    /** The Devil arrives after this much play (Pasi 20.10.: 3 minutes). */
-    bossAfterSeconds: 180,
+    /** Pasi 23.10.: two attempts (the evening was too long). */
+    attempts: 2,
+    /** The Devil arrives after this much play (Pasi 23.10.: 2 minutes, before 3). */
+    bossAfterSeconds: 120,
     /** No new enemies after this, so the last ones can still be shot before the Devil. */
-    lastSpawnSeconds: 168,
+    lastSpawnSeconds: 108,
     /** Length of the text before the Devil. */
     interludeSeconds: 5,
     /** Points: destroyed enemies (share of all), surviving until the Devil (share of the time) and defeating the Devil. */
@@ -200,9 +204,9 @@ export const CONFIG = {
     boostSeconds: 9,
     shieldSeconds: 7,
     /** A golden cross that restores one point of endurance drops from the first enemy destroyed after each of these moments (Pasi 20.10.). */
-    lifeDropTimes: [50, 100, 150],
+    lifeDropTimes: [33, 66, 99],
     /** Holy objects appear at these moments, in turn an ark (weapon) and a grail (guardian orb). */
-    specialTimes: [20, 40, 65, 90, 115, 140, 160],
+    specialTimes: [14, 27, 43, 60, 77, 93, 106],
     /** Devil's health in basic shots, and seconds between its attacks (calm → furious). It grows angrier at 2/3 and 1/3 health. */
     bossHealth: 462,
     bossAttackGapStart: 1.5,
@@ -272,8 +276,8 @@ export const CONFIG = {
     /** If the whip has not improved in a level by this share of the level, the next enemy defeated drops an upgrade (Pasi 21.10.). */
     whipGuaranteeAt: 0.5,
 
-    /** Pasi 22.10.: 5 attempts; after a fall the next attempt continues from the start of the same level. */
-    attempts: 5,
+    /** Pasi 23.10.: 3 attempts (before 5); after a fall the next attempt continues from the start of the same level. */
+    attempts: 3,
     /** Every candle gives this many coins (Pasi 22.10.), spent in the shop before levels 2 and 3. */
     coinsPerCandle: 1,
     /** Shop prices (coins) and limits (Pasi 22.10.). */
@@ -314,8 +318,8 @@ export const CONFIG = {
    * Rules: CLAUDE.md, game 7, and Pasi's choices 22.10. (EDISTYMINEN.md). The levels are in src/games/kurpitsalinko/levels.ts.
    */
   kurpitsalinko: {
-    /** Pasi 22.10.: two attempts; the first is a kind of practice round. */
-    attempts: 2,
+    /** Pasi 23.10.: one attempt (before 2; the evening was too long). */
+    attempts: 1,
     /** Pasi 22.10.: levels about two screens wide, with hills, valleys and obstacles. */
     levelWidth: 2560,
     levelHeight: 720,

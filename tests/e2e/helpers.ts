@@ -208,10 +208,10 @@ export async function playRiddlesCorrectly(page: Page): Promise<number> {
   return (await sceneState(page, 'AttemptResult')).score as number;
 }
 
-/** Flying game: from the instruction screen, play three quick attempts (each crashes at the first obstacle). Returns the best score. */
+/** Flying game: from the instruction screen, play both quick attempts (Pasi 23.10.: two) (each crashes at the first obstacle). Returns the best score. */
 export async function playFlightQuickly(page: Page): Promise<number> {
   await press(page, 'Enter');
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 2; attempt++) {
     await waitForScene(page, 'AttemptIntro');
     await press(page, 'Enter');
     await waitForScene(page, 'Lentopeli');
@@ -222,7 +222,7 @@ export async function playFlightQuickly(page: Page): Promise<number> {
       scene.debugPlace(gate.x - 10, gate.blocks[1].top + 40);
     });
     await waitForScene(page, 'AttemptResult', 120_000);
-    if (attempt < 3) await press(page, 'Enter');
+    if (attempt < 2) await press(page, 'Enter');
   }
   return (await sceneState(page, 'AttemptResult')).best as number;
 }
@@ -238,21 +238,21 @@ export async function selectGame(page: Page, id: string): Promise<void> {
   expect((await sceneState(page, 'Menu')).selected).toBe(id);
 }
 
-/** Shooter: from the instruction screen, play three quick attempts (the pope falls at once). Returns the best score. */
+/** Shooter: from the instruction screen, play both quick attempts (Pasi 23.10.: two) (the pope falls at once). Returns the best score. */
 export async function playShooterQuickly(page: Page): Promise<number> {
   await press(page, 'Enter');
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 2; attempt++) {
     await waitForScene(page, 'AttemptIntro');
     await press(page, 'Enter');
     await waitForScene(page, 'Raiskinta');
     await page.evaluate(() => (window.__peli!.game as any).scene.getScene('Raiskinta').debugHurt(10));
     await waitForScene(page, 'AttemptResult', 120_000);
-    if (attempt < 3) await press(page, 'Enter');
+    if (attempt < 2) await press(page, 'Enter');
   }
   return (await sceneState(page, 'AttemptResult')).best as number;
 }
 
-/** Platformer: from the instruction screen, lose all hearts in every attempt (5, each continuing the last). Returns the best score. */
+/** Platformer: from the instruction screen, lose all hearts in every attempt (3, each continuing the last). Returns the best score. */
 export async function playPlatformerQuickly(page: Page): Promise<number> {
   await press(page, 'Enter');
   for (;;) {

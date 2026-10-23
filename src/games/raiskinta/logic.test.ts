@@ -32,10 +32,12 @@ describe('schedule', () => {
 
   it('brings more and more enemies until shortly before the Devil', () => {
     const count = (from: number, to: number): number => SCHEDULE.filter((s) => s.t >= from && s.t < to && !SPECIALS.has(s.kind)).length;
-    expect(count(0, 40)).toBeLessThan(count(128, 168));
+    const quarter = C.lastSpawnSeconds / 4;
+    expect(count(0, quarter)).toBeLessThan(count(C.lastSpawnSeconds - quarter, C.lastSpawnSeconds));
     expect(Math.max(...SCHEDULE.map((s) => s.t))).toBeLessThanOrEqual(C.lastSpawnSeconds + 3);
-    expect(ENEMY_TOTAL).toBeGreaterThan(400);
-    expect(ENEMY_TOTAL).toBeLessThan(800);
+    // Pasi 23.10.: the Devil after 2 minutes, so about 400 enemies in all
+    expect(ENEMY_TOTAL).toBeGreaterThan(300);
+    expect(ENEMY_TOTAL).toBeLessThan(600);
     expect(new Set(SCHEDULE.map((s) => s.kind))).toEqual(new Set(['ghost', 'bat', 'pumpkin', 'skeleton', 'imp', 'reaper', 'ark', 'grail']));
   });
 

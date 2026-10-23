@@ -32,7 +32,7 @@ export class AttemptResultScene extends Phaser.Scene {
     addCenteredPanel(this, 760, 470);
 
     const action = d.kind === 'action';
-    const heading = action ? `Yritys ${d.attempt}/${d.total}` : 'Tulos';
+    const heading = action && d.total > 1 ? `Yritys ${d.attempt}/${d.total}` : 'Tulos';
     const top = this.add.text(W / 2, H / 2 - 170, d.gameName, { ...TEXT.heading, fontSize: '36px', color: CSS.muted }).setOrigin(0.5);
     const head = this.add.text(W / 2, H / 2 - 112, heading, { ...TEXT.heading, fontSize: '48px' }).setOrigin(0.5);
     const score = this.add.text(W / 2, H / 2 - 20, `${fi(0)} pistettä`, { ...TEXT.title, fontSize: '88px' }).setOrigin(0.5);
@@ -54,7 +54,9 @@ export class AttemptResultScene extends Phaser.Scene {
     this.time.delayedCall(200, () => sfx.play('result'));
 
     const lines: string[] = [];
-    if (action && d.isFinal) {
+    if (action && d.total === 1) {
+      lines.push('Tulos on tallennettu.');
+    } else if (action && d.isFinal) {
       const perfectEarly = d.attempt < d.total;
       lines.push(`Pelin tulos: ${fi(d.best)} pistettä`, perfectEarly ? 'Täydellinen tulos! Loput yritykset jäävät väliin.' : 'Paras yritys jää voimaan.');
     } else if (action) {

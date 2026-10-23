@@ -87,9 +87,7 @@ export class InstructionsScene extends Phaser.Scene {
     drawPanel(this, LEFT_X - 20, TOP - 8, LEFT_W + 40, BOTTOM - TOP + 16, { radius: 16 });
     const attemptRule =
       def.instructions.attemptRule ??
-      (plan.kind === 'action'
-        ? `${plan.total} yritystä. Paras jää voimaan.`
-        : 'Yksi kierros.');
+      (plan.kind === 'puzzle' ? 'Yksi kierros.' : plan.total === 1 ? 'Yksi yritys.' : `${plan.total} yritystä. Paras jää voimaan.`);
     const scoreLines = [...def.instructions.scoring, attemptRule];
     const keys: Array<[string, string]> = [...def.instructions.keys];
 

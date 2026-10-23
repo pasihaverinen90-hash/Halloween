@@ -16,7 +16,7 @@ async function startAttempt(page: Page): Promise<void> {
   await waitForState(page, 'Kurpitsalinko', (s) => s.phase === 'aim');
 }
 
-test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja kaksi yritystä', async ({ page }) => {
+test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja yksi yritys', async ({ page }) => {
   test.setTimeout(480_000);
   await openGame(page);
   await createPlayer(page, 'Piirittäjä');
@@ -25,7 +25,9 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja k
   await waitForScene(page, 'Instructions');
   await press(page, 'Enter');
 
-  // Yritys 1/3
+  // Pasi 23.10.: yksi yritys
+  await waitForScene(page, 'AttemptIntro');
+  expect(await sceneState(page, 'AttemptIntro')).toEqual({ attempt: 1, total: 1, best: null });
   await startAttempt(page);
   expect(await sceneState(page, 'Kurpitsalinko')).toMatchObject({ level: 0, shots: 0, left: 5, angle: 40, weapon: 'pumpkin' });
   await page.screenshot({ path: '/tmp/kuvat/kl-tahtays.png' });
@@ -83,7 +85,8 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja k
     if ((await sceneState(page, 'Kurpitsalinko')).phase === 'levelDone') break;
   }
 
-  // Loput kentät: luurangot kaatuvat testin apurilla, ja kuhunkin kuluu 10 ylimääräistä laukausta (100 pistettä).
+  // Loput kentät: luurangot kaatuvat testin apurilla. Kentissä 2–3 kuluu 10 ylimääräistä laukausta (100 pistettä),
+  // ja kentissä 4–5 yksi laukaus per luuranko (200 pistettä).
   // Aseet säilyvät, ja uusi kenttä tuo yhden rypäleen lisää.
   const clustersBefore = (await sceneState(page, 'Kurpitsalinko')).ammo.cluster;
   let checkedAmmo = false;
@@ -94,7 +97,7 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja k
       checkedAmmo = true;
       expect((await sceneState(page, 'Kurpitsalinko')).ammo.cluster).toBe(clustersBefore + 1);
     }
-    await catapult(page, 'scene.debugClearLevel(scene.battle.skeletonsLeft() + 10)');
+    await catapult(page, `scene.debugClearLevel(scene.battle.skeletonsLeft() + ${level <= 2 ? 10 : 0})`);
     if (level === 1) {
       // Pasi 23.10.: the next level waits for Enter
       await waitForState(page, 'Kurpitsalinko', (s) => s.phase === 'levelDone', 60_000);
@@ -105,29 +108,15 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja k
   }
   const first = await sceneState(page, 'Kurpitsalinko');
   expect(first.levelPoints).toHaveLength(5);
-  expect(first.levelPoints.slice(1)).toEqual([100, 100, 100, 100]);
+  expect(first.levelPoints.slice(1)).toEqual([100, 100, 200, 200]);
   await waitForScene(page, 'AttemptResult', 120_000);
-  let result = await sceneState(page, 'AttemptResult');
-  // Pasi 22.10.: kaksi yritystä, ja pisteet tulevat kentittäin (200 per kenttä)
-  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 2, isFinal: false, score: first.levelPoints.reduce((a: number, b: number) => a + b, 0) });
-  expect(result.score).toBeLessThanOrEqual(600);
-  await press(page, 'Enter');
-
-  // Yritys 2: kentät alkavat alusta, ja yksi laukaus per luuranko antaa 200 per kenttä eli 1000
-  await startAttempt(page);
-  expect(await sceneState(page, 'Kurpitsalinko')).toMatchObject({ level: 0, shots: 0, left: 5, levelPoints: [] });
-  for (let level = 0; level < 5; level++) {
-    await waitForState(page, 'Kurpitsalinko', (s) => s.level === level && s.phase !== 'levelDone', 60_000);
-    await catapult(page, 'scene.debugClearLevel(scene.battle.skeletonsLeft())');
-    await nextCatapultLevel(page, level);
-  }
-  await waitForScene(page, 'AttemptResult', 120_000);
-  result = await sceneState(page, 'AttemptResult');
-  expect(result).toMatchObject({ attempt: 2, total: 2, score: 1000, isFinal: true });
+  const result = await sceneState(page, 'AttemptResult');
+  // Pisteet tulevat kentittäin (200 per kenttä), ja yksi yritys on heti lopullinen
+  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 1, isFinal: true, score: first.levelPoints.reduce((a: number, b: number) => a + b, 0) });
   await press(page, 'Enter');
   await waitForScene(page, 'Menu');
   const record = (await savedData(page)).players[0].games.kurpitsalinko;
-  expect(record.attempts).toHaveLength(2);
+  expect(record.attempts).toHaveLength(1);
   expect(record.finished).toBe(true);
   await expectNoRuntimeErrors(page);
 });

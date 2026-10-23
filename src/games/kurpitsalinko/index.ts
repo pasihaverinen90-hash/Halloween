@@ -10,7 +10,7 @@ const kurpitsalinko: GameDefinition = {
   ...META,
   sceneKey: 'Kurpitsalinko',
   sceneClass: PiiritysScene,
-  // Pasi 22.10.: two attempts; the first is a kind of practice round.
+  // Pasi 23.10.: one attempt (before 2), so the evening stays about 30 minutes per player.
   attempts: CONFIG.kurpitsalinko.attempts,
   // Pasi 23.10.: short instructions; scoring only says what gives points.
   instructions: {

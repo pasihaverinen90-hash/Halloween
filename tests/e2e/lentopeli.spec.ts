@@ -39,7 +39,7 @@ test('lentopeli: törmäys, kissa, maali ja loput yritykset väliin', async ({ p
   expect((await sceneState(page, 'Lentopeli')).phase).toBe('flying');
   await waitForScene(page, 'AttemptResult', 180_000);
   let result = await sceneState(page, 'AttemptResult');
-  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 3, isFinal: false });
+  expect(result).toMatchObject({ kind: 'action', attempt: 1, total: 2, isFinal: false });
   expect(result.score).toBeGreaterThan(10);
   expect(result.score).toBeLessThan(60);
   await press(page, 'Enter');
@@ -62,7 +62,7 @@ test('lentopeli: törmäys, kissa, maali ja loput yritykset väliin', async ({ p
   await place(page, goal - 250, 360);
   await waitForScene(page, 'AttemptResult', 180_000);
   result = await sceneState(page, 'AttemptResult');
-  expect(result).toMatchObject({ attempt: 2, total: 3, score: 1000, best: 1000, isFinal: true });
+  expect(result).toMatchObject({ attempt: 2, total: 2, score: 1000, best: 1000, isFinal: true });
   const record = (await savedData(page)).players[0].games.lentopeli;
   expect(record.attempts).toHaveLength(2);
   expect(record.attempts[1]).toBe(1000);

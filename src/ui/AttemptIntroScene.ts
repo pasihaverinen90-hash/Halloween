@@ -31,10 +31,14 @@ export class AttemptIntroScene extends Phaser.Scene {
 
     const name = this.add.text(W / 2, H / 2 - 132, d.gameName, { ...TEXT.heading, fontSize: '38px', color: CSS.muted }).setOrigin(0.5);
     const big = this.add
-      .text(W / 2, H / 2 - 30, `Yritys ${d.attempt}/${d.total}`, { ...TEXT.title, fontSize: '104px' })
+      .text(W / 2, H / 2 - 30, d.total === 1 ? 'Yksi yritys' : `Yritys ${d.attempt}/${d.total}`, { ...TEXT.title, fontSize: '104px' })
       .setOrigin(0.5);
     const bestText =
-      d.best === null ? 'Paras yritys jää voimaan.' : `Paras tulos tähän mennessä: ${d.best.toLocaleString('fi-FI')} p`;
+      d.total === 1
+        ? 'Peli pelataan kerran.'
+        : d.best === null
+          ? 'Paras yritys jää voimaan.'
+          : `Paras tulos tähän mennessä: ${d.best.toLocaleString('fi-FI')} p`;
     const best = this.add.text(W / 2, H / 2 + 80, bestText, { ...TEXT.bodyBold, fontSize: '30px' }).setOrigin(0.5);
     const ready = d.note
       ? this.add.text(W / 2, H / 2 + 136, d.note, { ...TEXT.bodyBold, fontSize: '28px', color: CSS.orange, align: 'center', wordWrap: { width: 640 } }).setOrigin(0.5)

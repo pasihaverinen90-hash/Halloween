@@ -21,7 +21,7 @@ import {
 const C = CONFIG.lentopeli;
 
 describe('course length and speed', () => {
-  it('puts the finish about 90 seconds of flight away', () => {
+  it('puts the finish about 60 seconds of flight away (Pasi 23.10.)', () => {
     expect(Math.abs(flightSeconds(GOAL_DISTANCE) - C.goalSeconds)).toBeLessThan(0.2);
   });
 
@@ -130,9 +130,10 @@ describe('course', () => {
 
   it('mixes all kinds of obstacles, so the route is not always under the sky', () => {
     const count = (p: string): number => course.filter((c) => c.pattern === p).length;
-    expect(count('bats')).toBeGreaterThanOrEqual(10);
-    expect(count('tower')).toBeGreaterThanOrEqual(5);
-    expect(count('hanging')).toBeGreaterThanOrEqual(5);
+    // Pasi 23.10.: the finish is 60 seconds away, so a little fewer of each than before
+    expect(count('bats')).toBeGreaterThanOrEqual(6);
+    expect(count('tower')).toBeGreaterThanOrEqual(3);
+    expect(count('hanging')).toBeGreaterThanOrEqual(3);
     expect(count('gate')).toBeGreaterThanOrEqual(course.length / 4);
     // Bats and single obstacles leave ways both over and under
     expect(course.filter((c) => c.pattern === 'bats').every((c) => c.openings.length >= 2)).toBe(true);

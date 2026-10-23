@@ -11,6 +11,8 @@ const lentopeli: GameDefinition = {
   ...META,
   sceneKey: 'Lentopeli',
   sceneClass: LentoScene,
+  // Pasi 23.10.: two attempts, so the evening stays about 30 minutes per player.
+  attempts: CONFIG.lentopeli.attempts,
   // Pasi 23.10.: short instructions; scoring only says what gives points.
   instructions: {
     goal: 'Lennätä noita esteiden ohi matkan päässä odottavaan maaliin.',

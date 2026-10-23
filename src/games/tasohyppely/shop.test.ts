@@ -9,7 +9,7 @@ const S = C.shop;
 describe('what carries over (Pasi 22.10.)', () => {
   it('starts with the basic whip, 10 daggers and no coins', () => {
     expect(freshRun()).toEqual({ level: 0, whip: 1, daggers: 10, coins: 0, extraHearts: 0, sharpen: 0, candles: 0 });
-    expect(C.attempts).toBe(5);
+    expect(C.attempts).toBe(3);
   });
 
   it('reads back a saved state, and rejects a broken one', () => {

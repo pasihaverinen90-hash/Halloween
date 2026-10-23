@@ -12,6 +12,8 @@ const raiskinta: GameDefinition = {
   ...META,
   sceneKey: 'Raiskinta',
   sceneClass: RaiskintaScene,
+  // Pasi 23.10.: two attempts, so the evening stays about 30 minutes per player.
+  attempts: C.attempts,
   // Pasi 23.10.: short instructions; scoring only says what gives points.
   instructions: {
     goal: `Suojele hautausmaata ${minutes} minuuttia ja kaada lopuksi Paholainen.`,
