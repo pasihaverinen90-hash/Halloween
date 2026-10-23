@@ -35,7 +35,7 @@ export class HighscoresScene extends Phaser.Scene {
     this.leaving = false;
     addBackdrop(this, { dim: 0.45 });
     this.add.text(W / 2, 62, 'Ennätykset', { ...TEXT.title, fontSize: '64px' }).setOrigin(0.5);
-    drawPanel(this, W / 2 - TABLE_W / 2 - 20, TABLE_TOP - 80, TABLE_W + 40, 500, { radius: 18 });
+    drawPanel(this, W / 2 - TABLE_W / 2 - 20, TABLE_TOP - 80, TABLE_W + 40, 530, { radius: 18 });
     this.layer = this.add.container(0, 0);
     this.render();
     addKeyHints(this, [

@@ -253,11 +253,11 @@ Pasin palaute 22.10.: katapultin varsi oli väärällä puolella, kentät olivat
 Pasin palaute 23.10. (ks. "Pasin kanssa sovitut asiat"): tehty samassa rupeamassa. Testit varmistavat, että jokaisen −1:n saa samalla laukauksella, joka kaataa luurangon, ja että jokaiseen −3:een ja laatikkoon ylettyy yhdellä laukauksella.
 
 Kesken:
-- Pasi testaa hiomislistan muutokset: lyhyet ohjeet, ei taukoa, arvoitusten 3 s, kurpitsalingon −2/−5 ja Enter kenttien välissä.
-- Pasi päättää, lyhennetäänkö iltaa (ks. Aikataulu → Illan kesto 23.10.).
+- Illan lyhennys osissa (ks. "Työjärjestys" alempana). Tehty ja julkaistu 23.10.: osa 1 (lyhennykset), osat 2 ja 3 (turnaus ja freeplay).
+- Seuraavaksi osa 4 (loputon lentopeli freeplayssä) ja osa 5 (11 avointa kuva-arvoitusta Pasin kuvilla, freeplayssä 13).
 
 Seuraavaksi:
-- Pasin palautteen mukaiset korjaukset, sitten vaihe 8, viimeistely (koko ilta kolmella testipelaajalla).
+- Osat 4 ja 5, sitten Pasin palautteen mukaiset korjaukset ja vaihe 8, viimeistely (koko ilta kolmella testipelaajalla).
 
 ### 23.10.2026 – seuraavaksi: hiominen
 
@@ -294,7 +294,8 @@ Pasi: läpipeluun optimi on noin 30 minuuttia (keskivertopelaajalla nyt noin 60)
 - **Tasohyppely:** 3 yritystä (ennen 5). Kuoleman jälkeen jatketaan edelleen saman kentän alusta.
 - **Kurpitsalinko:** 1 yritys (ennen 2).
 - **Kuva-arvoitukset:** 11 arvoitusta (Pasi 23.10.: 8 elokuvaa + 3 sanaa; ennen sovittiin 10 ja 7 elokuvaa). Elokuvat: Manaaja, Texasin moottorisahamurhat, Halloween, Alien – kahdeksas matkustaja, Painajainen Elm Streetillä, Scream, The Ring ja Nunna. Myös englanninkieliset nimet ja lyhyet muodot hyväksytään (esim. The Exorcist, Exorcist, Alien, Kahdeksas matkustaja, The Nun). Pasi 23.10.: Texasin moottorisahamurhiin hyväksytään myös Teksasin moottorisahamurhaaja, ja sekä x- että ks-kirjoitusasu (Texasin/Teksasin moottorisahamurhat/-murhaaja, The Texas Chain Saw Massacre, Texas Chainsaw Massacre, Moottorisahamurhat). Sanat: Ihmissusi, Kummitusjuna ja Hirviö. **Kaikki 11 ovat avoimia**, eikä monivalintoja ole (Pasi 23.10.; poikkeaa CLAUDE.md:n jaosta puolet ja puolet). Pasi antaa elokuvat, kuvat ja oikeat vastaukset. Elokuvien kysymys on yksinkertainen, esim. "Mikä elokuva?". Kaikki 8 elokuvaa ovat uusia kuva-arvoituksia, joihin Pasi tekee ChatGPT:llä vihjekuvat. Ne korvaavat 5 emojiarvoitusta, ja sana-arvoituksista Verikuu ja Silmämuna jäävät pois. Pasi toimitti kuvat 23.10. (`public/assets/`: Alien, Freddy, Halloween, Manaaja, Nunna, Ring, Scream, Texas sekä freeplayn Hohto ja Uhrilampaat; pystykuvia 1024 × 1536). **Kuvissa on elokuvien omat hahmot, ja Pasi päätti käyttää niitä (poikkeus CLAUDE.md:n sääntöön elokuvien hahmoista; Pasi tietää, että sivu on julkinen).** Kuvat pienennetään latausta varten, ja arvoitusruutu tehdään pystykuville (kuva vasemmalla, vastaus oikealla). **Freeplayssä on 13 arvoitusta:** turnauksen 11 sekä Uhrilampaat (The Silence of the Lambs) ja Hohto (The Shining).
-- **Työjärjestys (Pasi: "tee osissa"):** 1) lyhennykset, 2) turnaus, 3) freeplay, 4) loputon lentopeli, 5) arvoitukset. Jokainen osa testataan ja julkaistaan erikseen.
+- **Työjärjestys (Pasi: "tee osissa"):** 1) lyhennykset, 2) turnaus, 3) freeplay, 4) loputon lentopeli, 5) arvoitukset. Jokainen osa testataan ja julkaistaan erikseen. Osat 2 ja 3 julkaistiin yhdessä, koska hirsipuu ja ristikko olisivat muuten olleet välillä poissa pelistä.
+- **Tehty 23.10. (osat 1–3):** lyhennykset kuten yllä. Aloitusnäkymässä on Turnaus, Freeplay ja Tulokset. Turnauksessa ohjeruudussa näkyy "Peli n/5", eikä sieltä pääse takaisin valikkoon. Freeplay-valikossa on 7 peliä ja Ennätykset-ruutu, ruuduissa näkyy pelin ennätys. Freeplayn tulosruutu kysyy nimen vain top 10 -tulokselle (Esc ohittaa tallennuksen), ja Enter pelaa saman pelin uudelleen. Korjaustilassa on uudet toiminnot "Avaa tai sulje freeplay" ja "Tyhjennä freeplayn top-listat". Yksi yritys näkyy ruuduilla tekstinä "Yksi yritys" eikä "Yritys 1/1". Kurpitsalingon, räiskinnän, tasohyppelyn ja ristikon pisteet lasketaan freeplayssä ilman pyöristystä.
 - Arvio keskivertopelaajalle muutosten jälkeen: arvoitukset 2,5 + lentopeli 2 + räiskintä 5,5 + tasohyppely 8 + kurpitsalinko 10 + aloitus ja kiitos 1,5 = noin 30 minuuttia. Taitavalla noin 26 ja aloittelijalla noin 30.
 
 ## Aikataulu
@@ -322,6 +323,8 @@ Täydellinen = 1000 pistettä ensimmäisellä yrityksellä, jolloin muut yrityks
 ## Tekninen muistio Claude Codelle
 
 - Rakenne: `src/core` (tulokset, tallennus, pisteet, salasana, varmuuskopiot, äänet), `src/ui` (yhteiset osat ja päällekkäisnäkymät), `src/scenes` (näkymät), `src/games/<id>/` (yksi kansio per peli: `meta.ts`, `assets.ts`, `index.ts`, pelinäkymä, puhdas `logic.ts`), `src/content` (sisältötiedostojen lukijat), `scripts` (sisällön tarkistus, `ASSETS.md`-generaattori).
+- Pelilistat (`src/games/registry.ts`, Pasi 23.10.): `ALL_GAMES` = kaikki pelit (freeplay, näkymien rekisteröinti, kuvat), `GAMES`/`GAME_IDS` = turnauksen pelit pelijärjestyksessä (`TOURNAMENT_ORDER`), joita tulokset, palkintojenjako, CSV ja korjaustila käyttävät. `getGame` hakee kaikista. Turnauksen seuraava peli: `continueTournament(scene)` (`src/scenes/tournament.ts`).
+- Freeplay: `src/core/freeplay.ts` (oma localStorage-avain `CONFIG.freeplay.key`: auki/kiinni ja top-listat), `GameHostData.freeplay` ja `InstructionsData.freeplay`, `GameContext.freeplay` (pelit raportoivat silloin pyöristämättömät pisteet; ydin kertoo ne kymmenellä). Näkymät: `MenuScene` (freeplay-valikko), `HighscoresScene`, `src/ui/FreeplayResultScene.ts`. Selaintestien apurit: `TOURNAMENT`, `startTournamentAt`, `finishedGames`, `riddles`, `openFreeplay`, `startFreeplayGame`.
 - Uusi peli: oma kansio ja yksi rivi tiedostoon `src/games/registry.ts`. Emojeja käyttävä peli listaa ne kentässä `preloadText` (fontti ladataan ennen alkua). Pelinäkymä saa `GameContext`in (`finish`, `checkpoint`, `sfx`) eikä tiedä yrityksistä tai tallennuksesta.
 - Asetukset (pisteet, aikarajat, vaikeus) kuuluvat tiedostoon `src/config.ts`.
 - Kuvien muuttamisen jälkeen aja `npm run kuvalista` (testi varmistaa, että `ASSETS.md` on ajan tasalla).
