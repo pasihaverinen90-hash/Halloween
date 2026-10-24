@@ -15,7 +15,8 @@ Tämä tiedosto kertoo, mitä on tehty, mikä on kesken ja mitä tehdään seura
 | 4. Räiskintä | Valmis, Pasi hyväksyi 20.10. ("Paljon parempi"; Paholaiselle +10 % kestävyyttä) |
 | 5. Ristikko | Valmis, Pasi hyväksyi 21.10. ("toimii hyvin") |
 | 6. Tasohyppely | Valmis, Pasi testasi kaiken 22.10. ja pyysi siirtymään kurpitsalinkoon |
-| 7. Kurpitsalinko | Ensimmäinen versio valmis 22.10., Pasi testaa |
+| 7. Kurpitsalinko | Valmis 23.10. (Pasin palaute 22.–23.10. tehty) |
+| Hiominen | Käynnissä: lyhennys, turnaus, freeplay ja uudet arvoitukset tehty 23.10. Seuraavaksi teema ja konsepti, nimet ja valikon ulkoasu (24.10.) |
 | 8. Viimeistely | Ei aloitettu (CSV-vienti ja kuvien vaihtaminen tehtiin jo vaiheessa 1) |
 
 ## Pasin kanssa sovitut asiat
