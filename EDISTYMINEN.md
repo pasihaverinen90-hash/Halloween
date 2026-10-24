@@ -284,7 +284,7 @@ Pasi halusi teeman, joka on "vähän cringe ja vanhanaikainen, kuten MonsterSlay
 - Peli: **SPOOKY ARCADE 3000**, alla vilkkuva "~ INSERT COIN ~". Myös selaimen välilehden otsikko.
 - Aloitusnäkymän napit: **TOURNAMENT** (turnaus), **FREE PLAY** (freeplay), **HIGH SCORES** (turnauksen tulokset salasanalla). Freeplayn valikon otsikko on FREE PLAY, ja sen top-listat ovat yhä "Ennätykset".
 - Pelit: kuva-arvoitukset **Leffa-O-Rama**, lentopeli **Broomstick Turbo**, räiskintä **Holy Water Blaster**, tasohyppely **MonsterSlayer3000**, kurpitsalinko **Pumpkin-O-Matic**, hirsipuu **Hang-O-Matic**, ristikko **Grid of Doom 2000**.
-- Seuraavaksi valikon ulkoasu teeman mukaan (kysytään Pasilta).
+- **Valikon ulkoasu (Pasi 24.10.): Neon-pelihalli** (valittu kolmesta: Neon-pelihalli, 90-luvun CD-ROM, Kevyt arcade). Koskee vain valikoita ja väliruutuja, ei pelejä. Otsikot ja napit ovat 8-bittisellä pikselifontilla (Press Start 2P), pelien nimet ruuduissa vanhalla päätefontilla (VT323), ja värit ovat neonpinkki, -turkoosi ja -violetti. Koko ruudulla on hennot kuvaputkijuovat ja tummat kulmat (`addBackdrop`). Väliruuduissa lukee PLAYER 1 READY (vilkkuu), GAME OVER (kiitosnäkymä ja freeplay ilman top 10 -sijaa) ja NEW HIGH SCORE! (freeplay, vilkkuu). Tyylit ovat tiedostossa `src/ui/theme.ts` (`FONTS.arcade`, `FONTS.terminal`, `TEXT.arcade`, `TEXT.arcadeSmall`, `TEXT.terminal`, neonvärit), ja aloitusnäkymän napit käyttävät `MenuList`-asetusta `arcade`.
 
 #### Illan lyhennys (Pasi 23.10., päätetty ja tehty 23.10.)
 
