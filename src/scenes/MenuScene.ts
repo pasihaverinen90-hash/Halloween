@@ -56,8 +56,8 @@ export class MenuScene extends Phaser.Scene {
     }
 
     addBackdrop(this, { dim: 0.35 });
-    this.add.text(W / 2, 62, 'FREE PLAY', { ...TEXT.title, fontSize: '64px' }).setOrigin(0.5);
-    this.add.text(48, 62, 'Pelaa niin paljon kuin haluat', { ...TEXT.bodyBold, fontSize: '24px', color: CSS.muted }).setOrigin(0, 0.5);
+    this.add.text(W / 2, 62, 'FREE PLAY', { ...TEXT.arcade, fontSize: '44px' }).setOrigin(0.5);
+    this.add.text(48, 62, 'Pelaa niin paljon\nkuin haluat', { ...TEXT.bodyBold, fontSize: '22px', color: CSS.muted }).setOrigin(0, 0.5);
 
     const items: Array<GameDefinition | null> = [...ALL_GAMES, null];
     const rows = Math.ceil(items.length / COLUMNS);
@@ -106,7 +106,7 @@ export class MenuScene extends Phaser.Scene {
     const container = this.add.container(x, y);
     const frame = this.add.graphics({ x: -TILE_W / 2, y: -TILE_H / 2 });
     const preview = addAsset(this, game.preview, 0, -TILE_H / 2 + 14 + PREVIEW_H / 2, { width: PREVIEW_W, height: PREVIEW_H });
-    const name = this.add.text(0, 44, game.name, { fontFamily: FONTS.title, fontStyle: '800', fontSize: '30px', color: CSS.bone }).setOrigin(0.5);
+    const name = this.add.text(0, 44, game.name.toLocaleUpperCase('fi-FI'), { ...TEXT.terminal, fontSize: '32px', fixedWidth: TILE_W - 12, align: 'center' }).setOrigin(0.5);
     const genre = this.add.text(0, 72, game.genre, { ...TEXT.small, fontSize: '18px' }).setOrigin(0.5);
     const record = this.add
       .text(0, 98, best ? `Ennätys ${fi(best.score)} · ${best.name}` : 'Ei vielä ennätystä', {
@@ -126,9 +126,9 @@ export class MenuScene extends Phaser.Scene {
     const container = this.add.container(x, y);
     const frame = this.add.graphics({ x: -TILE_W / 2, y: -TILE_H / 2 });
     const badge = this.add
-      .text(0, -TILE_H / 2 + 14 + PREVIEW_H / 2, `TOP ${CONFIG.freeplay.topSize}`, { ...TEXT.title, fontSize: '64px', color: CSS.gold })
+      .text(0, -TILE_H / 2 + 14 + PREVIEW_H / 2, `TOP ${CONFIG.freeplay.topSize}`, { ...TEXT.arcade, fontSize: '40px', color: CSS.gold })
       .setOrigin(0.5);
-    const name = this.add.text(0, 44, 'Ennätykset', { fontFamily: FONTS.title, fontStyle: '800', fontSize: '30px', color: CSS.bone }).setOrigin(0.5);
+    const name = this.add.text(0, 44, 'ENNÄTYKSET', { ...TEXT.terminal, fontSize: '32px' }).setOrigin(0.5);
     const genre = this.add.text(0, 72, 'Kaikkien pelien top-listat', { ...TEXT.small, fontSize: '18px' }).setOrigin(0.5);
     container.add([frame, badge, name, genre]);
     return { game: null, container, frame };
@@ -139,11 +139,11 @@ export class MenuScene extends Phaser.Scene {
       const selected = i === this.selected;
       paintPanel(tile.frame, TILE_W, TILE_H, {
         fill: selected ? COLORS.panelLight : COLORS.panel,
-        border: selected ? COLORS.orange : COLORS.border,
+        border: selected ? COLORS.neonPink : COLORS.neonPurple,
         borderWidth: selected ? 4 : 2,
-        radius: 16,
+        radius: 6,
         alpha: 0.95,
-        glow: selected,
+        glow: selected ? COLORS.neonCyan : false,
       });
       const scale = selected ? 1.04 : 1;
       if (animate) this.tweens.add({ targets: tile.container, scale, duration: 140, ease: 'Sine.Out' });

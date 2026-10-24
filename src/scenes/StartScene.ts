@@ -10,7 +10,7 @@ import { addBackdrop } from '../ui/backdrop';
 import { askPassword } from '../ui/dialogs';
 import { addKeyHints } from '../ui/hints';
 import { W } from '../ui/screen';
-import { CSS, FONTS, TEXT } from '../ui/theme';
+import { COLORS, CSS, TEXT } from '../ui/theme';
 import { MenuList } from '../ui/widgets/MenuList';
 import { drawPanel } from '../ui/widgets/panel';
 import { TextInput } from '../ui/widgets/TextInput';
@@ -37,12 +37,10 @@ export class StartScene extends Phaser.Scene {
     const db = getDb();
     addBackdrop(this, { dim: 0.15 });
 
-    // Pasi 24.10.: the Spooky Arcade 3000 theme, cringe and old-fashioned on purpose.
-    const title = this.add.text(W / 2, 92, 'SPOOKY ARCADE 3000', { ...TEXT.title, fontSize: '84px' }).setOrigin(0.5);
+    // Pasi 24.10.: the Spooky Arcade 3000 theme, cringe and old-fashioned on purpose, in neon arcade style.
+    const title = this.add.text(W / 2, 92, 'SPOOKY ARCADE 3000', { ...TEXT.arcade, fontSize: '50px' }).setOrigin(0.5);
     this.tweens.add({ targets: title, y: 98, duration: 2600, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
-    const coin = this.add
-      .text(W / 2, 154, '~ INSERT COIN ~', { fontFamily: FONTS.ui, fontStyle: '800', fontSize: '26px', color: CSS.gold, letterSpacing: 6 })
-      .setOrigin(0.5);
+    const coin = this.add.text(W / 2, 154, '~ INSERT COIN ~', { ...TEXT.arcadeSmall, color: CSS.gold }).setOrigin(0.5);
     this.tweens.add({ targets: coin, alpha: { from: 1, to: 0.15 }, duration: 600, yoyo: true, repeat: -1, ease: 'Stepped', easeParams: [2] });
     const games = GAMES.length === 1 ? 'Yksi peli' : `${GAMES.length} peliä`;
     this.add
@@ -53,8 +51,8 @@ export class StartScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const top = 222;
-    drawPanel(this, W / 2 - PANEL_W / 2, top, PANEL_W, 412, { radius: 20, borderWidth: 3 });
-    this.add.text(W / 2, top + 46, 'Kirjoita nimesi', { ...TEXT.heading, fontSize: '40px' }).setOrigin(0.5);
+    drawPanel(this, W / 2 - PANEL_W / 2, top, PANEL_W, 412, { radius: 6, borderWidth: 3, border: COLORS.neonCyan, glow: COLORS.neonCyan });
+    this.add.text(W / 2, top + 46, 'KIRJOITA NIMESI', { ...TEXT.arcadeSmall, fontSize: '22px', color: CSS.bone }).setOrigin(0.5);
     this.nameField = new TextInput(this, W / 2, top + 116, {
       width: 520,
       maxLength: CONFIG.player.nameMaxLength,
@@ -78,6 +76,7 @@ export class StartScene extends Phaser.Scene {
         itemHeight: 54,
         gap: 10,
         fontSize: 26,
+        arcade: true,
         onSelect: (index) => (index === 0 ? this.startPlayer() : index === 1 ? void this.openFreeplay() : void this.openResults()),
       },
     );

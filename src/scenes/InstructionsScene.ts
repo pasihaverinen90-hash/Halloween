@@ -62,15 +62,16 @@ export class InstructionsScene extends Phaser.Scene {
     }
 
     addBackdrop(this, { dim: 0.5 });
-    this.add.text(W / 2, 58, def.name, { ...TEXT.title, fontSize: '66px' }).setOrigin(0.5);
-    this.add.text(W / 2, 106, def.genre, { ...TEXT.heading, fontSize: '28px', color: CSS.muted }).setOrigin(0.5);
+    // Pasi 24.10.: neon arcade titles in the menus.
+    this.add.text(W / 2, 54, def.name.toLocaleUpperCase('fi-FI'), { ...TEXT.arcade, fontSize: '36px' }).setOrigin(0.5);
+    this.add.text(W / 2, 104, def.genre, { ...TEXT.terminal, fontSize: '30px', color: CSS.muted }).setOrigin(0.5);
     addAsset(this, def.preview, 60 + 86, 66, { width: 172, height: 96 });
     const index = this.freeplay ? -1 : GAME_IDS.indexOf(def.id);
     if (this.freeplay) {
-      this.add.text(W - 60, 66, 'Free Play', { ...TEXT.heading, fontSize: '30px', color: CSS.muted }).setOrigin(1, 0.5);
+      this.add.text(W - 60, 66, 'FREE PLAY', { ...TEXT.arcadeSmall, fontSize: '16px' }).setOrigin(1, 0.5);
     } else if (index >= 0) {
       this.add
-        .text(W - 60, 66, `Peli ${index + 1}/${GAME_IDS.length}`, { ...TEXT.heading, fontSize: '30px', color: CSS.muted })
+        .text(W - 60, 66, `PELI ${index + 1}/${GAME_IDS.length}`, { ...TEXT.arcadeSmall, fontSize: '16px' })
         .setOrigin(1, 0.5);
     }
 
@@ -121,7 +122,7 @@ export class InstructionsScene extends Phaser.Scene {
       const objects: Phaser.GameObjects.GameObject[] = [];
       let y = TOP + 8;
       const heading = (text: string): void => {
-        const t = this.add.text(LEFT_X, y, text, { ...TEXT.heading, fontSize: `${size + 8}px`, color: CSS.orange });
+        const t = this.add.text(LEFT_X, y + 4, text.toLocaleUpperCase('fi-FI'), { ...TEXT.arcadeSmall, fontSize: `${size - 6}px` });
         objects.push(t);
         y += t.height + 8;
       };
@@ -159,7 +160,7 @@ export class InstructionsScene extends Phaser.Scene {
       const objects: Phaser.GameObjects.GameObject[] = [];
       let y = TOP + 8;
       const heading = (text: string): void => {
-        const t = this.add.text(RIGHT_X, y, text, { ...TEXT.heading, fontSize: `${size + 8}px`, color: CSS.orange });
+        const t = this.add.text(RIGHT_X, y + 4, text.toLocaleUpperCase('fi-FI'), { ...TEXT.arcadeSmall, fontSize: `${size - 6}px` });
         objects.push(t);
         y += t.height + 6;
       };

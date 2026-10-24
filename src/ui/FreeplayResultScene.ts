@@ -51,14 +51,19 @@ export class FreeplayResultScene extends Phaser.Scene {
     addDim(this, 0.75);
     addCenteredPanel(this, PANEL_W, PANEL_H);
     const top = H / 2 - PANEL_H / 2;
-    const name = this.add.text(W / 2, top + 40, `${d.gameName} · Free Play`, { ...TEXT.heading, fontSize: '32px', color: CSS.muted }).setOrigin(0.5);
-    const score = this.add.text(W / 2, top + 104, `${fi(d.score)} pistettä`, { ...TEXT.title, fontSize: '76px' }).setOrigin(0.5);
+    const name = this.add.text(W / 2, top + 34, `${d.gameName.toLocaleUpperCase('fi-FI')} · FREE PLAY`, { ...TEXT.terminal, fontSize: '34px', color: CSS.muted }).setOrigin(0.5);
+    const score = this.add.text(W / 2, top + 104, `${fi(d.score)} pistettä`, { ...TEXT.arcade, fontSize: '40px' }).setOrigin(0.5);
     this.message = this.add.text(W / 2, top + 168, '', { ...TEXT.bodyBold, fontSize: '28px', color: CSS.orange }).setOrigin(0.5);
     riseIn(this, name, 0);
     riseIn(this, score, 80);
     this.time.delayedCall(150, () => sfx.play('result'));
 
     this.place = getFreeplay().placeFor(d.gameId, d.score);
+    // Pasi 24.10.: arcade style.
+    const banner = this.add
+      .text(W / 2, top + 68, this.place !== null ? 'NEW HIGH SCORE!' : 'GAME OVER', { ...TEXT.arcadeSmall, fontSize: '22px', color: this.place !== null ? CSS.gold : CSS.neonCyan })
+      .setOrigin(0.5);
+    if (this.place !== null) this.tweens.add({ targets: banner, alpha: 0.2, duration: 400, yoyo: true, repeat: -1 });
     this.hints = addKeyHints(this, []);
     if (this.place !== null) this.askName();
     else this.showList(`Ei top ${CONFIG.freeplay.topSize} -listalle. Yritä uudelleen!`);
@@ -77,7 +82,7 @@ export class FreeplayResultScene extends Phaser.Scene {
     this.phase = 'name';
     const top = H / 2 - PANEL_H / 2;
     this.message.setText(`Pääsit top ${CONFIG.freeplay.topSize} -listalle, sijalle ${this.place}!`);
-    const ask = this.add.text(W / 2, top + 250, 'Kirjoita nimesi', { ...TEXT.heading, fontSize: '36px' }).setOrigin(0.5);
+    const ask = this.add.text(W / 2, top + 250, 'KIRJOITA NIMESI', { ...TEXT.arcadeSmall, fontSize: '24px', color: CSS.bone }).setOrigin(0.5);
     this.nameField = new TextInput(this, W / 2, top + 330, { width: 520, maxLength: CONFIG.player.nameMaxLength, allow: isNameChar });
     this.listObjects.push(ask, this.nameField);
     this.hints.setHints([

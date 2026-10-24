@@ -33,9 +33,9 @@ export class AttemptResultScene extends Phaser.Scene {
 
     const action = d.kind === 'action';
     const heading = action && d.total > 1 ? `Yritys ${d.attempt}/${d.total}` : 'Tulos';
-    const top = this.add.text(W / 2, H / 2 - 170, d.gameName, { ...TEXT.heading, fontSize: '36px', color: CSS.muted }).setOrigin(0.5);
-    const head = this.add.text(W / 2, H / 2 - 112, heading, { ...TEXT.heading, fontSize: '48px' }).setOrigin(0.5);
-    const score = this.add.text(W / 2, H / 2 - 20, `${fi(0)} pistettä`, { ...TEXT.title, fontSize: '88px' }).setOrigin(0.5);
+    const top = this.add.text(W / 2, H / 2 - 170, d.gameName.toLocaleUpperCase('fi-FI'), { ...TEXT.terminal, fontSize: '38px', color: CSS.muted }).setOrigin(0.5);
+    const head = this.add.text(W / 2, H / 2 - 112, heading.toLocaleUpperCase('fi-FI'), { ...TEXT.arcadeSmall, fontSize: '28px' }).setOrigin(0.5);
+    const score = this.add.text(W / 2, H / 2 - 20, `${fi(0)} pistettä`, { ...TEXT.arcade, fontSize: '44px' }).setOrigin(0.5);
     riseIn(this, top, 0);
     riseIn(this, head, 60);
     riseIn(this, score, 120);

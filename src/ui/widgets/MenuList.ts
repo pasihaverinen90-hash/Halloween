@@ -29,6 +29,8 @@ export interface MenuListOptions {
   fontSize?: number;
   /** Selection wraps from the last item to the first. Default true. */
   wrap?: boolean;
+  /** Pasi 24.10.: neon arcade look (pixel font, pink and cyan) for the start screen. Default false. */
+  arcade?: boolean;
   /** Item selected at the start. Default: the first enabled item. */
   initialIndex?: number;
   /** Enter on an enabled item. */
@@ -61,6 +63,7 @@ export class MenuList extends Phaser.GameObjects.Container {
       gap: opts.gap ?? 10,
       fontSize: opts.fontSize ?? 28,
       wrap: opts.wrap ?? true,
+      arcade: opts.arcade ?? false,
       onSelect: opts.onSelect,
       onChange: opts.onChange,
     };
@@ -158,16 +161,18 @@ export class MenuList extends Phaser.GameObjects.Container {
   }
 
   private buildRow(item: MenuItem, i: number): Row {
-    const { width, itemHeight, gap, fontSize } = this.opts;
+    const { width, itemHeight, gap, fontSize, arcade } = this.opts;
     const top = i * (itemHeight + gap);
     const midY = top + itemHeight / 2;
     const panel = this.scene.add.graphics({ x: -width / 2, y: top });
+    // The pixel font is much wider, so it is drawn smaller.
+    const labelFont = arcade
+      ? { fontFamily: FONTS.arcade, fontSize: `${Math.round(fontSize * 0.75)}px` }
+      : { fontFamily: FONTS.ui, fontStyle: '800', fontSize: `${fontSize}px` };
     const marker = this.scene.add
-      .text(-width / 2 + 26, midY, '▸', { fontFamily: FONTS.ui, fontStyle: '800', fontSize: `${fontSize}px`, color: CSS.orange })
+      .text(-width / 2 + 26, midY, arcade ? '>' : '▸', { ...labelFont, color: arcade ? CSS.neonCyan : CSS.orange })
       .setOrigin(0.5, 0.5);
-    const label = this.scene.add
-      .text(-width / 2 + 50, midY, item.label, { fontFamily: FONTS.ui, fontStyle: '800', fontSize: `${fontSize}px`, color: CSS.bone })
-      .setOrigin(0, 0.5);
+    const label = this.scene.add.text(-width / 2 + 50, midY, item.label, { ...labelFont, color: CSS.bone }).setOrigin(0, 0.5);
     let detail: Phaser.GameObjects.Text | null = null;
     if (item.detail) {
       detail = this.scene.add
@@ -185,20 +190,21 @@ export class MenuList extends Phaser.GameObjects.Container {
   }
 
   private redraw(): void {
-    const { width, itemHeight } = this.opts;
+    const { width, itemHeight, arcade } = this.opts;
+    const accent = arcade ? COLORS.neonPink : COLORS.orange;
     this.rows.forEach((row, i) => {
       const item = this.items[i];
       const isSelected = i === this.selected && this.enabled;
       paintPanel(row.panel, width, itemHeight, {
         fill: isSelected ? COLORS.panelLight : COLORS.panel,
-        border: isSelected ? COLORS.orange : COLORS.border,
+        border: isSelected ? accent : arcade ? COLORS.neonPurple : COLORS.border,
         borderWidth: isSelected ? 3 : 2,
-        radius: 12,
+        radius: arcade ? 4 : 12,
         alpha: item.disabled ? 0.6 : 0.94,
-        glow: isSelected,
+        glow: isSelected ? (arcade ? COLORS.neonPink : true) : false,
       });
       row.marker.setVisible(isSelected);
-      row.label.setColor(item.disabled ? CSS.grey : isSelected ? CSS.orange : CSS.bone);
+      row.label.setColor(item.disabled ? CSS.grey : isSelected ? (arcade ? CSS.neonCyan : CSS.orange) : CSS.bone);
       row.detail?.setColor(item.disabled ? CSS.grey : CSS.muted);
     });
   }

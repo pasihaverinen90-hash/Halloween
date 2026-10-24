@@ -51,8 +51,9 @@ export class ThanksScene extends Phaser.Scene {
 
     addBackdrop(this, { dim: 0.3 });
     this.addEmbers();
-    const title = this.add.text(W / 2, 104, `Kiitos, ${player.name}!`, { ...TEXT.title, fontSize: '82px' }).setOrigin(0.5);
-    const sub = this.add.text(W / 2, 172, 'Pelasit kaikki pelit.', { ...TEXT.body, fontSize: '30px', color: CSS.muted }).setOrigin(0.5);
+    // Pasi 24.10.: arcade style, the turn ends in GAME OVER.
+    const title = this.add.text(W / 2, 96, 'GAME OVER', { ...TEXT.arcade, fontSize: '60px' }).setOrigin(0.5);
+    const sub = this.add.text(W / 2, 170, `Kiitos, ${player.name}! Pelasit kaikki pelit.`, { ...TEXT.bodyBold, fontSize: '30px' }).setOrigin(0.5);
     riseIn(this, title, 0);
     riseIn(this, sub, 120);
 
@@ -61,7 +62,7 @@ export class ThanksScene extends Phaser.Scene {
     const panelW = 640;
     const top = Math.max(214, 410 - panelH / 2);
     drawPanel(this, W / 2 - panelW / 2, top, panelW, panelH, { radius: 18, borderWidth: 3 });
-    this.add.text(W / 2, top + 32, 'Omat pisteesi', { ...TEXT.heading, fontSize: '32px', color: CSS.orange }).setOrigin(0.5);
+    this.add.text(W / 2, top + 32, 'OMAT PISTEESI', { ...TEXT.arcadeSmall, fontSize: '20px' }).setOrigin(0.5);
     GAMES.forEach((game, i) => {
       const y = top + 74 + i * rowH;
       const score = recordScore(player.games[game.id]) ?? 0;
@@ -75,7 +76,7 @@ export class ThanksScene extends Phaser.Scene {
     const lineY = top + 74 + GAMES.length * rowH - rowH / 2 + 10;
     this.add.rectangle(W / 2, lineY, panelW - 80, 2, COLORS.border).setOrigin(0.5);
     const total = this.add
-      .text(W / 2, lineY + 44, `Yhteensä ${fi(playerTotal(player, GAME_IDS))} pistettä`, { ...TEXT.title, fontSize: '46px' })
+      .text(W / 2, lineY + 44, `YHTEENSÄ ${fi(playerTotal(player, GAME_IDS))}`, { ...TEXT.arcade, fontSize: '30px', color: CSS.gold })
       .setOrigin(0.5);
     riseIn(this, total, 300 + GAMES.length * 70);
 

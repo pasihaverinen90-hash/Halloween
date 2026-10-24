@@ -53,7 +53,7 @@ export class PodiumScene extends Phaser.Scene {
     this.rows = rankTotals(players, GAME_IDS);
     this.places = [1, 2, 3].map((rank) => this.rows.filter((row) => row.rank === rank));
 
-    this.headline = this.add.text(W / 2, 150, '', { ...TEXT.title, fontSize: '58px', color: CSS.gold }).setOrigin(0.5).setDepth(5);
+    this.headline = this.add.text(W / 2, 150, '', { ...TEXT.arcade, fontSize: '34px', color: CSS.gold }).setOrigin(0.5).setDepth(5);
     this.note = this.add.text(W / 2, 214, '', { ...TEXT.body, color: CSS.muted, align: 'center' }).setOrigin(0.5);
     this.stage = this.add.container(0, 0);
     this.standings = this.add.container(0, 0).setVisible(false);
@@ -76,7 +76,7 @@ export class PodiumScene extends Phaser.Scene {
     this.steps.push('reveal1', 'standings');
 
     const unfinished = players.filter((p) => !isPlayerDone(p, GAME_IDS)).length;
-    this.headline.setText('Illan parhaat').setColor(CSS.orange);
+    this.headline.setText('ILLAN PARHAAT').setColor(CSS.neonPink);
     this.note.setText(
       unfinished > 0 ? `Huom: ${unfinished} pelaajalla on pelejä kesken.` : `${this.rows.length} pelaajaa · ${GAMES.length} ${GAMES.length === 1 ? 'peli' : 'peliä'}`,
     );
@@ -147,7 +147,7 @@ export class PodiumScene extends Phaser.Scene {
         .setAlpha(0.75);
       const empty = this.places[i].length === 0;
       const mystery = this.add
-        .text(place.x, top - 46, empty ? '' : '?', { ...TEXT.title, fontSize: '64px', color: CSS.muted })
+        .text(place.x, top - 46, empty ? '' : '?', { ...TEXT.arcade, fontSize: '48px', color: CSS.muted })
         .setOrigin(0.5);
       mystery.setName(`mystery-${i}`);
       this.stage.add([glow, block, number, mystery]);
@@ -163,7 +163,7 @@ export class PodiumScene extends Phaser.Scene {
     const group = this.places[placeIndex];
     const winner = placeIndex === 0;
     const glow = this.glows[placeIndex];
-    this.headline.setText(winner ? 'Ja illan voittaja on…' : `${place.label}. sija`).setColor(winner ? CSS.gold : place.css);
+    this.headline.setText(winner ? 'JA ILLAN VOITTAJA ON...' : `${place.label}. SIJA`).setColor(winner ? CSS.gold : place.css);
     this.note.setText('');
     sfx.play('drumroll');
     this.tweens.add({ targets: glow, alpha: { from: 0, to: 1 }, duration: 260, yoyo: true, repeat: winner ? 5 : 3 });
@@ -194,9 +194,11 @@ export class PodiumScene extends Phaser.Scene {
       this.tweens.add({ targets: nameText, scale: 1, alpha: 1, duration: 520, ease: 'Back.Out' });
       if (winner) {
         const who = names.length > 1 ? `Illan voittajat: ${names.join(' ja ')}!` : `Illan voittaja: ${names[0]}!`;
-        this.headline.setText(who);
-        this.headline.setScale(0.6);
-        this.tweens.add({ targets: this.headline, scale: 1, duration: 600, ease: 'Back.Out' });
+        this.headline.setText(who.toLocaleUpperCase('fi-FI'));
+        // The pixel font is wide: a long name shrinks to fit the screen.
+        const fit = Math.min(1, (W - 80) / this.headline.width);
+        this.headline.setScale(0.6 * fit);
+        this.tweens.add({ targets: this.headline, scale: fit, duration: 600, ease: 'Back.Out' });
         this.confetti();
       } else if (group.length > 1) {
         this.note.setText(`Jaettu ${place.label}. sija`);
@@ -234,7 +236,7 @@ export class PodiumScene extends Phaser.Scene {
 
   private showStandings(): void {
     this.stage.setVisible(false);
-    this.headline.setText('Koko tulostaulu').setColor(CSS.bone).setScale(1).setY(132).setFontSize(44);
+    this.headline.setText('KOKO TULOSTAULU').setColor(CSS.bone).setScale(1).setY(132).setFontSize(30);
     this.note.setText('');
     this.standings.setVisible(true);
     const visible = this.rows.slice(0, 11);

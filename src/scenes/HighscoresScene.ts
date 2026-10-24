@@ -34,7 +34,7 @@ export class HighscoresScene extends Phaser.Scene {
   create(): void {
     this.leaving = false;
     addBackdrop(this, { dim: 0.45 });
-    this.add.text(W / 2, 62, 'Ennätykset', { ...TEXT.title, fontSize: '64px' }).setOrigin(0.5);
+    this.add.text(W / 2, 62, 'ENNÄTYKSET', { ...TEXT.arcade, fontSize: '44px' }).setOrigin(0.5);
     drawPanel(this, W / 2 - TABLE_W / 2 - 20, TABLE_TOP - 80, TABLE_W + 40, 530, { radius: 18 });
     this.layer = this.add.container(0, 0);
     this.render();
@@ -72,7 +72,9 @@ export class HighscoresScene extends Phaser.Scene {
     if (!game) return;
     const left = W / 2 - TABLE_W / 2;
     this.layer.add([
-      this.add.text(W / 2, TABLE_TOP - 44, `${game.name} (${game.genre.toLocaleLowerCase('fi-FI')})`, { ...TEXT.heading, fontSize: '36px' }).setOrigin(0.5),
+      this.add
+        .text(W / 2, TABLE_TOP - 44, `${game.name.toLocaleUpperCase('fi-FI')} (${game.genre.toLocaleLowerCase('fi-FI')})`, { ...TEXT.terminal, fontSize: '40px' })
+        .setOrigin(0.5),
       this.add.text(left + TABLE_W, TABLE_TOP - 44, `${this.gameIndex + 1}/${ALL_GAMES.length}`, { ...TEXT.small }).setOrigin(1, 0.5),
     ]);
     const entries = getFreeplay().top(game.id);

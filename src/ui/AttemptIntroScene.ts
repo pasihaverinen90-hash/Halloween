@@ -29,9 +29,9 @@ export class AttemptIntroScene extends Phaser.Scene {
     addBackdrop(this, { dim: 0.55 });
     addCenteredPanel(this, 680, 400);
 
-    const name = this.add.text(W / 2, H / 2 - 132, d.gameName, { ...TEXT.heading, fontSize: '38px', color: CSS.muted }).setOrigin(0.5);
+    const name = this.add.text(W / 2, H / 2 - 132, d.gameName.toLocaleUpperCase('fi-FI'), { ...TEXT.terminal, fontSize: '40px', color: CSS.muted }).setOrigin(0.5);
     const big = this.add
-      .text(W / 2, H / 2 - 30, d.total === 1 ? 'Yksi yritys' : `Yritys ${d.attempt}/${d.total}`, { ...TEXT.title, fontSize: '104px' })
+      .text(W / 2, H / 2 - 40, d.total === 1 ? 'YKSI YRITYS' : `YRITYS ${d.attempt}/${d.total}`, { ...TEXT.arcade, fontSize: '50px' })
       .setOrigin(0.5);
     const bestText =
       d.total === 1
@@ -42,11 +42,13 @@ export class AttemptIntroScene extends Phaser.Scene {
     const best = this.add.text(W / 2, H / 2 + 80, bestText, { ...TEXT.bodyBold, fontSize: '30px' }).setOrigin(0.5);
     const ready = d.note
       ? this.add.text(W / 2, H / 2 + 136, d.note, { ...TEXT.bodyBold, fontSize: '28px', color: CSS.orange, align: 'center', wordWrap: { width: 640 } }).setOrigin(0.5)
-      : this.add.text(W / 2, H / 2 + 136, 'Valmis?', { ...TEXT.body, color: CSS.muted }).setOrigin(0.5);
+      : this.add.text(W / 2, H / 2 + 136, 'PLAYER 1 READY', { ...TEXT.arcadeSmall, fontSize: '22px' }).setOrigin(0.5);
     riseIn(this, name, 0);
     riseIn(this, big, 60);
     riseIn(this, best, 120);
     riseIn(this, ready, 180);
+    // Arcade style: the ready line blinks.
+    if (!d.note) this.time.delayedCall(700, () => this.tweens.add({ targets: ready, alpha: 0.15, duration: 450, yoyo: true, repeat: -1 }));
 
     addKeyHints(this, [['Enter', 'Aloita yritys']]);
     onKeys(this, { Enter: () => this.start() });

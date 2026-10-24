@@ -1,8 +1,9 @@
 import type Phaser from 'phaser';
 
 /*
- * Shared look of the whole evening: generic Halloween night (the real theme is
- * decided later). Use these instead of ad-hoc colours and fonts.
+ * Shared look of the whole evening: a Halloween night, and in the menus the
+ * neon arcade of Spooky Arcade 3000 (Pasi 24.10.). Use these instead of
+ * ad-hoc colours and fonts.
  */
 
 /** Colours as numbers for Graphics/fills. */
@@ -23,6 +24,10 @@ export const COLORS = {
   silver: 0xc9d1d9,
   bronze: 0xcd8a4b,
   black: 0x000000,
+  /** Pasi 24.10.: neon arcade look of the menus (Spooky Arcade 3000). */
+  neonPink: 0xff3fd8,
+  neonCyan: 0x3ff7ff,
+  neonPurple: 0x9b5cff,
 } as const;
 
 /** The same colours as CSS strings for Text styles. */
@@ -43,6 +48,9 @@ export const CSS = {
   silver: '#c9d1d9',
   bronze: '#cd8a4b',
   black: '#000000',
+  neonPink: '#ff3fd8',
+  neonCyan: '#3ff7ff',
+  neonPurple: '#9b5cff',
 } as const;
 
 /** Font stacks. The web fonts are bundled (see main.ts) and loaded before the game starts. */
@@ -53,6 +61,10 @@ export const FONTS = {
   ui: '"Nunito", "Segoe UI", Arial, sans-serif',
   /** Hand-drawn look for drawn-style games (hangman letters, hints). */
   hand: '"Patrick Hand", "Segoe Print", "Comic Sans MS", cursive',
+  /** Pasi 24.10.: 8-bit arcade font of the menus' titles and big words. Wide: keep the texts short. */
+  arcade: '"Press Start 2P", "Courier New", monospace',
+  /** Narrow old-terminal font for the menus' smaller arcade texts (e.g. game names on tiles). */
+  terminal: '"VT323", "Courier New", monospace',
   /** Colour emojis, bundled so they look the same on every computer. */
   emoji: '"Twemoji", "Segoe UI Emoji", "Apple Color Emoji", sans-serif',
 } as const;
@@ -103,6 +115,32 @@ export const TEXT = {
     fontSize: '20px',
     color: CSS.muted,
   },
+  /**
+   * Neon arcade titles of the menus (Pasi 24.10.: Spooky Arcade 3000): pink
+   * pixel letters glowing cyan. Not used inside the games.
+   */
+  arcade: {
+    fontFamily: FONTS.arcade,
+    fontSize: '48px',
+    color: CSS.neonPink,
+    stroke: '#2a0638',
+    strokeThickness: 4,
+    // A soft glow only around the letters; a strong one turns into a box with the square pixel letters.
+    shadow: { offsetX: 0, offsetY: 0, color: 'rgba(63, 247, 255, 0.55)', blur: 10, fill: true, stroke: false },
+  },
+  /** Smaller neon pixel text: labels such as INSERT COIN or PLAYER 1 READY. */
+  arcadeSmall: {
+    fontFamily: FONTS.arcade,
+    fontSize: '20px',
+    color: CSS.neonCyan,
+    shadow: { offsetX: 0, offsetY: 0, color: 'rgba(63, 247, 255, 0.45)', blur: 6, fill: true },
+  },
+  /** Old-terminal text for names on the menus' tiles. */
+  terminal: {
+    fontFamily: FONTS.terminal,
+    fontSize: '32px',
+    color: CSS.bone,
+  },
   /** Hand-drawn game text. */
   hand: {
     fontFamily: FONTS.hand,
@@ -119,6 +157,8 @@ export const DEPTH = {
   backdropDim: -99,
   /** Key hints at the bottom of the screen (addKeyHints). */
   hints: 900,
+  /** Old picture tube lines over the menus (addBackdrop). */
+  scanlines: 1000,
   /** Short messages near the top (showToast). */
   toast: 2000,
 } as const;

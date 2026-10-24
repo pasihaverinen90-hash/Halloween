@@ -5,6 +5,8 @@ import '@fontsource/nunito/800.css';
 import '@fontsource/grenze-gotisch/600.css';
 import '@fontsource/grenze-gotisch/800.css';
 import '@fontsource/patrick-hand/400.css';
+import '@fontsource/press-start-2p/400.css';
+import '@fontsource/vt323/400.css';
 import 'twemoji-colr-font/twemoji.css';
 import { ALL_GAMES } from './games/registry';
 import { ALL_SCENES } from './scenes';
@@ -109,6 +111,8 @@ async function loadFonts(): Promise<void> {
     '600 46px "Grenze Gotisch"',
     '800 76px "Grenze Gotisch"',
     '400 34px "Patrick Hand"',
+    '400 48px "Press Start 2P"',
+    '400 32px "VT323"',
   ];
   const loads = Promise.all([
     ...faces.map((face) => document.fonts.load(face, 'AaÄäÖöÅå')),

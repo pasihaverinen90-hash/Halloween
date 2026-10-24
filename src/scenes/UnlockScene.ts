@@ -28,7 +28,7 @@ export class UnlockScene extends Phaser.Scene {
     this.asking = false;
     session.playerId = null;
     addBackdrop(this, { dim: 0.35 });
-    this.add.text(W / 2, H / 2 - 230, 'SPOOKY ARCADE 3000', { ...TEXT.title, fontSize: '80px' }).setOrigin(0.5);
+    this.add.text(W / 2, H / 2 - 230, 'SPOOKY ARCADE 3000', { ...TEXT.arcade, fontSize: '50px' }).setOrigin(0.5);
     this.add.text(W / 2, H / 2 - 160, 'Peli avataan Pasin salasanalla.', { ...TEXT.body, color: CSS.muted }).setOrigin(0.5);
     this.time.delayedCall(150, () => void this.unlock());
   }
