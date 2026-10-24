@@ -286,6 +286,13 @@ Pasi halusi teeman, joka on "vähän cringe ja vanhanaikainen, kuten MonsterSlay
 - Pelit: kuva-arvoitukset **Leffa-O-Rama**, lentopeli **Broomstick Turbo**, räiskintä **Holy Water Blaster**, tasohyppely **MonsterSlayer3000**, kurpitsalinko **Pumpkin-O-Matic**, hirsipuu **Hang-O-Matic**, ristikko **Grid of Doom 2000**.
 - **Valikon ulkoasu (Pasi 24.10.): Neon-pelihalli** (valittu kolmesta: Neon-pelihalli, 90-luvun CD-ROM, Kevyt arcade). Koskee vain valikoita ja väliruutuja, ei pelejä. Otsikot ja napit ovat 8-bittisellä pikselifontilla (Press Start 2P), pelien nimet ruuduissa vanhalla päätefontilla (VT323), ja värit ovat neonpinkki, -turkoosi ja -violetti. Koko ruudulla on hennot kuvaputkijuovat ja tummat kulmat (`addBackdrop`). Väliruuduissa lukee PLAYER 1 READY (vilkkuu), GAME OVER (kiitosnäkymä ja freeplay ilman top 10 -sijaa) ja NEW HIGH SCORE! (freeplay, vilkkuu). Tyylit ovat tiedostossa `src/ui/theme.ts` (`FONTS.arcade`, `FONTS.terminal`, `TEXT.arcade`, `TEXT.arcadeSmall`, `TEXT.terminal`, neonvärit), ja aloitusnäkymän napit käyttävät `MenuList`-asetusta `arcade`.
 
+#### Lisätoiveet (Pasi 24.10.)
+
+Pasi: peli on kaveriporukan iltaan, eikä sen tarvitse olla täydellinen. Ennakkoläpipeluita (koko ilta kolmella testipelaajalla) ei tehdä. Pieniä hiomisia tehdään.
+- **Kurpitsalinko:** rypälepommin voi räjäyttää kesken lennon painamalla välilyöntiä uudelleen.
+- **Loputon lentopeli:** pisteet kertyvät kolmasosan nopeudella (turnauksen maalin etäisyys on noin 3 300 freeplay-pistettä, ennen 10 000).
+- **Freeplayn vaihtelut** (Pasi valitsi): lentopeliin uusi rata joka kerta, hirsipuun ja ristikon sanat arvotaan isommasta listasta, kuva-arvoituksiin arvotaan arvoitukset isommasta joukosta (Claude Code kirjoittaa uudet emojiarvoitukset), räiskintä jatkuu loputtomana Paholaisen jälkeen ja viholliset tulevat joka kerta eri järjestyksessä, ja tasohyppelyssä on freeplayssä vaikea tila (enemmän vihollisia, kovemmat osumat). Kurpitsalingon vaihtuvia luurankoja ei tehdä (iso työ).
+
 #### Illan lyhennys (Pasi 23.10., päätetty ja tehty 23.10.)
 
 Pasi: läpipeluun optimi on noin 30 minuuttia (keskivertopelaajalla nyt noin 60). "Älä vielä koodaa mitään."
