@@ -51,7 +51,7 @@ export class FreeplayResultScene extends Phaser.Scene {
     addDim(this, 0.75);
     addCenteredPanel(this, PANEL_W, PANEL_H);
     const top = H / 2 - PANEL_H / 2;
-    const name = this.add.text(W / 2, top + 40, `${d.gameName} · Freeplay`, { ...TEXT.heading, fontSize: '32px', color: CSS.muted }).setOrigin(0.5);
+    const name = this.add.text(W / 2, top + 40, `${d.gameName} · Free Play`, { ...TEXT.heading, fontSize: '32px', color: CSS.muted }).setOrigin(0.5);
     const score = this.add.text(W / 2, top + 104, `${fi(d.score)} pistettä`, { ...TEXT.title, fontSize: '76px' }).setOrigin(0.5);
     this.message = this.add.text(W / 2, top + 168, '', { ...TEXT.bodyBold, fontSize: '28px', color: CSS.orange }).setOrigin(0.5);
     riseIn(this, name, 0);

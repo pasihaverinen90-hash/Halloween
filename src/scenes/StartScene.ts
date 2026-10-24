@@ -10,7 +10,7 @@ import { addBackdrop } from '../ui/backdrop';
 import { askPassword } from '../ui/dialogs';
 import { addKeyHints } from '../ui/hints';
 import { W } from '../ui/screen';
-import { CSS, TEXT } from '../ui/theme';
+import { CSS, FONTS, TEXT } from '../ui/theme';
 import { MenuList } from '../ui/widgets/MenuList';
 import { drawPanel } from '../ui/widgets/panel';
 import { TextInput } from '../ui/widgets/TextInput';
@@ -37,11 +37,16 @@ export class StartScene extends Phaser.Scene {
     const db = getDb();
     addBackdrop(this, { dim: 0.15 });
 
-    const title = this.add.text(W / 2, 112, 'Halloween-peli-ilta', { ...TEXT.title, fontSize: '88px' }).setOrigin(0.5);
-    this.tweens.add({ targets: title, y: 118, duration: 2600, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+    // Pasi 24.10.: the Spooky Arcade 3000 theme, cringe and old-fashioned on purpose.
+    const title = this.add.text(W / 2, 92, 'SPOOKY ARCADE 3000', { ...TEXT.title, fontSize: '84px' }).setOrigin(0.5);
+    this.tweens.add({ targets: title, y: 98, duration: 2600, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+    const coin = this.add
+      .text(W / 2, 154, '~ INSERT COIN ~', { fontFamily: FONTS.ui, fontStyle: '800', fontSize: '26px', color: CSS.gold, letterSpacing: 6 })
+      .setOrigin(0.5);
+    this.tweens.add({ targets: coin, alpha: { from: 1, to: 0.15 }, duration: 600, yoyo: true, repeat: -1, ease: 'Stepped', easeParams: [2] });
     const games = GAMES.length === 1 ? 'Yksi peli' : `${GAMES.length} peliä`;
     this.add
-      .text(W / 2, 186, `${games} · Jokainen pelaa vuorollaan · Suurin kokonaispistemäärä voittaa`, {
+      .text(W / 2, 194, `${games} · Jokainen pelaa vuorollaan · Suurin kokonaispistemäärä voittaa`, {
         ...TEXT.body,
         color: CSS.muted,
       })
@@ -64,9 +69,9 @@ export class StartScene extends Phaser.Scene {
       W / 2,
       top + 204,
       [
-        { label: 'Turnaus', detail: 'Aloita vuoro' },
-        { label: 'Freeplay', detail: getFreeplay().isOpen() ? 'Pelaa vapaasti' : 'Vaatii salasanan' },
-        { label: 'Tulokset', detail: 'Vaatii salasanan' },
+        { label: 'TOURNAMENT', detail: 'Aloita vuoro' },
+        { label: 'FREE PLAY', detail: getFreeplay().isOpen() ? 'Pelaa vapaasti' : 'Vaatii salasanan' },
+        { label: 'HIGH SCORES', detail: 'Vaatii salasanan' },
       ],
       {
         width: 520,

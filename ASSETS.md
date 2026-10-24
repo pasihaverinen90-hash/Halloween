@@ -27,7 +27,7 @@ Hyvä tietää:
 
 > Yöllinen Halloween-maisema leveänä taustakuvana: tumma violetinmusta tähtitaivas, oikeassa yläkulmassa suuri lämpimänkeltainen täysikuu pehmeine hehkuineen, kaukana matalia kukkuloita, vasemmalla lehdetön kiemurainen puu siluettina, maassa muutama hautakivi ja risti siluetteina ja matala usva maan rajassa. Kuvan keskiosa on rauhallinen ja tumma, koska sen päälle tulee tekstiä ja valikoita. Ei ihmisiä, ei tekstiä, ei tunnettuja hahmoja. Tyyli: Pelkistetty piirroskuva, tumma ja tunnelmallinen mutta ei lapsellinen; violetti, musta ja kuunvalon oranssi. Koko 1280 × 720 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
 
-## Viimeinen sana (hirsipuu)
+## Hang-O-Matic (hirsipuu)
 
 ### `valikko-hirsipuu.png` – Hirsipuun esikatselukuva valikkoon
 
@@ -139,7 +139,7 @@ Hyvä tietää:
 
 > Kuvassa oikealla puolella oleva jalka: reisiluu, sääriluu ja jalkaterä, roikkuu alaspäin. Osa 8/8 luurangosta, joka kootaan hirsipuuhun pala kerrallaan. Kuvassa vain tämä yksi osa, suorassa asennossa edestä katsottuna. Tyyli: Pelkistetty piirroskuva, paksut tummat ääriviivat, luunvalkoinen väri ja kevyt varjostus. Kaikki kahdeksan osaa samalla tyylillä ja samassa mittakaavassa, ei lapsellinen. Koko 50 × 124 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
-## Enteet (kuva-arvoitukset)
+## Leffa-O-Rama (kuva-arvoitukset)
 
 ### `valikko-arvoitukset.png` – Kuva-arvoitusten esikatselukuva valikkoon
 
@@ -191,7 +191,7 @@ Hyvä tietää:
 
 > Kuva-arvoitus, jonka vastaus on KUMMITUSJUNA: vasemmalla valkoinen lakanakummitus, keskellä plusmerkki ja oikealla vanha höyryjuna. Tumma, yksivärinen tausta. Ei tekstiä eikä kirjaimia. Tyyli: Pelkistetty piirroskuva, selkeät muodot ja paksut ääriviivat, tumma Halloween-tunnelma mutta ei lapsellinen. Kohteet on helppo tunnistaa pienestäkin kuvasta. Koko 600 × 280 pikseliä. Kuva täyttää koko alueen, ei läpinäkyvyyttä.
 
-## Yölento (lentopeli)
+## Broomstick Turbo (lentopeli)
 
 ### `valikko-lentopeli.png` – Lentopelin esikatselukuva valikkoon
 
@@ -313,7 +313,7 @@ Hyvä tietää:
 
 > Korkea kivinen kaariportti, jonka keskellä hehkuu violetti taikaportaali. Portin juurella kaksi kurpitsalyhtyä. Edestä katsottuna. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 240 × 560 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
-## Kiirastuli (räiskintä)
+## Holy Water Blaster (räiskintä)
 
 ### `valikko-raiskinta.png` – Räiskinnän esikatselukuva valikkoon
 
@@ -545,7 +545,7 @@ Hyvä tietää:
 
 > Pieni kultainen risti mustalla ääriviivalla. Tyyli: Pelkistetty piirroskuva, selkeät ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 22 × 26 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
-## Kalmanristikko (ristikko)
+## Grid of Doom 2000 (ristikko)
 
 ### `valikko-ristikko.png` – Ristikon esikatselukuva valikkoon
 
@@ -971,7 +971,7 @@ Hyvä tietää:
 
 > Pieniä koristeita, jotka seisovat maassa (ruudun alareunassa). Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Kuvassa on 4 animaatiokuvaa vierekkäin samankokoisina ruutuina vasemmalta oikealle (saniainen, kanto ja sieniä, pensas, sammaloitunut kivi). Yksi ruutu on 48 × 96 pikseliä, koko kuva 192 × 96 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
-## Piiritys (kurpitsalinko)
+## Pumpkin-O-Matic (kurpitsalinko)
 
 ### `piiritys-esikatselu.png` – Valikon esikatselukuva
 

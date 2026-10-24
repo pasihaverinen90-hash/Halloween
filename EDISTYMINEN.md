@@ -278,7 +278,15 @@ Pasi keräsi ensin kommentit ja antoi sitten luvan korjata kaikki. Kaikki alla o
 - **Esc-tauko poistetaan kaikista peleistä** (Pasi valitsi, ettei taukoa ole missään pelissä), jotta kukaan ei voi pysäyttää peliä ja miettiä rauhassa. Tämä poikkeaa CLAUDE.md:n kohdasta "Esc pysäyttää pelin taukotilaan". Myös automaattinen tauko, kun ikkuna menettää fokuksen, poistettiin, ettei taukoa saa sitä kautta (Claude Coden päätös). Taukonäkymä on poistettu kokonaan. Jos välilehti vaihdetaan tai selain pienennetään, selain itse pysäyttää pelin, eikä sitä voi estää; koko näytön tilassa se näkyy kaikille. Jos peli jumittuu, Pasi antaa sen korjaustilassa uudelleen.
 - **Ohjeiden lyhennys:** Pasi antoi luvan tehdä suoraan esimerkin tyyliin (tavoite yhdellä lauseella, näppäimet, 2–3 lyhyttä sääntöä ja yksi pisteiden rivi). Pasi katsoo tuloksen pelissä.
 
-#### Illan lyhennys (Pasi 23.10., päätetty, ei vielä tehty)
+#### Teema ja nimet (Pasi 24.10., tehty)
+
+Pasi halusi teeman, joka on "vähän cringe ja vanhanaikainen, kuten MonsterSlayer3000", ja valitsi kolmesta ehdotuksesta pelihallityylin **Spooky Arcade 3000**. Englanninkieliset nimet ja napit ovat Pasin valinta (poikkeus CLAUDE.md:n suomenkielisistä teksteistä). Muut tekstit ovat yhä suomeksi.
+- Peli: **SPOOKY ARCADE 3000**, alla vilkkuva "~ INSERT COIN ~". Myös selaimen välilehden otsikko.
+- Aloitusnäkymän napit: **TOURNAMENT** (turnaus), **FREE PLAY** (freeplay), **HIGH SCORES** (turnauksen tulokset salasanalla). Freeplayn valikon otsikko on FREE PLAY, ja sen top-listat ovat yhä "Ennätykset".
+- Pelit: kuva-arvoitukset **Leffa-O-Rama**, lentopeli **Broomstick Turbo**, räiskintä **Holy Water Blaster**, tasohyppely **MonsterSlayer3000**, kurpitsalinko **Pumpkin-O-Matic**, hirsipuu **Hang-O-Matic**, ristikko **Grid of Doom 2000**.
+- Seuraavaksi valikon ulkoasu teeman mukaan (kysytään Pasilta).
+
+#### Illan lyhennys (Pasi 23.10., päätetty ja tehty 23.10.)
 
 Pasi: läpipeluun optimi on noin 30 minuuttia (keskivertopelaajalla nyt noin 60). "Älä vielä koodaa mitään."
 - **Hirsipuu ja ristikko** jäävät pois turnauksesta ja ovat vain freeplayssä. Ne eivät kuulu kokonaispisteisiin eivätkä palkintojenjakoon.

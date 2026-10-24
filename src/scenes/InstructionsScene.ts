@@ -67,7 +67,7 @@ export class InstructionsScene extends Phaser.Scene {
     addAsset(this, def.preview, 60 + 86, 66, { width: 172, height: 96 });
     const index = this.freeplay ? -1 : GAME_IDS.indexOf(def.id);
     if (this.freeplay) {
-      this.add.text(W - 60, 66, 'Freeplay', { ...TEXT.heading, fontSize: '30px', color: CSS.muted }).setOrigin(1, 0.5);
+      this.add.text(W - 60, 66, 'Free Play', { ...TEXT.heading, fontSize: '30px', color: CSS.muted }).setOrigin(1, 0.5);
     } else if (index >= 0) {
       this.add
         .text(W - 60, 66, `Peli ${index + 1}/${GAME_IDS.length}`, { ...TEXT.heading, fontSize: '30px', color: CSS.muted })

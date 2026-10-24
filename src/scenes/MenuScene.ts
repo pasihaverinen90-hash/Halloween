@@ -56,7 +56,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     addBackdrop(this, { dim: 0.35 });
-    this.add.text(W / 2, 62, 'Freeplay', { ...TEXT.title, fontSize: '64px' }).setOrigin(0.5);
+    this.add.text(W / 2, 62, 'FREE PLAY', { ...TEXT.title, fontSize: '64px' }).setOrigin(0.5);
     this.add.text(48, 62, 'Pelaa niin paljon kuin haluat', { ...TEXT.bodyBold, fontSize: '24px', color: CSS.muted }).setOrigin(0, 0.5);
 
     const items: Array<GameDefinition | null> = [...ALL_GAMES, null];
