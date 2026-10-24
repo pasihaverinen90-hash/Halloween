@@ -77,6 +77,11 @@ test('kurpitsalinko: kamera, kulma, voima, laukaus, aseet, kentät, pisteet ja y
     const before = (await sceneState(page, 'Kurpitsalinko')).shots;
     await catapult(page, `scene.debugFire('${weapon}', 50, 0.5)`);
     await waitForState(page, 'Kurpitsalinko', (s) => s.shots === before + 1);
+    if (weapon === 'cluster') {
+      // Pasi 24.10.: välilyönti räjäyttää rypäleen kesken lennon
+      await press(page, 'Space', 100);
+      await waitForState(page, 'Kurpitsalinko', (s) => s.projectiles >= 3 || s.phase !== 'flight');
+    }
     await waitForState(page, 'Kurpitsalinko', (s) => s.phase === 'aim' || s.phase === 'levelDone', 60_000);
     if ((await sceneState(page, 'Kurpitsalinko')).phase === 'levelDone') break;
   }

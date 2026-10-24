@@ -392,6 +392,8 @@ export class PiiritysScene extends Phaser.Scene {
         this.aim(dt);
         break;
       case 'flight':
+        // Space again bursts a cluster pumpkin in mid-air (Pasi 24.10.).
+        if (this.keys.takePress(' ')) this.battle.burstCluster();
         this.battle.step(dt);
         this.handleEvents();
         if (!this.battle.busy()) {

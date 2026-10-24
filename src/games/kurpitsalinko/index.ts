@@ -25,6 +25,7 @@ const kurpitsalinko: GameDefinition = {
     rules: [
       'Kurpitsa räjähtää ja kaataa lähellä olevat luurangot.',
       'Erikoisaseita on rajallisesti. Lisää saa laatikoista.',
+      'Rypäle hajoaa ilmassa, kun painat välilyöntiä lennon aikana.',
       'Ammu −2:n tai −5:n läpi, niin laukauksia vähennetään.',
     ],
     scoring: ['Mitä vähemmän laukauksia, sitä enemmän pisteitä.'],

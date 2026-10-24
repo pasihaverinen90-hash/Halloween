@@ -171,7 +171,9 @@ test('freeplay: loputon lentopeli jatkuu maalin ohi, ja pisteillä ei ole ylära
   await waitForScene(page, 'FreeplayResult', 120_000);
   const result = await sceneState(page, 'FreeplayResult');
   expect(result).toMatchObject({ gameId: 'lentopeli', place: 1 });
-  expect(result.score).toBeGreaterThan(15000);
+  // Pasi 24.10.: a third of the tournament scale, so about 5 400 at 30 000 px
+  expect(result.score).toBeGreaterThan(4500);
+  expect(result.score).toBeLessThan(10000);
   await expectNoRuntimeErrors(page);
 });
 

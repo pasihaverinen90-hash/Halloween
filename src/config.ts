@@ -117,6 +117,8 @@ export const CONFIG = {
     endlessSpeedGrowth: 0.004,
     endlessMaxSpeed: 900,
     endlessSeconds: 420,
+    /** Pasi 24.10.: the endless flight's points grow at this share of the tournament scale (the finish distance is worth 1000 × this). */
+    endlessPointsShare: 1 / 3,
     /** Speed builds up again after a crash (px/s²). */
     acceleration: 260,
     /** Gravity (px/s²), the upward kick of one Space press (px/s) and the fastest fall (px/s). */

@@ -371,6 +371,23 @@ export class Battle {
     }
   }
 
+  /**
+   * Pasi 24.10.: Space during the flight bursts the cluster pumpkin in the air.
+   * The bomblets keep much of its speed, so they rain ahead like a shower.
+   * Returns false when no cluster pumpkin is flying.
+   */
+  burstCluster(): boolean {
+    const p = this.projectiles.find((q) => q.kind === 'cluster');
+    if (!p) return false;
+    this.remove(p);
+    this.events.push({ type: 'bomblets', x: p.x, y: p.y });
+    for (let i = 0; i < C.bombletCount; i++) {
+      const spread = (i / (C.bombletCount - 1) - 0.5) * 2;
+      this.projectiles.push({ id: this.nextId++, kind: 'bomblet', x: p.x, y: p.y, vx: p.vx * 0.7 + spread * 170, vy: p.vy * 0.5 - 120 + Math.abs(spread) * 60, age: 0 });
+    }
+    return true;
+  }
+
   private remove(p: Projectile): void {
     this.projectiles = this.projectiles.filter((q) => q !== p);
   }

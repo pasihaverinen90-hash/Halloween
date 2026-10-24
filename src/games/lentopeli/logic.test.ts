@@ -180,9 +180,9 @@ describe('endless flight (freeplay, Pasi 23.10.)', () => {
     expect(targetSpeed(hardest + 20000)).toBe(C.maxSpeed);
   });
 
-  it('scores the distance without an upper limit: the tournament finish is worth 1000', () => {
-    expect(endlessPoints(GOAL_DISTANCE)).toBeCloseTo(1000, 6);
-    expect(endlessPoints(GOAL_DISTANCE * 2.5)).toBeCloseTo(2500, 6);
+  it('scores the distance without an upper limit, at a third of the tournament scale (Pasi 24.10.)', () => {
+    expect(endlessPoints(GOAL_DISTANCE)).toBeCloseTo(1000 / 3, 6);
+    expect(endlessPoints(GOAL_DISTANCE * 3)).toBeCloseTo(1000, 6);
     expect(endlessPoints(-5)).toBe(0);
   });
 

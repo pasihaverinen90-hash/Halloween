@@ -64,11 +64,12 @@ export const ENDLESS_DISTANCE = Math.round(distanceAfter(C.endlessSeconds, true)
 
 /**
  * Endless flight's points (freeplay, Pasi 23.10.): the tournament's scale
- * without the upper limit, so the finish distance is worth 1000 and every
- * pixel beyond it more. Unrounded.
+ * without the upper limit, slowed down to C.endlessPointsShare (Pasi 24.10.:
+ * a third), so the finish distance is worth about 333 and every pixel beyond
+ * it more. Unrounded.
  */
 export function endlessPoints(distance: number): number {
-  return (CONFIG.maxScore * Math.max(0, distance)) / GOAL_DISTANCE;
+  return (CONFIG.maxScore * C.endlessPointsShare * Math.max(0, distance)) / GOAL_DISTANCE;
 }
 
 /** Points: 1000 at the finish, otherwise the share of the way flown (at most 999). */

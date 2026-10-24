@@ -137,6 +137,23 @@ describe('battle', () => {
     expect(events.filter((e) => e.type === 'blast').length).toBe(1 + C.bombletCount);
   });
 
+  it('Space bursts a flying cluster pumpkin in the air, and the bomblets keep going forward (Pasi 24.10.)', () => {
+    const b = new Battle(0);
+    expect(b.burstCluster()).toBe(false);
+    b.fire('cluster', 40, 0.45);
+    for (let i = 0; i < 20; i++) b.step(1 / 60);
+    const cluster = b.projectiles[0];
+    const { x, vx } = cluster;
+    expect(b.burstCluster()).toBe(true);
+    expect(b.projectiles).toHaveLength(C.bombletCount);
+    expect(b.projectiles.every((p) => p.kind === 'bomblet' && p.x === x)).toBe(true);
+    // The middle bomblet flies on in the same direction
+    expect(b.projectiles[Math.floor(C.bombletCount / 2)].vx).toBeGreaterThan(vx * 0.5);
+    const events = [...b.takeEvents(), ...settle(b)];
+    expect(events.filter((e) => e.type === 'blast').length).toBe(C.bombletCount);
+    expect(b.burstCluster()).toBe(false);
+  });
+
   it('a homing pumpkin flies freely while rising, and only then turns towards a skeleton near it (Pasi 23.10.)', () => {
     const homing = new Battle(0);
     const plain = new Battle(0);
