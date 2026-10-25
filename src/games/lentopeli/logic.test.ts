@@ -32,7 +32,9 @@ describe('course length and speed', () => {
     expect(flightSeconds(EASY_DISTANCE)).toBeCloseTo(C.easySeconds, 1);
     expect(difficulty(EASY_DISTANCE - 1)).toBe(0);
     expect(targetSpeed(0)).toBe(C.startSpeed);
-    expect(targetSpeed(EASY_DISTANCE + C.rampDistance / 2)).toBeCloseTo((C.startSpeed + C.maxSpeed) / 2, 5);
+    // Pasi 25.10.: the speed ramp is a little shorter than the obstacles' one
+    expect(C.speedRampDistance).toBeLessThan(C.rampDistance);
+    expect(targetSpeed(EASY_DISTANCE + C.speedRampDistance / 2)).toBeCloseTo((C.startSpeed + C.maxSpeed) / 2, 5);
     expect(targetSpeed(1e9)).toBe(C.maxSpeed);
   });
 });
@@ -172,12 +174,12 @@ describe('endless flight (freeplay, Pasi 23.10.)', () => {
     expect(endless[endless.length - 1].x).toBeLessThan(ENDLESS_DISTANCE);
   });
 
-  it('gets faster and faster after the hardest point, up to a limit', () => {
-    const hardest = EASY_DISTANCE + C.rampDistance;
-    expect(targetSpeed(hardest, true)).toBe(C.maxSpeed);
-    expect(targetSpeed(hardest + 20000, true)).toBeGreaterThan(C.maxSpeed + 50);
+  it('gets faster and faster once at full speed, up to a limit', () => {
+    const fullSpeed = EASY_DISTANCE + C.speedRampDistance;
+    expect(targetSpeed(fullSpeed, true)).toBe(C.maxSpeed);
+    expect(targetSpeed(fullSpeed + 20000, true)).toBeGreaterThan(C.maxSpeed + 50);
     expect(targetSpeed(ENDLESS_DISTANCE, true)).toBe(C.endlessMaxSpeed);
-    expect(targetSpeed(hardest + 20000)).toBe(C.maxSpeed);
+    expect(targetSpeed(fullSpeed + 20000)).toBe(C.maxSpeed);
   });
 
   it('scores the distance without an upper limit, at a third of the tournament scale (Pasi 24.10.)', () => {

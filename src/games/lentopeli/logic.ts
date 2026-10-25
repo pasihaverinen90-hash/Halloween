@@ -30,9 +30,10 @@ export function difficulty(distance: number): number {
  * endless flight (freeplay) it keeps growing after the hardest point.
  */
 export function targetSpeed(distance: number, endless = false): number {
-  const speed = lerp(C.startSpeed, C.maxSpeed, difficulty(distance));
+  // Pasi 25.10.: the speed grows a little faster than the obstacles get harder.
+  const speed = lerp(C.startSpeed, C.maxSpeed, clamp((distance - EASY_DISTANCE) / C.speedRampDistance, 0, 1));
   if (!endless) return speed;
-  const beyond = Math.max(0, distance - EASY_DISTANCE - C.rampDistance);
+  const beyond = Math.max(0, distance - EASY_DISTANCE - C.speedRampDistance);
   return Math.min(C.endlessMaxSpeed, speed + beyond * C.endlessSpeedGrowth);
 }
 

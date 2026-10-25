@@ -107,14 +107,17 @@ export const CONFIG = {
     startSpeed: 270,
     /** … rising to this at the hardest. */
     maxSpeed: 460,
-    /** Distance after the easy part over which speed, openings and obstacles reach their hardest. */
+    /** Distance after the easy part over which the openings and obstacles reach their hardest. */
     rampDistance: 20000,
+    /** Pasi 25.10.: the speed reaches maxSpeed over this distance after the easy part (sooner than the obstacles get their hardest). */
+    speedRampDistance: 15000,
     /**
-     * Freeplay's endless flight (Pasi 23.10.): no finish, and after the hardest
-     * point the speed keeps growing by this much (px/s) per pixel flown, up to
-     * endlessMaxSpeed. The course is endlessSeconds of flight long.
+     * Freeplay's endless flight (Pasi 23.10.): no finish, and once the speed has
+     * reached maxSpeed it keeps growing by this much (px/s) per pixel flown, up to
+     * endlessMaxSpeed (Pasi 25.10.: a little faster, 0.004 → 0.006). The course
+     * is endlessSeconds of flight long.
      */
-    endlessSpeedGrowth: 0.004,
+    endlessSpeedGrowth: 0.006,
     endlessMaxSpeed: 900,
     endlessSeconds: 420,
     /** Pasi 24.10.: the endless flight's points grow at this share of the tournament scale (the finish distance is worth 1000 × this). */
