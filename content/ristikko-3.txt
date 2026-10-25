@@ -1,0 +1,77 @@
+# RISTIKON SANAT, VERSIO 3: Kauhuelokuvien hahmot
+#
+# Peli tekee ristikon automaattisesti näistä sanoista.
+# Pasi 25.10.: ristikoita on kolme (ristikko-1.txt, ristikko-2.txt ja ristikko-3.txt),
+# ja freeplay arpoo joka kerta yhden niistä.
+# Jokainen sana on oma korttinsa: ensin rivi "sana:", sitten rivi "vihje:".
+# Korttien väliin jätetään yksi tyhjä rivi.
+#
+# - Sanoja on 16–22.
+# - Sana on yksi sana ilman välilyöntejä: vain kirjaimia A–Ö, 3–13 kirjainta.
+# - Vihje saa olla enintään 60 merkkiä.
+# - Isoilla ja pienillä kirjaimilla ei ole väliä.
+# - Jos sanoista ei saada ristikkoa, joka mahtuu ruudulle, julkaisu pysähtyy ja virhe
+#   kerrotaan. Vaihda silloin jokin pitkä sana lyhyempään.
+# - #-merkillä alkavat rivit ovat ohjeita, eikä peli lue niitä.
+#
+# Sanat ovat Pasin listasta (25.10.).
+
+sana: Freddy
+vihje: Painajaisten mies veitsikäsineineen
+
+sana: Jason
+vihje: Kiekkomaskinen tappaja Kristallijärvellä
+
+sana: Chucky
+vihje: Murhaava leikkinukke
+
+sana: Pennywise
+vihje: Viemärissä asuva pelle
+
+sana: Ghostface
+vihje: Scream-elokuvien naamioitu tappaja
+
+sana: Leatherface
+vihje: Moottorisahaa heiluttava Texasin tappaja
+
+sana: Jigsaw
+vihje: Saw-elokuvien kieroja pelejä keksivä mies
+
+sana: Pinhead
+vihje: Hellraiserin nuppineulapäinen demoni
+
+sana: Samara
+vihje: Ring-elokuvan kaivosta kömpivä tyttö
+
+sana: Carrie
+vihje: Tanssiaisissa verellä valeltu tyttö
+
+sana: Valak
+vihje: Nunna-elokuvan demoni
+
+sana: Nosferatu
+vihje: Vanhan mykkäelokuvan kalju vampyyri
+
+sana: Beetlejuice
+vihje: Sano nimi kolmesti, niin hän ilmestyy
+
+sana: Wednesday
+vihje: Addamsin perheen synkkä tytär
+
+sana: Morticia
+vihje: Addamsin perheen äiti
+
+sana: Psycho
+vihje: Hitchcockin elokuva kuuluisasta suihkukohtauksesta
+
+sana: Alien
+vihje: Avaruusolento, joka kuoriutuu munasta
+
+sana: Gremlins
+vihje: Älä ruoki niitä keskiyön jälkeen
+
+sana: Elmstreet
+vihje: Katu, jolla Freddy vierailee unissa
+
+sana: Amityville
+vihje: Kummitustalon kaupunki elokuvissa

@@ -12,6 +12,7 @@ import { BACKGROUND, GALLOWS, GALLOWS_BOX, NOOSE, PART_LAYOUT, SKELETON_PARTS } 
 import { HIRSIPUU_CONTENT } from './content';
 import {
   ALPHABET,
+  drawWords,
   HIRSIPUU_LAYOUT,
   guess,
   isFailed,
@@ -79,7 +80,10 @@ export class HirsipuuScene extends Phaser.Scene {
 
   init(data: GameSceneData): void {
     this.ctx = data.ctx;
-    this.words = HIRSIPUU_CONTENT.ok ? HIRSIPUU_CONTENT.words : [];
+    // Pasi 25.10.: freeplay draws its words from the whole list every time.
+    const all = HIRSIPUU_CONTENT.ok ? HIRSIPUU_CONTENT.words : [];
+    const count = CONFIG.hirsipuu.wordsPerRound;
+    this.words = this.ctx.freeplay ? drawWords(all, count) : all.slice(0, count);
     this.phase = 'guessing';
     this.parts = [];
     this.cells = [];

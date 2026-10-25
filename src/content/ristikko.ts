@@ -3,7 +3,7 @@ import { buildLayout, letters, type CrosswordWord, type Layout } from '../games/
 import { listKeys, parseCards, type ContentError } from './format';
 
 /*
- * content/ristikko.txt: CONFIG.ristikko.minWords…maxWords cards with "sana"
+ * content/ristikko-<n>.txt (n = 1…3, Pasi 25.10.): CONFIG.ristikko.minWords…maxWords cards with "sana"
  * (one word, letters A–Ö) and "vihje" (the clue). The crossword is built from
  * them; the check fails if the words cannot be made into one.
  */

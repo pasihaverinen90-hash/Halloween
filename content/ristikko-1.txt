@@ -1,6 +1,8 @@
 # RISTIKON SANAT
 #
-# Peli tekee ristikon automaattisesti näistä sanoista. Kaikki pelaavat saman ristikon.
+# Peli tekee ristikon automaattisesti näistä sanoista.
+# Pasi 25.10.: ristikoita on kolme (ristikko-1.txt, ristikko-2.txt ja ristikko-3.txt),
+# ja freeplay arpoo joka kerta yhden niistä. Tämä on versio 1: vanhat kauhusanat.
 # Jokainen sana on oma korttinsa: ensin rivi "sana:", sitten rivi "vihje:".
 # Korttien väliin jätetään yksi tyhjä rivi.
 #

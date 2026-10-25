@@ -4,9 +4,9 @@ Tässä kansiossa ovat pelien sanat ja vihjeet. Voit muokata niitä itse suoraan
 
 | Tiedosto | Mitä siinä on |
 | --- | --- |
-| [`hirsipuu.txt`](hirsipuu.txt) | Hirsipuun 5 sanaa tai lausetta ja niiden vihjeet |
+| [`hirsipuu.txt`](hirsipuu.txt) | Hirsipuun sanat ja lauseet vihjeineen. Joka pelikerralla arvotaan 5 |
 | [`kuva-arvoitukset.txt`](kuva-arvoitukset.txt) | Kuva-arvoitukset: turnauksen 11 arvoitusta ja freeplayn lisäarvoitukset |
-| [`ristikko.txt`](ristikko.txt) | Ristikon 16–22 sanaa ja niiden vihjeet (nyt 20) sekä varasanoja |
+| [`ristikko-1.txt`](ristikko-1.txt), [`ristikko-2.txt`](ristikko-2.txt), [`ristikko-3.txt`](ristikko-3.txt) | Kolme ristikkoa, kussakin 16–22 sanaa vihjeineen. Freeplay arpoo joka kerta yhden |
 
 ## Näin muokkaat tiedostoa
 
@@ -36,7 +36,7 @@ vihje: Näin lapset kysyvät ovella Halloween-iltana.
 
 ### Hirsipuun säännöt
 
-- Sanoja pitää olla **tasan 5**. Ne pelataan tiedoston järjestyksessä, joten aloita helpolla sanalla.
+- Sanoja pitää olla **vähintään 5**, ja niitä voi olla niin monta kuin haluat. Joka pelikerralla arvotaan 5 sanaa, ja niistä pisin tulee ensimmäisenä, koska pitkä sana on helpoin arvata.
 - Sanassa saa olla kirjaimia A–Ö, välilyöntejä ja tavallisia välimerkkejä (- , . ! ? ' : ; ( ) "). Välilyönnit ja välimerkit näkyvät pelaajalle valmiina.
 - Numeroita ei voi arvata, joten kirjoita ne kirjaimin.
 - Yksi sana saa olla enintään 14 kirjainta, ja koko lauseen pitää mahtua kolmelle riville (noin 40 merkkiä).
@@ -82,7 +82,7 @@ Jos et saa virhettä korjattua, kerro siitä Claude Codelle. Voit myös palautta
 
 ### Ristikon säännöt
 
-Peli tekee ristikon automaattisesti sanoista, joten riittää, että vaihdat sanat ja vihjeet. Kaikki pelaavat saman ristikon.
+Ristikoita on kolme: `ristikko-1.txt`, `ristikko-2.txt` ja `ristikko-3.txt`. Freeplay arpoo joka kerta yhden niistä. Peli tekee ristikon automaattisesti sanoista, joten riittää, että vaihdat sanat ja vihjeet.
 
 ```
 sana: Kalmisto
@@ -92,6 +92,6 @@ vihje: Vanha nimi hautausmaalle
 - Sanoja pitää olla **16–22**. Suositus on 18–20.
 - Sana on yksi sana ilman välilyöntejä: vain kirjaimia A–Ö, 3–13 kirjainta.
 - Vihje saa olla enintään 60 merkkiä. Peli näyttää vihjeen perässä sanan pituuden.
-- Tiedoston lopussa on varasanoja `#`-merkeillä. Voit vaihtaa sanan ottamalla #-merkit pois varasanan riveiltä ja lisäämällä ne poistettavan sanan riveille.
+- Tiedoston `ristikko-1.txt` lopussa on varasanoja `#`-merkeillä. Voit vaihtaa sanan ottamalla #-merkit pois varasanan riveiltä ja lisäämällä ne poistettavan sanan riveille.
 - Jos sanoista ei saada ristikkoa, joka mahtuu ruudulle, julkaisu pysähtyy ja virhe kerrotaan. Silloin vaihda jokin pitkä sana lyhyempään tai sellaiseen, jossa on yleisiä kirjaimia (esimerkiksi A, I, K, L, S, T, U).
 

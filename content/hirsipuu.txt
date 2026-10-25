@@ -1,6 +1,7 @@
 # HIRSIPUUN SANAT
 #
-# Pelissä arvataan tasan 5 sanaa tai lausetta tässä järjestyksessä.
+# Pasi 25.10.: joka pelikerralla arvotaan 5 sanaa tai lausetta tästä listasta.
+# Sanoja pitää olla vähintään 5, ja niitä voi lisätä niin monta kuin haluaa.
 # Jokainen sana on oma korttinsa: ensin rivi "sana:", sitten rivi "vihje:".
 # Korttien väliin jätetään yksi tyhjä rivi.
 #
@@ -11,7 +12,7 @@
 # - Isoilla ja pienillä kirjaimilla ei ole väliä.
 # - #-merkillä alkavat rivit ovat ohjeita, eikä peli lue niitä.
 #
-# Aloita helpolla sanalla, jotta alku on armollinen.
+# Sanat ovat Pasin listasta (25.10.) ja aiemmasta hirsipuusta.
 
 sana: Lepakko
 vihje: Siivekäs yölentäjä, joka nukkuu pää alaspäin.
@@ -27,3 +28,153 @@ vihje: Kahdeksanjalkainen kutoja ullakon nurkassa.
 
 sana: Täysikuun yö
 vihje: Silloin ihmissudet heräävät.
+
+sana: Musta kissa
+vihje: Tuo huonoa onnea, jos se kulkee tiesi poikki.
+
+sana: Luuranko
+vihje: Pelkät luut ilman lihaa, ja ne kolisevat.
+
+sana: Vampyyri
+vihje: Imee verta ja välttelee valkosipulia.
+
+sana: Ihmissusi
+vihje: Täysikuulla karvaiseksi muuttuva olento.
+
+sana: Zombi
+vihje: Elävä kuollut, joka hamuaa aivoja.
+
+sana: Noita
+vihje: Lentää luudalla ja keittää liemiä.
+
+sana: Haamu
+vihje: Läpikuultava aave, joka kulkee seinien läpi.
+
+sana: Demoni
+vihje: Paha henki, joka voi riivata ihmisen.
+
+sana: Hautausmaa
+vihje: Paikka, jossa hautakivet seisovat riveissä.
+
+sana: Hautakivi
+vihje: Siihen on kaiverrettu vainajan nimi.
+
+sana: Arkku
+vihje: Vainajan viimeinen vuode.
+
+sana: Kallo
+vihje: Pääkallo, joka irvistää ilman huulia.
+
+sana: Luuta
+vihje: Noidan kulkuväline.
+
+sana: Noidankattila
+vihje: Siinä porisee loitsujen liemi.
+
+sana: Kirous
+vihje: Paha toivotus, joka käy toteen.
+
+sana: Loitsu
+vihje: Noidan lausumat taikasanat.
+
+sana: Myrkky
+vihje: Sellainen voi piillä punaisessa omenassa.
+
+sana: Painajainen
+vihje: Paha uni, josta herää hiestä märkänä.
+
+sana: Naamiaiset
+vihje: Juhlat, joihin tullaan pukeutuneena.
+
+sana: Naamio
+vihje: Sen takana kasvot eivät näy.
+
+sana: Viitta
+vihje: Vampyyrin musta, liehuva vaate.
+
+sana: Kynttilä
+vihje: Lepattava liekki pimeässä huoneessa.
+
+sana: Verikuu
+vihje: Punaisena hehkuva täysikuu.
+
+sana: Keskiyö
+vihje: Kellot lyövät kaksitoista.
+
+sana: Ukkosmyrsky
+vihje: Salamat välähtävät linnan ikkunoissa.
+
+sana: Sumuinen yö
+vihje: Silloin ei näe hautausmaan toiselle puolelle.
+
+sana: Korppi
+vihje: Musta lintu, joka raakkuu hautausmaalla.
+
+sana: Pöllö
+vihje: Huhuilee yöllä puun oksalla.
+
+sana: Sammakko
+vihje: Noidan liemen limainen ainesosa.
+
+sana: Käärme
+vihje: Sihisee ja luikertelee kellarin lattialla.
+
+sana: Kellari
+vihje: Talon pimein ja kostein kerros.
+
+sana: Ullakko
+vihje: Talon yläkerros, jonka lattia narisee.
+
+sana: Krypta
+vihje: Kirkon alla oleva hautaholvi.
+
+sana: Kummituslinna
+vihje: Vanha linna, jonka käytävillä aaveet vaeltavat.
+
+sana: Kirves
+vihje: Kauhuelokuvassa sillä hakataan reikä oveen.
+
+sana: Tikari
+vihje: Lyhyt ja terävä terä.
+
+sana: Klovni
+vihje: Punanenäinen pelle, joka voi olla kammottava.
+
+sana: Nukke
+vihje: Lelu, jonka silmät tuntuvat seuraavan sinua.
+
+sana: Suklaa
+vihje: Ruskea herkku karkkipussin pohjalla.
+
+sana: Frankensteinin hirviö
+vihje: Ruumiinosista koottu ja salamalla herätetty olento.
+
+sana: Dracula
+vihje: Transilvanian kuuluisin kreivi.
+
+sana: Nosferatu
+vihje: Vanhan mykkäelokuvan kalju vampyyri.
+
+sana: Pennywise
+vihje: Viemärissä asuva pelle, jolla on punainen ilmapallo.
+
+sana: Chucky
+vihje: Murhaava leikkinukke.
+
+sana: Wednesday
+vihje: Addamsin perheen synkkä tytär.
+
+sana: Beetlejuice
+vihje: Sano hänen nimensä kolmesti, niin hän ilmestyy.
+
+sana: Poltergeist
+vihje: Esineitä paiskova, riehuva henki.
+
+sana: Hocus Pocus
+vihje: Elokuva kolmesta noitasiskosta.
+
+sana: Addamsin perhe
+vihje: Kummallinen perhe: Gomez, Morticia ja Wednesday.
+
+sana: Manaaja
+vihje: Ajaa pahan hengen ulos riivatusta.

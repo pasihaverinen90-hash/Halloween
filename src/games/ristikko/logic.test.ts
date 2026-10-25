@@ -2,11 +2,12 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CONFIG } from '../../config';
+import { drawRistikkoVersion, RISTIKKO_FILES } from './content';
 import { parseRistikko } from '../../content/ristikko';
 import { buildLayout, cellKey, crosswordPoints, solutionCells, wordCells, type Layout } from './logic';
 
 const C = CONFIG.ristikko;
-const content = parseRistikko(readFileSync(resolve(__dirname, '../../../content/ristikko.txt'), 'utf8'));
+const content = parseRistikko(readFileSync(resolve(__dirname, '../../../content/ristikko-1.txt'), 'utf8'));
 if (!content.ok) throw new Error(content.errors.map((e) => e.message).join('\n'));
 const layout = content.layout;
 
@@ -133,4 +134,15 @@ it('prints the grid (for a look)', () => {
     lines.push(line);
   }
   console.log(`${layout.cols}×${layout.rows}, ${cells.size} ruutua\n${lines.join('\n')}`);
+});
+
+describe('three crosswords (Pasi 25.10.)', () => {
+  it('every version builds a crossword that fits the screen, and freeplay draws all of them', () => {
+    for (const file of RISTIKKO_FILES) {
+      const result = parseRistikko(readFileSync(resolve(__dirname, `../../../content/${file}`), 'utf8'));
+      expect(result.ok, file).toBe(true);
+    }
+    const drawn = new Set(Array.from({ length: 60 }, () => drawRistikkoVersion()));
+    expect([...drawn].sort()).toEqual([1, 2, 3]);
+  });
 });

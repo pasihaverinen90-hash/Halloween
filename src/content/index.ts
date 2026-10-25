@@ -41,8 +41,32 @@ export const CONTENT_FILES: readonly ContentFile[] = [
     },
   },
   {
-    file: 'ristikko.txt',
-    title: 'Ristikon sanat',
+    file: 'ristikko-1.txt',
+    title: 'Ristikon sanat, versio 1',
+    check: (text) => {
+      const result = parseRistikko(text);
+      return result.ok ? [] : result.errors;
+    },
+    describe: (text) => {
+      const result = parseRistikko(text);
+      return result.ok ? `${result.words.length} sanaa, ristikko ${result.layout.cols} × ${result.layout.rows} ruutua` : '';
+    },
+  },
+  {
+    file: 'ristikko-2.txt',
+    title: 'Ristikon sanat, versio 2',
+    check: (text) => {
+      const result = parseRistikko(text);
+      return result.ok ? [] : result.errors;
+    },
+    describe: (text) => {
+      const result = parseRistikko(text);
+      return result.ok ? `${result.words.length} sanaa, ristikko ${result.layout.cols} × ${result.layout.rows} ruutua` : '';
+    },
+  },
+  {
+    file: 'ristikko-3.txt',
+    title: 'Ristikon sanat, versio 3',
     check: (text) => {
       const result = parseRistikko(text);
       return result.ok ? [] : result.errors;

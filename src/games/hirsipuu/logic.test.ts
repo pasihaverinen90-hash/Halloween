@@ -1,19 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  ALPHABET,
-  guess,
-  isFailed,
-  isSolved,
-  newWord,
-  restoreRound,
-  revealed,
-  roundTotal,
-  serializeRound,
-  toLetter,
-  wordPoints,
-  wrapPhrase,
-  type WordState,
-} from './logic';
+import { ALPHABET, drawWords, guess, isFailed, isSolved, newWord, toLetter, restoreRound, revealed, roundTotal, serializeRound, wordPoints, type WordState, wrapPhrase } from './logic';
 
 function play(phrase: string, keys: string): WordState {
   let state = newWord(phrase);
@@ -118,5 +104,26 @@ describe('checkpoint', () => {
     const done = play('LEPAKKO', 'lepako');
     const restored = restoreRound(serializeRound({ index: 0, scores: [], current: done }), words);
     expect(restored?.current && isSolved(restored.current)).toBe(true);
+  });
+});
+
+describe('drawing the words (Pasi 25.10.)', () => {
+  const all = ['KUU', 'LEPAKKO', 'KARKKI VAI KEPPONEN', 'NOITA', 'ZOMBI', 'HAUTAUSMAA', 'KALLO'].map((phrase) => ({ phrase }));
+
+  it('draws five different words, the longest first', () => {
+    for (let seed = 0; seed < 20; seed++) {
+      let n = seed;
+      const random = (): number => ((n = (n * 9301 + 49297) % 233280) / 233280);
+      const words = drawWords(all, 5, random);
+      expect(words).toHaveLength(5);
+      expect(new Set(words.map((w) => w.phrase)).size).toBe(5);
+      const letters = (p: string): number => p.replace(/[^A-ZÅÄÖ]/g, '').length;
+      expect(words.every((w) => letters(w.phrase) <= letters(words[0].phrase))).toBe(true);
+    }
+  });
+
+  it('varies from round to round', () => {
+    const rounds = new Set(Array.from({ length: 10 }, () => drawWords(all, 5).map((w) => w.phrase).sort().join()));
+    expect(rounds.size).toBeGreaterThan(1);
   });
 });

@@ -158,3 +158,20 @@ export function restoreRound(raw: unknown, words: readonly string[]): RoundState
   }
   return { index, scores, current: state };
 }
+
+/**
+ * Pasi 25.10.: a round's words drawn at random from the whole list. The word
+ * with the most letters comes first: long words are the easiest to guess, so
+ * the start is forgiving.
+ */
+export function drawWords<T extends { phrase: string }>(all: readonly T[], count: number, random: () => number = Math.random): T[] {
+  const pool = [...all];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const picked = pool.slice(0, count);
+  const letters = (w: T): number => [...w.phrase].filter(isLetter).length;
+  const first = picked.reduce((best, w, i) => (letters(w) > letters(picked[best]) ? i : best), 0);
+  return [picked[first], ...picked.filter((_, i) => i !== first)];
+}

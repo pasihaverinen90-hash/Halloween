@@ -2,7 +2,7 @@ import { CONFIG } from '../../config';
 
 /*
  * Crossword rules (CLAUDE.md, game 5; Pasi 20.10.) as pure functions. The
- * grid is built automatically from the word list (content/ristikko.txt), so
+ * grid is built automatically from the word list (content/ristikko-<n>.txt), so
  * Pasi can change the words without touching anything else. The same list
  * always gives the same grid, so everyone plays the same crossword.
  */

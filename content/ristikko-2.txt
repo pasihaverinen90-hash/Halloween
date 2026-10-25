@@ -1,0 +1,77 @@
+# RISTIKON SANAT, VERSIO 2: Halloween-yö
+#
+# Peli tekee ristikon automaattisesti näistä sanoista.
+# Pasi 25.10.: ristikoita on kolme (ristikko-1.txt, ristikko-2.txt ja ristikko-3.txt),
+# ja freeplay arpoo joka kerta yhden niistä.
+# Jokainen sana on oma korttinsa: ensin rivi "sana:", sitten rivi "vihje:".
+# Korttien väliin jätetään yksi tyhjä rivi.
+#
+# - Sanoja on 16–22.
+# - Sana on yksi sana ilman välilyöntejä: vain kirjaimia A–Ö, 3–13 kirjainta.
+# - Vihje saa olla enintään 60 merkkiä.
+# - Isoilla ja pienillä kirjaimilla ei ole väliä.
+# - Jos sanoista ei saada ristikkoa, joka mahtuu ruudulle, julkaisu pysähtyy ja virhe
+#   kerrotaan. Vaihda silloin jokin pitkä sana lyhyempään.
+# - #-merkillä alkavat rivit ovat ohjeita, eikä peli lue niitä.
+#
+# Sanat ovat Pasin listasta (25.10.).
+
+sana: Lepakko
+vihje: Siivekäs yölentäjä, joka nukkuu pää alaspäin
+
+sana: Kurpitsa
+vihje: Oranssi kasvis, josta kaiverretaan lyhty
+
+sana: Hämähäkki
+vihje: Kahdeksanjalkainen seitin kutoja
+
+sana: Luuranko
+vihje: Pelkät luut ilman lihaa
+
+sana: Ihmissusi
+vihje: Muuttuu täysikuulla karvaiseksi
+
+sana: Noita
+vihje: Lentää luudalla ja keittää liemiä
+
+sana: Kallo
+vihje: Pään luu, joka irvistää
+
+sana: Arkku
+vihje: Vainajan viimeinen vuode
+
+sana: Zombi
+vihje: Elävä kuollut, joka hamuaa aivoja
+
+sana: Loitsu
+vihje: Noidan lausumat taikasanat
+
+sana: Myrkky
+vihje: Sellainen voi piillä punaisessa omenassa
+
+sana: Kynttilä
+vihje: Lepattava liekki pimeässä
+
+sana: Naamio
+vihje: Sen takana kasvot eivät näy
+
+sana: Karkki
+vihje: Herkku, jota kerjätään ovelta
+
+sana: Kissa
+vihje: Noidan musta lemmikki
+
+sana: Korppi
+vihje: Musta lintu, joka raakkuu
+
+sana: Kellari
+vihje: Talon pimein ja kostein kerros
+
+sana: Hautausmaa
+vihje: Paikka, jossa hautakivet seisovat
+
+sana: Luuta
+vihje: Noidan kulkuväline
+
+sana: Haamu
+vihje: Läpikuultava aave

@@ -8,7 +8,7 @@ import { COLORS, CSS, FONTS, TEXT } from '../../ui/theme';
 import { drawPanel } from '../../ui/widgets/panel';
 import type { GameContext, GameSceneData } from '../types';
 import { BACKGROUND } from './assets';
-import { ristikkoContent } from './content';
+import { drawRistikkoVersion, ristikkoContent, RISTIKKO_FILES } from './content';
 import { Crossword, type Arrow, type CrosswordEvent } from './crossword';
 import { cellKey, type Layout } from './logic';
 
@@ -42,6 +42,8 @@ interface ClueView {
 /** Crossword: type the words, the game checks each finished word. One round of 10 minutes. */
 export class RistikkoScene extends Phaser.Scene {
   private ctx!: GameContext;
+  /** Which of the three crosswords (1…3) is played. */
+  private version = 1;
   private phase: Phase = 'playing';
   private finished = false;
   /** The round; public for the browser tests. */
@@ -83,7 +85,9 @@ export class RistikkoScene extends Phaser.Scene {
   }
 
   create(): void {
-    const content = ristikkoContent();
+    // Pasi 25.10.: freeplay draws one of the three crosswords every time.
+    this.version = this.ctx.freeplay ? drawRistikkoVersion() : 1;
+    const content = ristikkoContent(this.version);
     if (!content.ok) {
       this.showContentError(content.errors.map((e) => e.message));
       return;
@@ -151,6 +155,7 @@ export class RistikkoScene extends Phaser.Scene {
     const x = this.crossword;
     if (!x) return { phase: 'error' };
     return {
+      version: this.version,
       phase: this.phase,
       secondsLeft: Math.round(x.secondsLeft * 10) / 10,
       solved: x.solved.size,
@@ -461,7 +466,7 @@ export class RistikkoScene extends Phaser.Scene {
     this.add.rectangle(W / 2, H / 2, W, H, COLORS.night);
     this.add.text(W / 2, 120, 'Ristikon sanatiedostossa on virhe', { ...TEXT.heading, color: CSS.red }).setOrigin(0.5);
     this.add
-      .text(W / 2, 190, [...messages, '', 'Korjaa tiedosto content/ristikko.txt. Pasi: Ctrl + Shift + K avaa korjaustilan.'].join('\n'), {
+      .text(W / 2, 190, [...messages, '', `Korjaa tiedosto content/${RISTIKKO_FILES[this.version - 1]}. Pasi: Ctrl + Shift + K avaa korjaustilan.`].join('\n'), {
         ...TEXT.body,
         fontSize: '22px',
         align: 'center',

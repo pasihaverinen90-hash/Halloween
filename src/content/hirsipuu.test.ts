@@ -30,11 +30,11 @@ describe('parseCards', () => {
 });
 
 describe('parseHirsipuu', () => {
-  it('accepts the real content file', () => {
+  it('accepts the real content file: a long list to draw from (Pasi 25.10.)', () => {
     const result = parseHirsipuu(readFileSync('content/hirsipuu.txt', 'utf8'));
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.words).toHaveLength(5);
+      expect(result.words.length).toBeGreaterThanOrEqual(40);
       expect(result.words[0].phrase).toBe(result.words[0].phrase.toLocaleUpperCase('fi-FI'));
     }
   });
@@ -44,10 +44,10 @@ describe('parseHirsipuu', () => {
     expect(result.ok && result.words[0].phrase).toBe('KARKKI VAI KEPPONEN!');
   });
 
-  it('requires exactly five words', () => {
+  it('requires at least five words', () => {
     const four = FIVE.split('\n\n').slice(0, 4).join('\n\n');
-    expect(errorsOf(four).join()).toMatch(/tasan 5, nyt niitä on 4/);
-    expect(errorsOf(`${FIVE}\n\nsana: Kuusi\nvihje: Kuusi`).join()).toMatch(/nyt niitä on 6/);
+    expect(errorsOf(four).join()).toMatch(/vähintään 5, nyt niitä on 4/);
+    expect(errorsOf(`${FIVE}\n\nsana: Kuusi\nvihje: Kuusi`)).toEqual([]);
     expect(errorsOf('# vain kommentti').join()).toMatch(/ei ole yhtään sanaa/);
   });
 

@@ -50,8 +50,8 @@ test('freeplay: salasana, hirsipuu, top 10 -lista nimen kanssa, ennätykset ja a
   await waitForScene(page, 'Menu');
   await startFreeplayGame(page, 'hirsipuu', 'Hirsipuu');
 
-  // Sana 1: kaksi väärää kirjainta → 200 − 2 × 25 = 150
-  await solveHangmanWord(page, 'qw');
+  // Sana 1: kaksi väärää kirjainta → 200 − 2 × 25 = 150 (Q ja X eivät ole yhdessäkään sanassa)
+  await solveHangmanWord(page, 'qx');
   expect(await sceneState(page, 'Hirsipuu')).toMatchObject({ index: 0, total: 150, phase: 'wordDone' });
   await press(page, 'Enter');
   // Sana 2: kahdeksas väärä kirjain kaataa sanan → 0

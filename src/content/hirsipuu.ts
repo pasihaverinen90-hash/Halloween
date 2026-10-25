@@ -3,8 +3,9 @@ import { HIRSIPUU_LAYOUT, isLetter, wrapPhrase } from '../games/hirsipuu/logic';
 import { listKeys, parseCards, type ContentError } from './format';
 
 /*
- * content/hirsipuu.txt: exactly CONFIG.hirsipuu.wordsPerRound cards with
- * "sana" (the word or phrase) and "vihje" (the hint).
+ * content/hirsipuu.txt: at least CONFIG.hirsipuu.wordsPerRound cards with
+ * "sana" (the word or phrase) and "vihje" (the hint). Pasi 25.10.: each
+ * round draws its words at random from all of them.
  */
 
 export interface HirsipuuWord {
@@ -90,11 +91,11 @@ export function parseHirsipuu(text: string): HirsipuuContent {
   }
 
   if (cards.length === 0 && errors.length === 0) {
-    errors.push({ line: null, message: `Tiedostossa ei ole yhtään sanaa. Sanoja pitää olla tasan ${expected}.` });
-  } else if (cards.length !== expected) {
+    errors.push({ line: null, message: `Tiedostossa ei ole yhtään sanaa. Sanoja pitää olla vähintään ${expected}.` });
+  } else if (cards.length < expected) {
     errors.push({
       line: null,
-      message: `Sanoja pitää olla tasan ${expected}, nyt niitä on ${cards.length}. Jokainen sana on oma korttinsa (rivit "sana:" ja "vihje:"), ja korttien välissä on tyhjä rivi.`,
+      message: `Sanoja pitää olla vähintään ${expected}, nyt niitä on ${cards.length}. Jokainen sana on oma korttinsa (rivit "sana:" ja "vihje:"), ja korttien välissä on tyhjä rivi.`,
     });
   }
 

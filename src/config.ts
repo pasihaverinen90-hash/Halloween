@@ -153,7 +153,7 @@ export const CONFIG = {
 
   /** 5. Ristikko. */
   ristikko: {
-    /** The crossword is built from content/ristikko.txt, which has this many words (CLAUDE.md: over 15; Pasi 20.10.: 18). */
+    /** A crossword is built from content/ristikko-<n>.txt (three versions, Pasi 25.10.), which has this many words (CLAUDE.md: over 15; Pasi 20.10.: 18). */
     minWords: 16,
     maxWords: 22,
     /** Word length in letters. */
