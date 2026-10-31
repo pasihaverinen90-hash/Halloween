@@ -212,6 +212,11 @@ export class LentoScene extends Phaser.Scene {
     this.ctx.sfx.play('start');
   }
 
+  /** Points at this moment, for ending the game with Ctrl + Q (Pasi 31.10.). */
+  currentScore(): number {
+    return this.points();
+  }
+
   private points(): number {
     if (this.endless) return endlessPoints(this.distance);
     return distancePoints(this.distance, this.phase === 'finished');

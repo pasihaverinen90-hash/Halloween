@@ -196,6 +196,11 @@ export class ArvoitusScene extends Phaser.Scene {
     return this.riddles[this.round.index];
   }
 
+  /** Points at this moment, for ending the game with Ctrl + Q (Pasi 31.10.). */
+  currentScore(): number {
+    return this.displayTotal();
+  }
+
   private displayTotal(): number {
     const result = this.round.current?.result;
     return roundTotal(this.round.scores) + (result ? result.points : 0);

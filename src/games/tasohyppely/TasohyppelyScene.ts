@@ -749,6 +749,11 @@ export class TasohyppelyScene extends Phaser.Scene {
     return this.phase === 'dead';
   }
 
+  /** Points at this moment, for ending the game with Ctrl + Q (Pasi 31.10.). */
+  currentScore(): number {
+    return this.points(this.ctx.freeplay);
+  }
+
   private points(exact = false): number {
     return score(
       {

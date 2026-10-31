@@ -378,6 +378,11 @@ export class RaiskintaScene extends Phaser.Scene {
     this.bossHealth = health;
   }
 
+  /** Points at this moment, for ending the game with Ctrl + Q (Pasi 31.10.). */
+  currentScore(): number {
+    return this.points(this.ctx.freeplay);
+  }
+
   private points(exact = false): number {
     return scoreOf(this.killed, this.playTime, this.bossDefeated, exact);
   }

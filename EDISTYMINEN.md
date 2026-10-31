@@ -301,6 +301,7 @@ Pasi: peli on kaveriporukan iltaan, eikä sen tarvitse olla täydellinen. Ennakk
 - **Holy Water Blaster:** Paholaiselle +20 % kestävyyttä (`bossHealth` 462 → 554).
 - **MonsterSlayer3000:** hautausmaalle 2 zombia lisää (11). Jokaiseen kenttään 3 kynttilää lisää, joten kolikoita on 15 per kenttä. Jokaisessa kentässä on 2 kynttilää (`H` kartassa), joista putoaa kokonainen sydän (`fullHeartHeal` 1; puolikas sydän palauttaa yhä 0,5). Uusi kuva `tasohyppely-sydan-koko.png`.
 - **Pumpkin-O-Matic:** ison pommin räjähdys 50 % isompi (`bombRadius` 110 → 165).
+- **Ctrl + Q lopettaa pelin heti** (kaikki pelit): turnauksessa sen hetken pisteet tallentuvat yritykseksi, loput yritykset jäävät väliin (parempi aiempi yritys jää voimaan) ja seuraava peli alkaa. Freeplayssä palataan valikkoon ilman top-listaa. Pasi pyysi ensin Ctrl + Esc, mutta valitsi Ctrl + Q, koska Windows varaa Ctrl + Escin. Pelit kertovat pisteensä `currentScore()`-metodilla.
 - **Pumpkin-O-Matic, korjaus:** Pasin koneella linnanpihan maasto ei näkynyt (luurangot leijuivat). Syy oli luultavasti maastokuvan koko: suurella näytöllä se piirrettiin 5120 pikselin levyisenä, ja osa näytönohjaimista näyttää enintään 4096. Maastokuva on nyt enintään 4096 pikseliä leveä (`TERRAIN_SCALE`). Muissa peleissä yhtä suuria kuvia ei ole (suurin on noin 3840).
 
 #### Illan lyhennys (Pasi 23.10., päätetty ja tehty 23.10.)

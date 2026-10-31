@@ -53,6 +53,15 @@ export interface GameContext {
   freeplay: boolean;
 }
 
+/**
+ * Pasi 31.10.: Ctrl + Q ends a game at once. A game scene
+ * implements currentScore() to give its points at that moment (0..1000, may
+ * have decimals); a scene without it scores 0.
+ */
+export interface QuittableScene {
+  currentScore(): number;
+}
+
 /** Scene data every game scene receives: this.scene.launch(def.sceneKey, { ctx }). */
 export interface GameSceneData {
   ctx: GameContext;

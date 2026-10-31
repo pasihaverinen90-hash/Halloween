@@ -6,7 +6,7 @@ import { session } from '../core/session';
 import { sfx } from '../core/sfx';
 import type { AttemptEnd } from '../core/types';
 import { getGame } from '../games/registry';
-import type { GameContext, GameDefinition, GameSceneData } from '../games/types';
+import type { GameContext, GameDefinition, GameSceneData, QuittableScene } from '../games/types';
 import { H, W } from '../ui/screen';
 import { COLORS } from '../ui/theme';
 import { showToast } from '../ui/toast';
@@ -42,6 +42,14 @@ export class GameHostScene extends Phaser.Scene {
     event.returnValue = '';
   };
 
+  /** Pasi 31.10.: Ctrl + Q ends the game at once (see quit()). */
+  private readonly quitKey = (event: KeyboardEvent): void => {
+    if (!event.ctrlKey || event.code !== 'KeyQ') return;
+    event.preventDefault();
+    // Not while correction mode's password prompt has paused everything.
+    if (this.sys.isActive()) this.quit();
+  };
+
   constructor() {
     super(SCENES.GameHost);
   }
@@ -70,10 +78,12 @@ export class GameHostScene extends Phaser.Scene {
     this.playerId = player?.id ?? '';
     this.add.rectangle(W / 2, H / 2, W, H, COLORS.night);
 
+    window.addEventListener('keydown', this.quitKey);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.token += 1;
       this.state = 'idle';
       window.removeEventListener('beforeunload', this.guardUnload);
+      window.removeEventListener('keydown', this.quitKey);
     });
 
     this.nextAttempt();
@@ -176,6 +186,31 @@ export class GameHostScene extends Phaser.Scene {
       onContinue: () => (finished ? this.leave() : this.nextAttempt()),
     };
     this.scene.launch(SCENES.AttemptResult, data);
+  }
+
+  /**
+   * Pasi 31.10.: Ctrl + Q ends the game at once. In the tournament the points
+   * of that moment are saved as an attempt and the remaining attempts are
+   * skipped (a better earlier attempt still counts), and the next game starts.
+   * In freeplay it goes back to the menu without a top list entry.
+   */
+  private quit(): void {
+    if (this.state === 'idle') return;
+    const playing = this.state === 'playing';
+    const scene = this.scene.get(this.def.sceneKey) as Partial<QuittableScene> | null;
+    const score = playing ? (scene?.currentScore?.() ?? 0) : 0;
+    this.state = 'idle';
+    this.token += 1;
+    window.removeEventListener('beforeunload', this.guardUnload);
+    if (!this.freeplay && !getDb().getRecord(this.playerId, this.def.id)?.finished) {
+      try {
+        getDb().recordAttempt(this.playerId, this.def.id, score, this.total, { complete: true });
+      } catch (error) {
+        console.error('Tuloksen tallennus epäonnistui:', error);
+      }
+    }
+    sfx.play('back');
+    this.leave();
   }
 
   private leave(): void {

@@ -600,6 +600,11 @@ export class PiiritysScene extends Phaser.Scene {
     this.showMessage('Kaikki luurangot kaatuivat!', '');
   }
 
+  /** Points at this moment, for ending the game with Ctrl + Q (Pasi 31.10.). */
+  currentScore(): number {
+    return this.points();
+  }
+
   private points(): number {
     return this.levelPoints.reduce((sum, p) => sum + p, 0);
   }

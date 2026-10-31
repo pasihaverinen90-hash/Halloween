@@ -199,6 +199,11 @@ export class HirsipuuScene extends Phaser.Scene {
     return this.round.current as WordState;
   }
 
+  /** Points at this moment, for ending the game with Ctrl + Q (Pasi 31.10.). */
+  currentScore(): number {
+    return this.displayTotal();
+  }
+
   private displayTotal(): number {
     const current = this.round.current;
     const pending = current && isOver(current) ? wordPoints(current) : 0;

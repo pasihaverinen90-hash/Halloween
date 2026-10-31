@@ -151,6 +151,11 @@ export class RistikkoScene extends Phaser.Scene {
     if (this.crossword.secondsLeft <= 0) this.end('timeout');
   }
 
+  /** Points at this moment, for ending the game with Ctrl + Q (Pasi 31.10.). */
+  currentScore(): number {
+    return this.crossword ? this.crossword.points(this.ctx.freeplay) : 0;
+  }
+
   getTestState(): unknown {
     const x = this.crossword;
     if (!x) return { phase: 'error' };
