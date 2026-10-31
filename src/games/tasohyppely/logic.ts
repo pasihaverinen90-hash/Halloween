@@ -24,7 +24,8 @@ export const MOVER_W = 2 * TILE;
 export const MOVER_H = 18;
 
 export type EnemyKind = 'zombie' | 'bat' | 'raven' | 'armor' | 'skull' | 'spider' | 'wisp' | 'mushroom' | 'wolf' | 'skeleton';
-export type ItemKind = 'heart' | 'whip' | 'dagger';
+/** heart = half a heart; fullHeart = a whole one (Pasi 31.10.). */
+export type ItemKind = 'heart' | 'fullHeart' | 'whip' | 'dagger';
 
 const ENEMY_CHARS: Readonly<Record<string, EnemyKind>> = {
   z: 'zombie',
@@ -37,7 +38,7 @@ const ENEMY_CHARS: Readonly<Record<string, EnemyKind>> = {
   m: 'mushroom',
   f: 'wolf',
 };
-const CANDLE_CHARS: Readonly<Record<string, ItemKind | null>> = { i: null, h: 'heart', u: 'whip', t: 'dagger' };
+const CANDLE_CHARS: Readonly<Record<string, ItemKind | null>> = { i: null, h: 'heart', H: 'fullHeart', u: 'whip', t: 'dagger' };
 const KNOWN_CHARS = new Set(['.', '#', '=', 'C', '~', ':', 'P', 'S', 'G', 'B', ...Object.keys(ENEMY_CHARS), ...Object.keys(CANDLE_CHARS)]);
 
 export interface Rect {

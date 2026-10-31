@@ -255,8 +255,10 @@ export const CONFIG = {
     maxHealth: 5,
     /** A hit by an enemy, a projectile or a blade, and a fall into a pit, each take this much. */
     hitDamage: 1,
-    /** A heart pick-up heals this much. */
+    /** A heart pick-up heals this much … */
     heartHeal: 0.5,
+    /** … and a whole heart this much (Pasi 31.10.: two candles in every level drop one). */
+    fullHeartHeal: 1,
     /** After a hit (or a fall into a pit) the hunter cannot be hit for this long. */
     invulnerableSeconds: 1.5,
     /** Small knockback after a hit (never into a pit), and how long the controls are off meanwhile. */
@@ -363,9 +365,9 @@ export const CONFIG = {
     angleSpeed: 50,
     fineAngleSpeed: 10,
     startAngle: 40,
-    /** Blast radius of a normal pumpkin (Pasi 22.10.: about a skeleton's height), a big bomb and a cluster pumpkin's bomblet. */
+    /** Blast radius of a normal pumpkin (Pasi 22.10.: about a skeleton's height), a big bomb (Pasi 31.10.: +50 %, 110 → 165) and a cluster pumpkin's bomblet. */
     blastRadius: 52,
-    bombRadius: 110,
+    bombRadius: 165,
     bombletRadius: 34,
     bombletCount: 5,
     /**

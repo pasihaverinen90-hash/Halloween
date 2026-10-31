@@ -600,6 +600,14 @@ export function drawHeartItem(ctx: CanvasRenderingContext2D): void {
   frames(ctx, 1, 8, 8, (p) => p.grid(0, 0, ['.rr.....', 'rlrr....', 'rlrr....', 'rrrr....', '.rrr....', '..rr....', '...r....', '........'], pal));
 }
 
+/** A whole heart (Pasi 31.10.): 9 × 8 pixels. */
+export function drawFullHeartItem(ctx: CanvasRenderingContext2D): void {
+  const pal: Palette = { r: '#e5484d', l: '#ff8f8f', d: '#9a1f2a' };
+  frames(ctx, 1, 9, 8, (p) =>
+    p.grid(0, 0, ['.rr...rr.', 'rlrr.rrrr', 'rlrrrrrrd', 'rrrrrrrrd', '.rrrrrrd.', '..rrrrd..', '...rrd...', '....d....'], pal),
+  );
+}
+
 /** Whip upgrade: a golden coiled whip. 10 × 10 pixels. */
 export function drawWhipItem(ctx: CanvasRenderingContext2D): void {
   const pal: Palette = { g: '#f5c542', y: '#fff0a0', b: '#b8862b', h: '#5b3b24' };

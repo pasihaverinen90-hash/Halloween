@@ -15,6 +15,12 @@ const C = CONFIG.kurpitsalinko;
 const LW = C.levelWidth;
 const LH = C.levelHeight;
 const TERRAIN_KEY = 'piiritys-maasto';
+/**
+ * Resolution of the ground picture: crisp on big screens, but never wider than
+ * 4096 pixels. Pasi 31.10.: on a big screen the picture was 5120 wide, and a
+ * graphics card that shows at most 4096 left the ground invisible.
+ */
+const TERRAIN_SCALE = Math.min(ZOOM, 4096 / C.levelWidth, 4096 / C.levelHeight);
 /** Camera zoom while aiming (the start of a level) and while a pumpkin flies. */
 const AIM_ZOOM: number = C.aimZoom;
 const FLIGHT_ZOOM: number = C.flightZoom;
@@ -147,7 +153,7 @@ export class PiiritysScene extends Phaser.Scene {
 
     this.sky = this.inWorld(addAsset(this, SKY, LW / 2, (LH - SKY_ABOVE) / 2, { fit: 'stretch', width: LW, height: LH + SKY_ABOVE }).setDepth(-10));
     const existing = this.textures.exists(TERRAIN_KEY) ? (this.textures.get(TERRAIN_KEY) as Phaser.Textures.CanvasTexture) : null;
-    this.terrainTexture = existing ?? this.textures.createCanvas(TERRAIN_KEY, Math.round(LW * ZOOM), Math.round(LH * ZOOM))!;
+    this.terrainTexture = existing ?? this.textures.createCanvas(TERRAIN_KEY, Math.round(LW * TERRAIN_SCALE), Math.round(LH * TERRAIN_SCALE))!;
     this.inWorld(this.add.image(0, 0, TERRAIN_KEY).setOrigin(0, 0).setDisplaySize(LW, LH).setDepth(0));
     this.water = this.inWorld(this.add.graphics().setDepth(1));
     this.trail = this.inWorld(this.add.graphics().setDepth(2));
@@ -292,7 +298,7 @@ export class PiiritysScene extends Phaser.Scene {
     ctx.globalCompositeOperation = 'source-over';
     ctx.clearRect(0, 0, tex.width, tex.height);
     ctx.save();
-    ctx.scale(ZOOM, ZOOM);
+    ctx.scale(TERRAIN_SCALE, TERRAIN_SCALE);
     for (const shape of shapes) {
       const art = MATERIAL_ART[shape.material];
       const source = this.textures.get(assetKey(art)).getSourceImage() as CanvasImageSource & { width: number };
@@ -322,7 +328,7 @@ export class PiiritysScene extends Phaser.Scene {
   private carvePicture(x: number, y: number, r: number): void {
     const ctx = this.terrainTexture.context;
     ctx.save();
-    ctx.setTransform(ZOOM, 0, 0, ZOOM, 0, 0);
+    ctx.setTransform(TERRAIN_SCALE, 0, 0, TERRAIN_SCALE, 0, 0);
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -351,7 +357,7 @@ export class PiiritysScene extends Phaser.Scene {
   private carveBeam(x0: number, y0: number, x1: number, y1: number, width: number): void {
     const ctx = this.terrainTexture.context;
     ctx.save();
-    ctx.setTransform(ZOOM, 0, 0, ZOOM, 0, 0);
+    ctx.setTransform(TERRAIN_SCALE, 0, 0, TERRAIN_SCALE, 0, 0);
     ctx.globalCompositeOperation = 'destination-out';
     ctx.lineCap = 'round';
     ctx.lineWidth = width;

@@ -67,7 +67,9 @@ describe('levels', () => {
       expect(level.enemies.length).toBeGreaterThan(8);
       // Pasi 21.10.: about 12 candles in a level, and 1–2 of them drop an item; 31.10.: 15, so 15 coins per level.
       expect(level.candles.length).toBe(15);
-      const drops = level.candles.filter((c) => c.drop !== null).length;
+      // Pasi 31.10.: and two more drop a whole heart.
+      expect(level.candles.filter((c) => c.drop === 'fullHeart')).toHaveLength(2);
+      const drops = level.candles.filter((c) => c.drop !== null && c.drop !== 'fullHeart').length;
       expect(drops).toBeGreaterThanOrEqual(1);
       expect(drops).toBeLessThanOrEqual(2);
     }

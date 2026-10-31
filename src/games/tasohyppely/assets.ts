@@ -13,6 +13,7 @@ import {
   drawDagger,
   drawDaggerItem,
   drawGate,
+  drawFullHeartItem,
   drawHeartItem,
   drawHudHeart,
   drawHunter,
@@ -98,6 +99,7 @@ export const WITCH = sprite(
 export const ORB = sprite('tasohyppely-taikapallo.png', 'Taikapallo', 'Hehkuva violetti taikapallo.', 24, 24, drawOrb, { count: 2, order: 'sykkii 1, sykkii 2' });
 export const CANDLE = sprite('tasohyppely-kynttila.png', 'Kynttilä', 'Palava kynttilä rautaisella jalustalla.', 24, 48, drawCandle, { count: 2, order: 'liekki 1, liekki 2' });
 export const HEART_ITEM = sprite('tasohyppely-sydan-esine.png', 'Puolikas sydän', 'Puolikas punainen sydän (vasen puolisko), kerättävä esine.', 24, 24, drawHeartItem);
+export const FULL_HEART_ITEM = sprite('tasohyppely-sydan-koko.png', 'Kokonainen sydän', 'Kokonainen punainen sydän, kerättävä esine.', 27, 24, drawFullHeartItem);
 export const WHIP_ITEM = sprite('tasohyppely-ruoska-esine.png', 'Ruoskan päivitys', 'Kerällä oleva kultainen ruoska, kerättävä esine.', 30, 30, drawWhipItem);
 export const DAGGER = sprite('tasohyppely-tikari.png', 'Heitettävä tikari', 'Lentävä heittotikari sivulta, kärki oikealle.', 30, 12, drawDagger);
 export const DAGGER_ITEM = sprite('tasohyppely-tikarit-esine.png', 'Tikarinippu', 'Viuhkaksi aseteltu nippu heittotikareita, kerättävä esine.', 30, 30, drawDaggerItem);
@@ -210,6 +212,7 @@ export const ASSETS: AssetSpec[] = [
   ORB,
   CANDLE,
   HEART_ITEM,
+  FULL_HEART_ITEM,
   WHIP_ITEM,
   DAGGER,
   DAGGER_ITEM,

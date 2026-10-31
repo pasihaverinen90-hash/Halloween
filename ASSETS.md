@@ -774,6 +774,16 @@ Hyvä tietää:
 
 > Puolikas punainen sydän (vasen puolisko), kerättävä esine. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 24 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
 
+### `tasohyppely-sydan-koko.png` – Kokonainen sydän
+
+- **Koko:** 27 × 24 px
+- **Tausta:** läpinäkyvä
+- **Tyyli:** Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen.
+
+**Kuvaus generaattorille:**
+
+> Kokonainen punainen sydän, kerättävä esine. Tyyli: Pikselitaide 90-luvun konsolipelin tyyliin, selkeät tummat ääriviivat, tumma Halloween-yö, ei lapsellinen. Koko 27 × 24 pikseliä. Läpinäkyvä tausta (PNG), kuvassa vain itse kohde.
+
 ### `tasohyppely-ruoska-esine.png` – Ruoskan päivitys
 
 - **Koko:** 30 × 30 px

@@ -17,6 +17,7 @@ import {
   DAGGER,
   DAGGER_ITEM,
   GATE,
+  FULL_HEART_ITEM,
   HEART_ITEM,
   HUD_HEART,
   HUNTER,
@@ -846,7 +847,7 @@ export class TasohyppelyScene extends Phaser.Scene {
       this.whipDroppedHere = true;
       this.guaranteeArmed = false;
     }
-    const spec = kind === 'whip' ? WHIP_ITEM : kind === 'dagger' ? DAGGER_ITEM : HEART_ITEM;
+    const spec = kind === 'whip' ? WHIP_ITEM : kind === 'dagger' ? DAGGER_ITEM : kind === 'fullHeart' ? FULL_HEART_ITEM : HEART_ITEM;
     const image = this.levelObject(addAsset(this, spec, x, y).setDepth(12));
     this.items.push({ kind, x, y, vy: -260, resting: false, t: 0, image });
   }
@@ -894,10 +895,11 @@ export class TasohyppelyScene extends Phaser.Scene {
       this.floatText(item.x, item.y - 30, WHIP_NAMES[this.whipLevel - 1] + '!', CSS.gold);
       return;
     }
-    // A whip upgrade with the whip already full becomes half a heart (Pasi 21.10.).
-    this.health = Math.min(this.heartCap(), this.health + C.heartHeal);
+    // A whole heart (Pasi 31.10.); otherwise half a heart, also from a whip upgrade with the whip already full (Pasi 21.10.).
+    const whole = item.kind === 'fullHeart';
+    this.health = Math.min(this.heartCap(), this.health + (whole ? C.fullHeartHeal : C.heartHeal));
     this.ctx.sfx.play('correct');
-    this.floatText(item.x, item.y - 30, '+½', CSS.red);
+    this.floatText(item.x, item.y - 30, whole ? '+1' : '+½', CSS.red);
   }
 
   // ---------------------------------------------------------------- throwing daggers
