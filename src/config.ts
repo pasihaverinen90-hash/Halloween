@@ -234,8 +234,8 @@ export const CONFIG = {
     lifeDropTimes: [33, 66, 99],
     /** Holy objects appear at these moments, in turn an ark (weapon) and a grail (guardian orb). */
     specialTimes: [14, 27, 43, 60, 77, 93, 106],
-    /** Devil's health in basic shots, and seconds between its attacks (calm → furious). It grows angrier at 2/3 and 1/3 health. */
-    bossHealth: 462,
+    /** Devil's health in basic shots (Pasi 31.10.: +20 %, 462 → 554), and seconds between its attacks (calm → furious). It grows angrier at 2/3 and 1/3 health. */
+    bossHealth: 554,
     bossAttackGapStart: 1.5,
     bossAttackGapEnd: 0.75,
     /** Graveyard scrolling speed (px/s). */

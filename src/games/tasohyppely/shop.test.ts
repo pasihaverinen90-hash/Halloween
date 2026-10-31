@@ -20,7 +20,7 @@ describe('what carries over (Pasi 22.10.)', () => {
     expect(readRunState({ ...run, whip: 0 })).toBeNull();
     expect(readRunState({ ...run, daggers: 1.5 })).toBeNull();
     // More candles than the earlier levels have cannot be.
-    expect(readRunState({ ...run, candles: 25 })).toBeNull();
+    expect(readRunState({ ...run, candles: 31 })).toBeNull();
     expect(readRunState({ ...run, coins: undefined })).toBeNull();
   });
 

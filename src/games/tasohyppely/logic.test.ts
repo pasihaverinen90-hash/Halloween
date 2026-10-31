@@ -65,8 +65,8 @@ describe('levels', () => {
     for (const level of levels) {
       expect(level.start).toBeTruthy();
       expect(level.enemies.length).toBeGreaterThan(8);
-      // Pasi 21.10.: about 12 candles in a level, and 1–2 of them drop an item.
-      expect(level.candles.length).toBe(12);
+      // Pasi 21.10.: about 12 candles in a level, and 1–2 of them drop an item; 31.10.: 15, so 15 coins per level.
+      expect(level.candles.length).toBe(15);
       const drops = level.candles.filter((c) => c.drop !== null).length;
       expect(drops).toBeGreaterThanOrEqual(1);
       expect(drops).toBeLessThanOrEqual(2);
@@ -75,7 +75,7 @@ describe('levels', () => {
     expect(levels[1].gate).not.toBeNull();
     expect(levels[2].gate).toBeNull();
     expect(levels[2].arena).not.toBeNull();
-    expect(totalCandles()).toBe(36);
+    expect(totalCandles()).toBe(45);
   });
 
   it('has climbing sections, moving platforms, crumbling floors and swinging blades (Pasi 21.10.)', () => {
@@ -315,7 +315,7 @@ describe('distance and points', () => {
     expect(score({ levelsDone: 1, progress: 0, candlesBroken: 0, candlesTotal: total, bossShare: 0 })).toBe(200);
     expect(score({ levelsDone: 2, progress: 0.5, candlesBroken: 0, candlesTotal: total, bossShare: 0 })).toBe(500);
     expect(score({ levelsDone: 3, progress: 0, candlesBroken: total, candlesTotal: total, bossShare: 0 })).toBe(700);
-    expect(score({ levelsDone: 2, progress: 1, candlesBroken: 18, candlesTotal: total, bossShare: 0.5 })).toBe(800);
+    expect(score({ levelsDone: 2, progress: 1, candlesBroken: total / 2, candlesTotal: total, bossShare: 0.5 })).toBe(800);
     expect(score({ levelsDone: 3, progress: 1, candlesBroken: total, candlesTotal: total, bossShare: 1 })).toBe(1000);
   });
 });
